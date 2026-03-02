@@ -8,7 +8,7 @@ from config import parameter
 
 #TODO: update readme
 
-CURRENT_DIR = "/Users/tristan.lemoalle/Documents/Thèse/Code/code_these/"
+CURRENT_DIR = ""
 
 warnings.filterwarnings('ignore')
 logging.getLogger("aequilibrae").setLevel(logging.ERROR)
@@ -17,10 +17,10 @@ edge_df, node_df = import_network(CURRENT_DIR + "data/edges_small_grid_2.csv", C
 plot_network(edge_df, node_df,
              node_id_col='node',
              node_label=True,
-             color_col_num='travel_time_car',
+             color_col_str='type_bike',
              base_width=1,
              legend=False,
-             title="Network with Free Flow Time",
+             title="Network with type of bike infrastructure",
              figsize=(8, 8))
 
 
@@ -35,7 +35,7 @@ plot = True
 
 size_od = max(node_df['node']) + 1
 
-od_df = generate_od_df(size_od, od_scenario="RANDOM_OD", max_demand=200)
+od_df = generate_od_df(size_od, od_scenario="RANDOM_OD", max_demand=2000)
 
 result_df, updated_od_car, updated_od_bike = mode_choice(edge_df,
                                                          node_df,

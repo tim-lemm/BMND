@@ -18,13 +18,13 @@ def calculate_length_bi(edge_df, weight = 0):
     list_length_bi = []
     for row in edge_df.itertuples():
         if row.type_bike is None:
-            if row.flow_car < 800:
+            if row.flow_car < 6000:
                 list_length_bi.append(row.length * (0.8 - weight))
-            elif row.flow_car >= 4000:
+            elif row.flow_car >= 8000:
                 list_length_bi.append(row.length * (1.4 + weight))
-            elif 800 <= row.flow_car < 1000:
+            elif 6000 <= row.flow_car < 7500:
                 list_length_bi.append(row.length * 1)
-            elif 1000 <= row.flow_car < 4000:
+            elif 7500 <= row.flow_car < 8000:
                 list_length_bi.append(row.length * (1.2 + weight))
         else:
             list_length_bi.append(row.length * (0.5 - weight))

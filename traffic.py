@@ -84,10 +84,10 @@ def plot_mc_results(edge_df, node_df, results_df):
     fig, axes = plt.subplots(2, 2, figsize=(10, 10))
     plot_network(edge_df, node_df, width_col='flow_car', color_col_num='flow_car', cmap='Reds',
                  title=f'Car flows- Mode Choice Assignment ', node_size=3, colorbar_label='Flow (cars)',
-                 base_width=1, width_scale=50, ax=axes[0, 0])
+                 base_width=0.1, width_scale=10, ax=axes[0, 0])
     plot_network(edge_df, node_df, width_col='flow_bike', color_col_num='flow_bike', cmap='Greens',
                  title=f'Bike flows - Mode Choice Assignment ', node_size=3, colorbar_label='Flow (bikes)',
-                 base_width=1, width_scale=50, ax=axes[0, 1])
+                 base_width=0.1, width_scale=10, ax=axes[0, 1])
     plot_network(edge_df, node_df, color_col_num='travel_time_car', cmap='hot_r', title=f'Car Travel Time',
                  node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 0])
     plot_network(edge_df, node_df, color_col_num='travel_time_bike', cmap='hot_r', title=f'Bike Travel Time',
@@ -95,7 +95,7 @@ def plot_mc_results(edge_df, node_df, results_df):
     plt.show()
 
     _,axes = plt.subplots(1, 2, figsize=(20, 7))
-    results_df.plot.line(x='iteration', y=['modal_share_car', 'modal_share_bike'], title='Evolution of modal shares',
+    results_df.plot.area(x='iteration', y=['modal_share_car', 'modal_share_bike'], title='Evolution of modal shares',
                          ax=axes[0])
     results_df.plot.line(x='iteration', y=['total_travel_time_car', 'total_travel_time_bike'],
                          title='Evolution of travel times', ax=axes[1])
@@ -123,8 +123,8 @@ def mode_choice(edge_df, node_df, od_df,
             print(f"\n--- Mode Choice Loop {j + 1} ---")
         j += 1
 
-        skim_car = skimming(edge_df, time_field='length', size_od=size_od)
-        skim_bike = skimming(edge_df, time_field='length_bi', size_od=size_od)
+        skim_car = skimming(edge_df, time_field='travel_time_car', size_od=size_od)
+        skim_bike = skimming(edge_df, time_field='travel_time_bike', size_od=size_od)
         # Calculate utilities and mode share for each OD pair
         prob_matrice_car, prob_matrice_bike = calculate_proba_matrice(skim_car, skim_bike, ASC_car, ASC_bike, beta_time,
                                                                       mu_mode, size_od)
@@ -150,7 +150,7 @@ def mode_choice(edge_df, node_df, od_df,
             updated_od_car,
             algorithm='bfw',
             time_field='travel_time_car',
-            cost_field='length',
+            cost_field='travel_time_car',
             capacity_field='capacity_cars',
             max_iter=500,
             tolerance=1e-4,

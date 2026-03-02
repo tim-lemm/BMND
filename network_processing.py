@@ -17,7 +17,7 @@ def calculate_length_bi(edge_df, weight = 0):
         raise ValueError("Weight must be between 0.5 and -0.2")
     list_length_bi = []
     for row in edge_df.itertuples():
-        if row.type_bike is None:
+        if row.type_bike == "None":
             if row.flow_car < 6000:
                 list_length_bi.append(row.length * (0.8 - weight))
             elif row.flow_car >= 8000:
@@ -56,7 +56,7 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 3000
 
     edge_df = calculate_length(node_df, edge_df)
     #edge_df["length"] *= 10
-    edge_df["type_bike"] = None
+    edge_df["type_bike"] = "None"
     edge_df["speed_bike"] /= 3.6
     edge_df["speed_car"] /= 3.6
     edge_df["free_flow_time_car"] = edge_df["length"] / edge_df["speed_car"]
@@ -72,3 +72,44 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 3000
     edge_df["length_bi"]= edge_df["length"]
     return edge_df, node_df
 
+def change_type_bike_infra(edge_df:pd.DataFrame, new_type_bike:str, a_node:int, b_node:int):
+    mask = (edge_df["a_node"] == a_node) & (edge_df["b_node"] == b_node)
+    edge_df.loc[mask, "type_bike"] = new_type_bike
+    return edge_df
+
+def change_type_bike_infra_loop(edge_df:pd.DataFrame, new_type_bike:str,list_node:list):
+    for a_node in list_node:
+        for b_node in list_node:
+            edge_df = change_type_bike_infra(edge_df, new_type_bike, a_node, b_node)
+    return edge_df
+
+def apply_bike_infra_scenario(edge_df:pd.DataFrame, num_scenario:int):
+    list_node = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    edge_df = change_type_bike_infra_loop(edge_df, "None", list_node)
+    if num_scenario == 0:
+        return edge_df
+    if num_scenario == 1:
+        list_node = [1, 2, 3, 4, 5, 9, 13, 14, 15, 16, 12, 8]
+        change_type_bike_infra_loop(edge_df, "bike_path",list_node)
+        return edge_df
+    if num_scenario == 2:
+        list_node = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        edge_df = change_type_bike_infra_loop(edge_df, "bike_path", list_node)
+        return edge_df
+    if num_scenario == 3:
+        list_road = [[2, 6, 10, 14],[3,7,11,15],[5,6,7,8],[9,10,11,12]]
+        for road in list_road:
+            edge_df = change_type_bike_infra_loop(edge_df, "bike_path", road)
+        return edge_df
+    if num_scenario == 4:
+        list_road = [[2, 6, 10, 14], [9,10,11,12]]
+        for road in list_road:
+            edge_df = change_type_bike_infra_loop(edge_df, "bike_path", road)
+        return edge_df
+    if num_scenario == 5:
+        list_road = [[1, 2, 6, 7, 11, 12, 16], [4, 3, 7, 6,10,9,13]]
+        for road in list_road:
+            edge_df = change_type_bike_infra_loop(edge_df, "bike_path", road)
+        return edge_df
+    else:
+        raise ValueError("Pleas choose a valid scenario (0 to 5)")

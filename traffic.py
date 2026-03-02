@@ -105,6 +105,15 @@ def plot_mc_results(edge_df, node_df, results_df):
     axes[1].set_xticks(results_df['iteration'])
     axes[0].grid(True)
     axes[1].grid(True)
+
+    final_it = results_df['iteration'].iloc[-1]
+    val_car = results_df['modal_share_car'].iloc[-1]
+    val_bike = results_df['modal_share_bike'].iloc[-1]
+
+    axes[0].text(final_it, val_car / 2, f'{val_car:.4f}%',
+                 ha='center', va='center', fontweight='bold', fontsize=12)
+    axes[0].text(final_it, val_car + val_bike / 2, f'{val_bike:.4f}%',
+                 ha='center', va='center', fontweight='bold', fontsize=12)
     plt.show()
 
 def mode_choice(edge_df, node_df, od_df,

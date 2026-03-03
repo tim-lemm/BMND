@@ -18,13 +18,13 @@ def calculate_length_bi(edge_df, weight = 0):
     list_length_bi = []
     for row in edge_df.itertuples():
         if row.type_bike is None:
-            if row.flow_car < 800:
+            if row.flow_car < 3000:
                 list_length_bi.append(row.length * (0.8 - weight))
-            elif row.flow_car >= 4000:
+            elif row.flow_car >= 8000:
                 list_length_bi.append(row.length * (1.4 + weight))
-            elif 800 <= row.flow_car < 1000:
+            elif 3000 <= row.flow_car < 6500:
                 list_length_bi.append(row.length * 1)
-            elif 1000 <= row.flow_car < 4000:
+            elif 6500 <= row.flow_car < 8000:
                 list_length_bi.append(row.length * (1.2 + weight))
         else:
             list_length_bi.append(row.length * (0.5 - weight))
@@ -72,3 +72,7 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 3000
     edge_df["length_bi"]= edge_df["length"]
     return edge_df, node_df
 
+def change_type_infra(edge_df, a_node:int, b_node:int, new_type:str):
+    mask = (edge_df["a_node"] == a_node) & (edge_df["b_node"] == b_node)
+    edge_df.loc[mask, "type_bike"] = new_type
+    return edge_df

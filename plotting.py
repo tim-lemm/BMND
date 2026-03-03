@@ -152,7 +152,6 @@ def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', 
     ax.axis('off')
     ax.set_title(title or f'Network (width by {width_col})')
     plt.tight_layout()
-
     if ax is None:
         return fig, ax
 

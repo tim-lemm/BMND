@@ -12,7 +12,7 @@ import seaborn as sns
 
 #TODO: update readme
 
-CURRENT_DIR = "/Users/tristan.lemoalle/Documents/Thèse/Code/code_these/"
+CURRENT_DIR = ""
 
 warnings.filterwarnings('ignore')
 logging.getLogger("aequilibrae").setLevel(logging.ERROR)

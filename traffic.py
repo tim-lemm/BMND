@@ -84,10 +84,10 @@ def plot_mc_results(edge_df, node_df, results_df):
     fig, axes = plt.subplots(2, 2, figsize=(10, 10))
     plot_network(edge_df, node_df, width_col='flow_car', color_col_num='flow_car', cmap='Reds',
                  title=f'Car flows- Mode Choice Assignment ', node_size=3, colorbar_label='Flow (cars)',
-                 base_width=0.01, width_scale=10, ax=axes[0, 0])
+                 base_width=0.1, width_scale=10, ax=axes[0, 0])
     plot_network(edge_df, node_df, width_col='flow_bike', color_col_num='flow_bike', cmap='Greens',
                  title=f'Bike flows - Mode Choice Assignment ', node_size=3, colorbar_label='Flow (bikes)',
-                 base_width=1, width_scale=50, ax=axes[0, 1])
+                 base_width=0.1, width_scale=10, ax=axes[0, 1])
     plot_network(edge_df, node_df, color_col_num='travel_time_car', cmap='hot_r', title=f'Car Travel Time',
                  node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 0])
     plot_network(edge_df, node_df, color_col_num='travel_time_bike', cmap='hot_r', title=f'Bike Travel Time',
@@ -105,6 +105,15 @@ def plot_mc_results(edge_df, node_df, results_df):
     axes[1].set_xticks(results_df['iteration'])
     axes[0].grid(True)
     axes[1].grid(True)
+
+    final_it = results_df['iteration'].iloc[-1]
+    val_car = results_df['modal_share_car'].iloc[-1]
+    val_bike = results_df['modal_share_bike'].iloc[-1]
+
+    axes[0].text(final_it, val_car / 2, f'{val_car:.4f}%',
+                 ha='center', va='center', fontweight='bold', fontsize=12)
+    axes[0].text(final_it, val_car + val_bike / 2, f'{val_bike:.4f}%',
+                 ha='center', va='center', fontweight='bold', fontsize=12)
     plt.show()
 
 def mode_choice(edge_df, node_df, od_df,

@@ -116,13 +116,17 @@ def plot_mc_results(edge_df, node_df, results_df):
                  ha='center', va='center', fontweight='bold', fontsize=12)
     plt.show()
 
-def mode_choice(edge_df, node_df, od_df,
-                    beta_time=-0.01,
-                    ASC_car=0,
-                    ASC_bike=-2.5,
-                    mu_mode=1.0,
-                    max_iter_mode_choice=3,
-                    plot=True):
+def mode_choice(edge_df,
+                node_df,
+                od_df,
+                beta_time=-0.01,
+                ASC_car=0,
+                ASC_bike=-2.5,
+                mu_mode=1.0,
+                max_iter_mode_choice=3,
+                plot=True,
+                return_network=False):
+
     od_matrix = convert_od_df_to_matrix(od_df)
     size_od = len(od_matrix)
     results_df = create_empty_result_df_mc()
@@ -175,7 +179,7 @@ def mode_choice(edge_df, node_df, od_df,
             edge_df,
             updated_od_bike,
             mode='bikes',
-            time_field='free_flow_time_bike',
+            time_field='travel_time_bike',
             cost_field='length_bi',  ### LENGTH OR LENGTH_BI?
             algorithm='bfsle',
             max_routes=3,
@@ -188,7 +192,7 @@ def mode_choice(edge_df, node_df, od_df,
         edge_df = pd.DataFrame.from_dict(edge_df)
 
         # calculate congested time for cars and length bi
-        update_network(edge_df, flow_name='flow_car', free_flow_time_name='free_flow_time_car',
+        edge_df = update_network(edge_df, flow_name='flow_car', free_flow_time_name='free_flow_time_car',
                        capacity_name="capacity_cars", congested_time_name='travel_time_car', alpha=0.15, beta=4)
 
         results_df = update_result_df_mc(results_df, j,
@@ -203,5 +207,7 @@ def mode_choice(edge_df, node_df, od_df,
         f"Mode shares with skimming: Car = {modal_share_car :.3f} %, Bike = {modal_share_bike:.3f}%")
     if plot:
         plot_mc_results(edge_df, node_df, results_df)
-
-    return results_df, updated_od_car, updated_od_bike, prob_matrice_car, prob_matrice_bike
+    if return_network:
+        return results_df, updated_od_car, updated_od_bike, prob_matrice_car, prob_matrice_bike, edge_df
+    else:
+        return results_df, updated_od_car, updated_od_bike, prob_matrice_car, prob_matrice_bike

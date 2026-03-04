@@ -3,12 +3,12 @@ import logging
 
 from IPython.core.display_functions import display
 
-from traffic import *
-from network_processing import *
-from plotting import *
-from od_matrix_generator import generate_od_df
+from utils_traffic import *
+from utils_network_processing import *
+from utils_plotting import *
+from utils_od_matrix_generator import generate_od_df
 from config import parameter
-from traffic import *
+from utils_traffic import *
 
 warnings.filterwarnings('ignore')
 logging.getLogger("aequilibrae").setLevel(logging.ERROR)

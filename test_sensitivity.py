@@ -2,12 +2,12 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import pandas as pd
-from plotting import *
-from od_matrix_generator import *
-from eaquilibrea_interface import *
-from network_processing import *
+from utils_plotting import *
+from utils_od_matrix_generator import *
+from utils_eaquilibrea_interface import *
+from utils_network_processing import *
 from src.utils_sta import ta_due, ta_stochastic
-from traffic import mode_choice
+from utils_traffic import mode_choice
 
 CURRENT_DIR = ""
 

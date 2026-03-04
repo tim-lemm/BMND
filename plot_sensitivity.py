@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from od_matrix_generator import generate_od_df
+from utils_od_matrix_generator import generate_od_df
 import ast
 
 

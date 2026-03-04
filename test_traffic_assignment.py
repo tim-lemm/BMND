@@ -1,10 +1,10 @@
 import warnings
 import logging
 from src.utils_sta import ta_due, ta_stochastic, plot_vc_histogram
-from network_processing import *
-from plotting import *
-from od_matrix_generator import generate_od_df
-from eaquilibrea_interface import *
+from utils_network_processing import *
+from utils_plotting import *
+from utils_od_matrix_generator import generate_od_df
+from utils_eaquilibrea_interface import *
 from config import parameter
 
 

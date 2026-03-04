@@ -1,5 +1,5 @@
-from network_processing import *
-from plotting import *
+from utils_network_processing import *
+from utils_plotting import *
 import matplotlib.pyplot as plt
 
 CURRENT_DIR = ""

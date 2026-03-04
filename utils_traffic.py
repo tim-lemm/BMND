@@ -1,8 +1,8 @@
 import networkx as nx
-from plotting import *
-from od_matrix_generator import *
-from eaquilibrea_interface import *
-from network_processing import *
+from utils_plotting import *
+from utils_od_matrix_generator import *
+from utils_eaquilibrea_interface import *
+from utils_network_processing import *
 from src.utils_sta import ta_due, ta_stochastic
 
 def _create_empty_skim_matrice (size_od:int):

@@ -77,6 +77,10 @@ def change_type_bike_infra(edge_df:pd.DataFrame, new_type_bike:str, a_node:int, 
     edge_df.loc[mask, "type_bike"] = new_type_bike
     return edge_df
 
+def change_type_bike_infra_with_index(edge_df:pd.DataFrame, new_type_bike:str, index):
+    edge_df.loc[index, "type_bike"] = new_type_bike
+    return edge_df
+
 def change_type_bike_infra_loop(edge_df:pd.DataFrame, new_type_bike:str,list_node:list):
     for a_node in list_node:
         for b_node in list_node:

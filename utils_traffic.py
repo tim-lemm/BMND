@@ -180,7 +180,7 @@ def mode_choice(edge_df,
             updated_od_bike,
             mode='bikes',
             time_field='travel_time_bike',
-            cost_field='length_bi',  ### LENGTH OR LENGTH_BI?
+            cost_field='length_bi',
             algorithm='bfsle',
             max_routes=3,
             capacity_field='capacity_bikes',

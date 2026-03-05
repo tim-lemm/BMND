@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import numpy as np
 from shapely.geometry import Polygon
+import pandas as pd
+from utils_network_processing import *
+from pathlib import Path
 
 
 #### plotting functions
@@ -219,3 +222,87 @@ def plot_od_matrix(od_matrix, edges_df, nodes_df, ax=None, figsize=(10, 10), cma
 
     if ax is None:
         return fig, ax
+
+def plot_optimization_results(test_name:str, edge_df, node_df, save = False):
+    output_dir = Path(f"output/optimization/images/{test_name}")
+    output_dir_network = output_dir / "network"
+    output_dir_infra = output_dir / "infrastructure"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir_infra.mkdir(parents=True, exist_ok=True)
+    output_dir_network.mkdir(parents=True, exist_ok=True)
+    edge_df_results = pd.read_csv(f"output/optimization/rgo_edge_df_results_{test_name}.csv")
+    results_df_opt = pd.read_csv(f"output/optimization/rgo_results_df_opt_{test_name}.csv")
+
+    edge_df = edge_df.merge(results_df_opt, how="inner", left_index=True, right_on="index_removed").set_index(
+        edge_df.index)
+
+    edge_df.drop(
+        ["Unnamed: 0", "nbr_bike_lanes", "nbr_none_bike_lanes", "modal_share_car", "modal_share_bike", "index_removed",
+         "flow_of_removed_edge"], axis=1, inplace=True)
+    edge_df.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
+
+    plot_network(edge_df, node_df, node_id_col='node',
+                     node_label=True,
+                     color_col_num='iteration_of_removal',
+                     base_width=1,
+                     legend=True,
+                     title=f"Network with iteration of removal")
+    if save:
+        file_path = output_dir / f"network_iteration_of_removal_results_{test_name}.png"
+        plt.savefig(file_path)
+    else:
+        plt.show()
+
+    ax = results_df_opt.plot(kind='line', x="iteration", y="flow_of_removed_edge",
+                             color='blue', label="Bike flow", grid=True, title=f"Results for {test_name}")
+
+    results_df_opt.plot(kind='line', x="iteration", y="modal_share_bike",
+                        color='red', label="Modal share bike", secondary_y=True, ax=ax)
+
+    if save:
+        file_path = output_dir / f"graph_results_{test_name}.png"
+        plt.savefig(file_path)
+    else:
+        plt.show()
+
+    list_budget = list(range(1, 49))
+    for budget in list_budget:
+        max_budget = max(edge_df["iteration_of_removal"])
+        iteration_corresponding_to_budget = max_budget - budget + 1
+
+        mask = edge_df["iteration_of_removal"] >= iteration_corresponding_to_budget
+        list_index_of_bike_infra = edge_df.index[mask].tolist()
+
+        edge_df = change_type_bike_infra_with_index(edge_df, "bike_path", list_index_of_bike_infra)
+        plot_network(edge_df, node_df, node_id_col='node',
+                     node_label=True,
+                     color_col_str='type_bike',
+                     base_width=1,
+                     legend=True,
+                     title=f"Network for a budget of {budget}")
+        if save:
+            file_path = output_dir_infra / f"infra_budget_{budget}_{test_name}.png"
+            plt.savefig(file_path)
+        else:
+            plt.show()
+
+        fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+        plot_network(edge_df_results, node_df, width_col=f'flow_car_iteration_{iteration_corresponding_to_budget}',
+                     color_col_num=f'flow_car_iteration_{iteration_corresponding_to_budget}', cmap='Reds',
+                     title=f'Car flows - budget: {budget}', node_size=3, colorbar_label='Flow (cars)',
+                     base_width=0.1, width_scale=10, ax=axes[0, 0])
+        plot_network(edge_df_results, node_df, width_col=f'flow_bike_iteration_{iteration_corresponding_to_budget}',
+                     color_col_num=f'flow_bike_iteration_{iteration_corresponding_to_budget}', cmap='Greens',
+                     title=f'Bike flows - budget: {budget}', node_size=3, colorbar_label='Flow (bikes)',
+                     base_width=0.1, width_scale=10, ax=axes[0, 1])
+        plot_network(edge_df_results, node_df, color_col_num=f'travel_time_car_{iteration_corresponding_to_budget}',
+                     cmap='hot_r', title=f'Car Travel Time',
+                     node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 0])
+        plot_network(edge_df_results, node_df, color_col_num=f'travel_time_bike_{iteration_corresponding_to_budget}',
+                     cmap='hot_r', title=f'Bike Travel Time',
+                     node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 1])
+        if save:
+            file_path = output_dir_network / f"networks_budget_{budget}_{test_name}.png"
+            plt.savefig(file_path)
+        else:
+            plt.show()

@@ -31,6 +31,37 @@ def calculate_length_bi(edge_df, weight = 0):
     edge_df["length_bi"] = list_length_bi
     return edge_df
 
+def slope_coef(value, slope):
+    if slope <= -2.5:
+        if value-0.2 > 0.05:
+            return value-0.2
+        else:
+            return 0.1
+    elif slope >= 2.5:
+        return value + 0.1
+    else:
+        return value
+
+def calculate_length_bi_2(edge_df):
+    list_length_bi = []
+    for row in edge_df.itertuples():
+        if row.type_bike == "None":
+            if row.flow_car < 6000:
+                list_length_bi.append(row.length * slope_coef(0.8, row.slope))
+            elif row.flow_car >= 8000:
+                list_length_bi.append(row.length * slope_coef(1.4, row.slope))
+            elif 6000 <= row.flow_car < 7500:
+                list_length_bi.append(row.length * slope_coef(1, row.slope))
+            elif 7500 <= row.flow_car < 8000:
+                list_length_bi.append(row.length * slope_coef(1.2, row.slope))
+        else:
+            if row.green_overlap_percentage > 51:
+                list_length_bi.append(row.length * slope_coef(0.2, row.slope))
+            else:
+                list_length_bi.append(row.length * slope_coef(0.4, row.slope))
+    edge_df["length_bi"] = list_length_bi
+    return edge_df
+
 def calculate_congested_time(edge_df, free_flow_time_name="free_flow_time", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4):
     """Calculate congested travel time using BPR function.
     𝑇=𝑇0(1+α(𝑉/𝐶)^β)
@@ -46,7 +77,7 @@ def calculate_congested_time(edge_df, free_flow_time_name="free_flow_time", cong
 
 def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4):
     edge_df = calculate_congested_time(edge_df, free_flow_time_name, congested_time_name, flow_name, capacity_name, alpha, beta)
-    edge_df = calculate_length_bi(edge_df)
+    edge_df = calculate_length_bi_2(edge_df)
     edge_df["travel_time_bike"] = edge_df["length_bi"]/edge_df["speed_bike"]
     return edge_df
 

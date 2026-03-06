@@ -223,7 +223,7 @@ def plot_od_matrix(od_matrix, edges_df, nodes_df, ax=None, figsize=(10, 10), cma
     if ax is None:
         return fig, ax
 
-def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra, output_dir_network):
+def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra, output_dir_network, test_name):
     max_budget = max(edge_df["iteration_of_removal"])
     iteration_corresponding_to_budget = max_budget - budget + 1
 
@@ -308,7 +308,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False):
 
     list_budget = list(range(1, 49))
     for budget in list_budget:
-        plot_optimization_network(edge_df, edge_df_results,node_df, budget, save, output_dir_infra, output_dir_network)
+        plot_optimization_network(edge_df, edge_df_results,node_df, budget, save, output_dir_infra, output_dir_network, test_name)
 
 def plot_optimization_different_budgets(list_test_name:list, list_budget:list, save = False):
     for test_name in list_test_name:

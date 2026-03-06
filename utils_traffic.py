@@ -49,16 +49,16 @@ def utility_bike(time, ASC, beta_time):
 
 
 def skimming (edge_df: pd.DataFrame, size_od, time_field:str = 'time'):
-    skim_matrice = _create_empty_skim_matrice(size_od)
+    skim_matrice = _create_empty_skim_matrice(size_od+1)
     graph = _create_graph_for_skimming(edge_df, time_field)
-    for nodes_o in graph.nodes(data=True):
-        for nodes_d in graph.nodes(data=True):
-            if nodes_o[0] != nodes_d[0]:
-                try:
-                    skim_matrice[nodes_o[0], nodes_d[0]] = nx.shortest_path_length(graph, source=nodes_o[0],
-                                                                                    target=nodes_d[0], weight='time')
-                except:
-                    skim_matrice[nodes_o[0], nodes_d[0]] = 9999
+    target_nodes = range(1,size_od+1)
+    for o_id in target_nodes:
+        for d_id in target_nodes:
+            try:
+                length = nx.shortest_path_length(graph, source=o_id,target=d_id, weight='time')
+                skim_matrice[o_id, d_id] = length
+            except:
+                skim_matrice[o_id, d_id] = 9999
     return skim_matrice
 
 def calculate_proba_matrice (skim_matrice_car, skim_matrice_bike, ASC_car:float, ASC_bike:float, beta_time:float, mu_mode:float, size_od:int):
@@ -81,17 +81,21 @@ def calculate_proba_matrice (skim_matrice_car, skim_matrice_bike, ASC_car:float,
     return prob_matrice_car, prob_matrice_bike
 
 def plot_mc_results(edge_df, node_df, results_df):
+    edge_df_affich = edge_df.copy()
+    edge_df_affich["coef_bi"] = edge_df_affich["length_bi"] / edge_df_affich["length"]
+    edge_df_affich["real_speed_car"]= edge_df_affich["length"]/edge_df_affich["travel_time_car"]
+
     fig, axes = plt.subplots(2, 2, figsize=(10, 10))
-    plot_network(edge_df, node_df, width_col='flow_car', color_col_num='flow_car', cmap='Reds',
-                 title=f'Car flows- Mode Choice Assignment ', node_size=3, colorbar_label='Flow (cars)',
+    plot_network(edge_df_affich, node_df, width_col='flow_car', color_col_num='flow_car', cmap='Reds',
+                 title=f'Car flows - Mode Choice Assignment ', node_size=3, colorbar_label='Flow (cars)',
                  base_width=0.1, width_scale=10, ax=axes[0, 0])
-    plot_network(edge_df, node_df, width_col='flow_bike', color_col_num='flow_bike', cmap='Greens',
+    plot_network(edge_df_affich, node_df, width_col='flow_bike', color_col_num='flow_bike', cmap='Greens',
                  title=f'Bike flows - Mode Choice Assignment ', node_size=3, colorbar_label='Flow (bikes)',
                  base_width=0.1, width_scale=10, ax=axes[0, 1])
-    plot_network(edge_df, node_df, color_col_num='travel_time_car', cmap='hot_r', title=f'Car Travel Time',
-                 node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 0])
-    plot_network(edge_df, node_df, color_col_num='travel_time_bike', cmap='hot_r', title=f'Bike Travel Time',
-                 node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 1])
+    plot_network(edge_df_affich, node_df, color_col_num='real_speed_car', cmap='hot_r', title=f'Car speed',
+                 node_size=3, colorbar_label='Speed (m/s)', base_width=1, ax=axes[1, 0])
+    plot_network(edge_df_affich, node_df, color_col_num='coef_bi', cmap='summer', title=f'Bikeability Coefficient',
+                 node_size=3, colorbar_label='Coefficient', base_width=1, ax=axes[1, 1])
     plt.show()
 
     _,axes = plt.subplots(1, 2, figsize=(20, 7))
@@ -129,11 +133,13 @@ def mode_choice(edge_df,
                 od_shape = "square"):
     if od_shape == "square":
         od_matrix = convert_od_df_to_matrix(od_df)
+        size_od = od_matrix.shape[0]
     elif od_shape == "long":
-        od_matrix = od_df.to_numpy()
+        od_matrix = convert_od_df_long_to_matrix(od_df)
+        size_od = max(max(od_df["origin"]), max(od_df["destination"]))
     else:
         raise ValueError("od_shape must be either 'square' or 'long'")
-    size_od = len(od_matrix)
+
     results_df = create_empty_result_df_mc()
     j = 0
     while j < max_iter_mode_choice:
@@ -146,8 +152,10 @@ def mode_choice(edge_df,
         # Calculate utilities and mode share for each OD pair
         prob_matrice_car, prob_matrice_bike = calculate_proba_matrice(skim_car, skim_bike, ASC_car, ASC_bike, beta_time,
                                                                       mu_mode, size_od)
+
         od_matrix_car = od_matrix * prob_matrice_car
         od_matrix_bike = od_matrix * prob_matrice_bike
+
 
         total_car_skim = od_matrix_car.sum()
         total_bike_skim = od_matrix_bike.sum()

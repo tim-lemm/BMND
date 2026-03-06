@@ -39,7 +39,7 @@ def _create_offset_polygon(coords, width):
 
 
 def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', node_y_col='y',
-                 width_col=None, base_width=0.1, width_scale=2.1, node_id_col='node', color_col_num=None,
+                 width_col=None, base_width=0.1, width_scale=2.1, node_id_col='id', color_col_num=None,
                  color_col_str=None, dict_colors_str=None,
                  vmin=None, vmax=None, a_node_col='a_node', b_node_col='b_node', show_nodes=True,
                  node_size=100, cmap='viridis', colorbar_label=None, title=None, node_label=False, legend=False,
@@ -159,7 +159,7 @@ def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', 
         return fig, ax
 
 
-def plot_od_matrix(od_matrix, edges_df, nodes_df, ax=None, figsize=(10, 10), cmap='viridis', title='OD Matrix',
+def plot_od_matrix(od_matrix, edges_df, nodes_df, ax=None, figsize=(10, 10), title='OD Matrix',
                    label=False, color='red', vmax=None):
     """ Plot OD matrix as arrows on the network."""
     if ax is None:
@@ -172,10 +172,10 @@ def plot_od_matrix(od_matrix, edges_df, nodes_df, ax=None, figsize=(10, 10), cma
         od_matrix_plot['linewidth'] = od_matrix_plot['demand'] / vmax * 5
 
     for i, row in od_matrix_plot.iterrows():
-        x0 = nodes_df.loc[nodes_df['node'] == row['origin'], 'x'].values[0]
-        y0 = nodes_df.loc[nodes_df['node'] == row['origin'], 'y'].values[0]
-        x1 = nodes_df.loc[nodes_df['node'] == row['destination'], 'x'].values[0]
-        y1 = nodes_df.loc[nodes_df['node'] == row['destination'], 'y'].values[0]
+        x0 = nodes_df.loc[nodes_df['id'] == row['origin'], 'x'].values[0]
+        y0 = nodes_df.loc[nodes_df['id'] == row['origin'], 'y'].values[0]
+        x1 = nodes_df.loc[nodes_df['id'] == row['destination'], 'x'].values[0]
+        y1 = nodes_df.loc[nodes_df['id'] == row['destination'], 'y'].values[0]
 
         ax.annotate(
             "",

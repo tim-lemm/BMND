@@ -125,9 +125,14 @@ def mode_choice(edge_df,
                 mu_mode=1.0,
                 max_iter_mode_choice=3,
                 plot=True,
-                return_network=False):
-
-    od_matrix = convert_od_df_to_matrix(od_df)
+                return_network=False,
+                od_shape = "square"):
+    if od_shape == "square":
+        od_matrix = convert_od_df_to_matrix(od_df)
+    elif od_shape == "long":
+        od_matrix = od_df.to_numpy()
+    else:
+        raise ValueError("od_shape must be either 'square' or 'long'")
     size_od = len(od_matrix)
     results_df = create_empty_result_df_mc()
     j = 0

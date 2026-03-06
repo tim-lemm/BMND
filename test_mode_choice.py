@@ -24,17 +24,18 @@ mu_mode = parameter_dict['mu_mode']
 max_iter_mode_choice = parameter_dict['max_iter_mode_choice']
 plot = True
 
-size_od = max(node_df['node']) + 1
+size_od = max(node_df['id']) + 1
 
 od_df = generate_od_df(size_od, od_scenario="RANDOM_OD", max_demand=2000)
+
 
 plot_od_matrix(convert_to_eaquilibrae_od_matrix(od_df),edge_df,node_df)
 plt.show()
 
-for scenario in [0,1,2,3,4,5]:
+for scenario in [0]:
     edge_df = apply_bike_infra_scenario(edge_df, scenario)
     plot_network(edge_df, node_df,
-                 node_id_col='node',
+                 node_id_col='id',
                  node_label=True,
                  color_col_str='type_bike',
                  base_width=1,
@@ -48,7 +49,8 @@ for scenario in [0,1,2,3,4,5]:
                                                          ASC_bike,
                                                          mu_mode=mu_mode,
                                                          max_iter_mode_choice=max_iter_mode_choice,
-                                                         plot=plot)
+                                                         plot=plot,
+                                      od_shape="square")
 
 # result_all_df = pd.DataFrame(columns = ['number_of_bike_path',
 #                         'modal_share_car',

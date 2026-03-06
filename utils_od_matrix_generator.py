@@ -45,3 +45,9 @@ def convert_od_matrix_to_df(od_matrix: np.ndarray)-> pd.DataFrame:
         for destination in od_df.index:
             od_df.loc[origin, destination] = od_matrix[origin, destination]
     return od_df
+
+def convert_od_df_long_to_matrix(od_df: pd.DataFrame)-> np.ndarray:
+    matrix_df = od_df.pivot(index='origin', columns='destination', values='demand').fillna(0)
+    all_nodes = sorted(set(od_df['origin']) | set(od_df['destination']))
+    matrix_df = matrix_df.reindex(index=all_nodes, columns=all_nodes, fill_value=0)
+    return matrix_df.to_numpy()

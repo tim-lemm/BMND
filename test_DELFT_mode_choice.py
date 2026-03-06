@@ -8,12 +8,15 @@ from config import parameter
 
 #TODO: update readme
 
-CURRENT_DIR = ""
+
 
 warnings.filterwarnings('ignore')
 logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 
-edge_df, node_df = import_network(CURRENT_DIR + "data/edges_small_grid_2.csv", CURRENT_DIR + "data/nodes_small_grid_2.csv")
+edge_df = pd.read_csv("data/Delft/edges.csv")
+edge_df = initialization_delft(edge_df)
+node_df = pd.read_csv("data/Delft/nodes.csv")
+od_df = pd.read_csv("data/Delft/od.csv")
 
 # parameters for mode choice
 parameter_dict = parameter()
@@ -26,10 +29,7 @@ plot = True
 
 size_od = max(node_df['id']) + 1
 
-od_df = generate_od_df(size_od, od_scenario="RANDOM_OD", max_demand=2000)
-
-plot_network(edge_df, node_df,)
-plot_od_matrix(convert_to_eaquilibrae_od_matrix(od_df),edge_df,node_df)
+plot_od_matrix(od_df,edge_df,node_df)
 plt.show()
 
 for scenario in [0]:
@@ -49,7 +49,8 @@ for scenario in [0]:
                                                          ASC_bike,
                                                          mu_mode=mu_mode,
                                                          max_iter_mode_choice=max_iter_mode_choice,
-                                                         plot=plot)
+                                                         plot=plot,
+                                      od_shape="long")
 
 # result_all_df = pd.DataFrame(columns = ['number_of_bike_path',
 #                         'modal_share_car',

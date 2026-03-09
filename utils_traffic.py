@@ -58,7 +58,7 @@ def skimming (edge_df: pd.DataFrame, size_od, time_field:str = 'time'):
                 length = nx.shortest_path_length(graph, source=o_id,target=d_id, weight='time')
                 skim_matrice[o_id, d_id] = length
             except:
-                skim_matrice[o_id, d_id] = 9999
+                skim_matrice[o_id, d_id] = 99999999
     return skim_matrice
 
 def calculate_proba_matrice (skim_matrice_car, skim_matrice_bike, ASC_car:float, ASC_bike:float, beta_time:float, mu_mode:float, size_od:int):
@@ -92,7 +92,7 @@ def plot_mc_results(edge_df, node_df, results_df):
     plot_network(edge_df_affich, node_df, width_col='flow_bike', color_col_num='flow_bike', cmap='Greens',
                  title=f'Bike flows - Mode Choice Assignment ', node_size=3, colorbar_label='Flow (bikes)',
                  base_width=0.1, width_scale=10, ax=axes[0, 1])
-    plot_network(edge_df_affich, node_df, color_col_num='real_speed_car', cmap='hot_r', title=f'Car speed',
+    plot_network(edge_df_affich, node_df, color_col_num='real_speed_car', cmap='hot', title=f'Car speed',
                  node_size=3, colorbar_label='Speed (m/s)', base_width=1, ax=axes[1, 0])
     plot_network(edge_df_affich, node_df, color_col_num='coef_bi', cmap='summer', title=f'Bikeability Coefficient',
                  node_size=3, colorbar_label='Coefficient', base_width=1, ax=axes[1, 1])
@@ -193,7 +193,7 @@ def mode_choice(edge_df,
             updated_od_bike,
             mode='bikes',
             time_field='travel_time_bike',
-            cost_field='length_bi',
+            cost_field='travel_time_bike',
             algorithm='bfsle',
             max_routes=3,
             capacity_field='capacity_bikes',

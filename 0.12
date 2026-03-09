@@ -1,0 +1,960 @@
+3 channel Terms of Service accepted
+Channels:
+ - conda-forge
+ - defaults
+Platform: win-64
+Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / done
+Solving environment: \ | / - \ | done
+
+## Package Plan ##
+
+  environment location: C:\Users\Tristan\miniconda3
+
+  added / updated specs:
+    - folium
+    - mapclassify
+    - matplotlib
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    ca-certificates-2026.2.25  |       h4c7d964_0         144 KB  conda-forge
+    certifi-2026.2.25          |     pyhd8ed1ab_0         148 KB  conda-forge
+    libabseil-20250512.1       | cxx17_habfad5f_0         1.5 MB  conda-forge
+    libclang13-21.1.8          |default_h643f374_0        27.8 MB
+    libevent-2.1.12            |       h3671451_1         401 KB  conda-forge
+    libllvm21-21.1.8           |       h3aa9ab2_0          20 KB
+    libre2-11-2024.07.02       |       h0465865_4         259 KB  conda-forge
+    matplotlib-3.10.6          |  py313hfa70ccb_1          17 KB  conda-forge
+    mysql-common-9.3.0         |       h0b12ad4_5         619 KB
+    mysql-libs-9.3.0           |       hcb0c519_5         1.2 MB
+    pyside6-6.9.2              |  py313h151a370_0        10.4 MB
+    qtbase-6.9.2               |       h916ffc4_3        23.2 MB
+    qtshadertools-6.9.2        |       heb02b0b_1         1.3 MB
+    qttools-6.9.2              |       h7e7b719_0         7.5 MB
+    qtwebengine-6.9.2          |       hebbe641_0       153.7 MB
+    re2-2024.07.02             |       h8e466ff_4         212 KB  conda-forge
+    snappy-1.2.2               |       h7fa0ca8_1          66 KB  conda-forge
+    ------------------------------------------------------------
+                                           Total:       228.5 MB
+
+The following NEW packages will be INSTALLED:
+
+  libabseil          conda-forge/win-64::libabseil-20250512.1-cxx17_habfad5f_0 
+  libclang13         pkgs/main/win-64::libclang13-21.1.8-default_h643f374_0 
+  libevent           conda-forge/win-64::libevent-2.1.12-h3671451_1 
+  libllvm21          pkgs/main/win-64::libllvm21-21.1.8-h3aa9ab2_0 
+  libre2-11          conda-forge/win-64::libre2-11-2024.07.02-h0465865_4 
+  libxslt            conda-forge/win-64::libxslt-1.1.43-h25c3957_0 
+  matplotlib         conda-forge/win-64::matplotlib-3.10.6-py313hfa70ccb_1 
+  mysql-common       pkgs/main/win-64::mysql-common-9.3.0-h0b12ad4_5 
+  mysql-libs         pkgs/main/win-64::mysql-libs-9.3.0-hcb0c519_5 
+  pyside6            pkgs/main/win-64::pyside6-6.9.2-py313h151a370_0 
+  qtbase             pkgs/main/win-64::qtbase-6.9.2-h916ffc4_3 
+  qtdeclarative      pkgs/main/win-64::qtdeclarative-6.9.2-h88b4c33_1 
+  qtshadertools      pkgs/main/win-64::qtshadertools-6.9.2-heb02b0b_1 
+  qtsvg              pkgs/main/win-64::qtsvg-6.9.2-h30ace32_1 
+  qttools            pkgs/main/win-64::qttools-6.9.2-h7e7b719_0 
+  qtwebchannel       pkgs/main/win-64::qtwebchannel-6.9.2-heb02b0b_1 
+  qtwebengine        pkgs/main/win-64::qtwebengine-6.9.2-hebbe641_0 
+  qtwebsockets       pkgs/main/win-64::qtwebsockets-6.9.2-heb02b0b_1 
+  re2                conda-forge/win-64::re2-2024.07.02-h8e466ff_4 
+  snappy             conda-forge/win-64::snappy-1.2.2-h7fa0ca8_1 
+
+The following packages will be UPDATED:
+
+  ca-certificates                       2026.1.4-h4c7d964_0 --> 2026.2.25-h4c7d964_0 
+  certifi                             2026.1.4-pyhd8ed1ab_0 --> 2026.2.25-pyhd8ed1ab_0 
+  mapclassify        pkgs/main/win-64::mapclassify-2.10.0-~ --> conda-forge/noarch::mapclassify-2.10.0-pyhd8ed1ab_1 
+
+
+Proceed ([y]/n)? 
+
+Downloading and Extracting Packages: ...working...qtwebengine-6.9.2    | 153.7 MB  |            |   0% 
+libclang13-21.1.8    | 27.8 MB   |            |   0% [A
+
+qtbase-6.9.2         | 23.2 MB   |            |   0% [A[A
+
+
+pyside6-6.9.2        | 10.4 MB   |            |   0% [A[A[A
+
+
+
+qttools-6.9.2        | 7.5 MB    |            |   0% [A[A[A[A
+
+
+
+
+libabseil-20250512.1 | 1.5 MB    |            |   0% [A[A[A[A[A
+
+
+
+
+
+qtshadertools-6.9.2  | 1.3 MB    |            |   0% [A[A[A[A[A[A
+
+
+
+
+
+
+mysql-libs-9.3.0     | 1.2 MB    |            |   0% [A[A[A[A[A[A[A
+
+
+
+
+
+
+
+mysql-common-9.3.0   | 619 KB    |            |   0% [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+libevent-2.1.12      | 401 KB    |            |   0% [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+libre2-11-2024.07.02 | 259 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+re2-2024.07.02       | 212 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+certifi-2026.2.25    | 148 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+ca-certificates-2026 | 144 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+snappy-1.2.2         | 66 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libllvm21-21.1.8     | 20 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+matplotlib-3.10.6    | 17 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  |            |   0% 
+
+
+pyside6-6.9.2        | 10.4 MB   |            |   1% [A[A[A
+libclang13-21.1.8    | 27.8 MB   |            |   0% [A
+
+
+
+qttools-6.9.2        | 7.5 MB    |            |   0% [A[A[A[A
+
+qtbase-6.9.2         | 23.2 MB   |            |   0% [A[Aqtwebengine-6.9.2    | 153.7 MB  | 1          |   1% 
+libclang13-21.1.8    | 27.8 MB   | 4          |   5% [A
+
+
+
+qttools-6.9.2        | 7.5 MB    | #7         |  17% [A[A[A[A
+
+
+pyside6-6.9.2        | 10.4 MB   | ##         |  20% [A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | 4          |   5% [A[Aqtwebengine-6.9.2    | 153.7 MB  | 2          |   3% 
+libclang13-21.1.8    | 27.8 MB   | #          |  10% [A
+
+
+
+qttools-6.9.2        | 7.5 MB    | ###7       |  37% [A[A[A[A
+
+
+pyside6-6.9.2        | 10.4 MB   | ###8       |  38% [A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | #          |  11% [A[Aqtwebengine-6.9.2    | 153.7 MB  | 3          |   4% 
+libclang13-21.1.8    | 27.8 MB   | #7         |  17% [A
+
+
+
+qttools-6.9.2        | 7.5 MB    | #####9     |  60% [A[A[A[A
+
+
+pyside6-6.9.2        | 10.4 MB   | #####6     |  57% [A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | #6         |  17% [A[Aqtwebengine-6.9.2    | 153.7 MB  | 5          |   5% 
+libclang13-21.1.8    | 27.8 MB   | ##3        |  23% [A
+
+
+pyside6-6.9.2        | 10.4 MB   | #######4   |  75% [A[A[A
+
+
+
+qttools-6.9.2        | 7.5 MB    | #######9   |  80% [A[A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | ##3        |  23% [A[Aqtwebengine-6.9.2    | 153.7 MB  | 6          |   6% 
+libclang13-21.1.8    | 27.8 MB   | ##9        |  29% [A
+
+
+
+qttools-6.9.2        | 7.5 MB    | ########## | 100% [A[A[A[A
+
+
+pyside6-6.9.2        | 10.4 MB   | #########3 |  94% [A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | ##9        |  29% [A[A
+
+
+
+qttools-6.9.2        | 7.5 MB    | ########## | 100% [A[A[A[A
+
+
+pyside6-6.9.2        | 10.4 MB   | ########## | 100% [A[A[Aqtwebengine-6.9.2    | 153.7 MB  | 8          |   8% 
+libclang13-21.1.8    | 27.8 MB   | ###8       |  38% [A
+
+
+
+
+
+qtshadertools-6.9.2  | 1.3 MB    | 1          |   1% [A[A[A[A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | ###8       |  38% [A[A
+
+
+
+
+libabseil-20250512.1 | 1.5 MB    | 1          |   1% [A[A[A[A[A
+
+
+
+
+
+qtshadertools-6.9.2  | 1.3 MB    | ########## | 100% [A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | 9          |  10% 
+libclang13-21.1.8    | 27.8 MB   | ####6      |  46% [A
+
+qtbase-6.9.2         | 23.2 MB   | ####7      |  47% [A[A
+
+
+
+
+libabseil-20250512.1 | 1.5 MB    | ####9      |  50% [A[A[A[A[A
+
+
+
+
+
+
+mysql-libs-9.3.0     | 1.2 MB    | 1          |   1% [A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | #1         |  11% 
+libclang13-21.1.8    | 27.8 MB   | #####4     |  55% [A
+
+
+
+
+libabseil-20250512.1 | 1.5 MB    | ########## | 100% [A[A[A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | #####4     |  55% [A[A
+
+
+
+
+
+
+mysql-libs-9.3.0     | 1.2 MB    | ########## | 100% [A[A[A[A[A[A[A
+
+
+
+
+
+qtshadertools-6.9.2  | 1.3 MB    | ########## | 100% [A[A[A[A[A[A
+
+
+
+
+
+qtshadertools-6.9.2  | 1.3 MB    | ########## | 100% [A[A[A[A[A[A
+
+
+
+
+
+
+
+mysql-common-9.3.0   | 619 KB    | 2          |   3% [A[A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | #2         |  13% 
+libclang13-21.1.8    | 27.8 MB   | ######4    |  64% [A
+
+
+
+
+
+
+
+mysql-common-9.3.0   | 619 KB    | ########## | 100% [A[A[A[A[A[A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | ######5    |  65% [A[A
+
+
+
+
+
+
+
+
+libevent-2.1.12      | 401 KB    | 3          |   4% [A[A[A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | #4         |  15% 
+
+
+
+
+
+
+
+
+
+libre2-11-2024.07.02 | 259 KB    | 6          |   6% [A[A[A[A[A[A[A[A[A[A
+libclang13-21.1.8    | 27.8 MB   | #######4   |  74% [A
+
+
+
+
+
+
+
+
+
+libre2-11-2024.07.02 | 259 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | #######6   |  77% [A[A
+
+
+
+
+
+
+
+
+libevent-2.1.12      | 401 KB    | ########## | 100% [A[A[A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | #6         |  17% 
+
+
+
+
+
+
+
+
+
+
+re2-2024.07.02       | 212 KB    | 7          |   8% [A[A[A[A[A[A[A[A[A[A[A
+libclang13-21.1.8    | 27.8 MB   | ########3  |  84% [A
+
+
+
+
+
+
+
+
+
+
+re2-2024.07.02       | 212 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | ########8  |  88% [A[A
+
+
+
+
+
+
+
+
+
+
+
+certifi-2026.2.25    | 148 KB    | #          |  11% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+certifi-2026.2.25    | 148 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+ca-certificates-2026 | 144 KB    | #1         |  11% [A[A[A[A[A[A[A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | #8         |  18% 
+
+
+
+
+
+
+
+
+
+
+
+
+ca-certificates-2026 | 144 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+libclang13-21.1.8    | 27.8 MB   | #########2 |  93% [A
+
+qtbase-6.9.2         | 23.2 MB   | #########9 | 100% [A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+snappy-1.2.2         | 66 KB     | ##4        |  24% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+snappy-1.2.2         | 66 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libllvm21-21.1.8     | 20 KB     | ########1  |  82% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libllvm21-21.1.8     | 20 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | ##         |  21% 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+matplotlib-3.10.6    | 17 KB     | #########1 |  92% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+qtbase-6.9.2         | 23.2 MB   | ########## | 100% [A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+matplotlib-3.10.6    | 17 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+libclang13-21.1.8    | 27.8 MB   | ########## | 100% [A
+
+
+
+qttools-6.9.2        | 7.5 MB    | ########## | 100% [A[A[A[A
+
+
+pyside6-6.9.2        | 10.4 MB   | ########## | 100% [A[A[Aqtwebengine-6.9.2    | 153.7 MB  | ##3        |  24% 
+
+
+
+
+
+
+mysql-libs-9.3.0     | 1.2 MB    | ########## | 100% [A[A[A[A[A[A[A
+
+
+
+
+
+
+mysql-libs-9.3.0     | 1.2 MB    | ########## | 100% [A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | ##8        |  28% 
+
+
+
+
+
+
+
+
+
+libre2-11-2024.07.02 | 259 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+libre2-11-2024.07.02 | 259 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+mysql-common-9.3.0   | 619 KB    | ########## | 100% [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+mysql-common-9.3.0   | 619 KB    | ########## | 100% [A[A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | ###2       |  32% 
+
+
+
+
+
+
+
+
+
+
+re2-2024.07.02       | 212 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+re2-2024.07.02       | 212 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+libevent-2.1.12      | 401 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+libevent-2.1.12      | 401 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+certifi-2026.2.25    | 148 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+certifi-2026.2.25    | 148 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | ###6       |  37% 
+
+
+
+
+
+
+
+
+
+
+
+
+ca-certificates-2026 | 144 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+ca-certificates-2026 | 144 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+libabseil-20250512.1 | 1.5 MB    | ########## | 100% [A[A[A[A[A
+
+
+
+
+libabseil-20250512.1 | 1.5 MB    | ########## | 100% [A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+snappy-1.2.2         | 66 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+snappy-1.2.2         | 66 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libllvm21-21.1.8     | 20 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libllvm21-21.1.8     | 20 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+matplotlib-3.10.6    | 17 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+matplotlib-3.10.6    | 17 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Aqtwebengine-6.9.2    | 153.7 MB  | ####       |  41% qtwebengine-6.9.2    | 153.7 MB  | ####4      |  45% qtwebengine-6.9.2    | 153.7 MB  | ####8      |  48% 
+
+qtbase-6.9.2         | 23.2 MB   | ########## | 100% [A[A
+libclang13-21.1.8    | 27.8 MB   | ########## | 100% [Aqtwebengine-6.9.2    | 153.7 MB  | #####1     |  51% qtwebengine-6.9.2    | 153.7 MB  | #####4     |  55% qtwebengine-6.9.2    | 153.7 MB  | #####8     |  58% qtwebengine-6.9.2    | 153.7 MB  | ######1    |  62% qtwebengine-6.9.2    | 153.7 MB  | ######6    |  67% qtwebengine-6.9.2    | 153.7 MB  | #######1   |  72% qtwebengine-6.9.2    | 153.7 MB  | #######5   |  76% qtwebengine-6.9.2    | 153.7 MB  | ########   |  80% qtwebengine-6.9.2    | 153.7 MB  | ########4  |  84% qtwebengine-6.9.2    | 153.7 MB  | ########8  |  89% qtwebengine-6.9.2    | 153.7 MB  | #########2 |  93% qtwebengine-6.9.2    | 153.7 MB  | #########7 |  97% qtwebengine-6.9.2    | 153.7 MB  | ########## | 100% qtwebengine-6.9.2    | 153.7 MB  | ########## | 100%                                                      
+                                                     [A
+
+                                                     [A[A
+
+
+                                                     [A[A[A
+
+
+
+                                                     [A[A[A[A
+
+
+
+
+                                                     [A[A[A[A[A
+
+
+
+
+
+                                                     [A[A[A[A[A[A
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A done
+Preparing transaction: - \ done
+Verifying transaction: / - \ | / - \ | / - \ | / - \ | done
+Executing transaction: - \ | / - \ | / - \ | / - \ | / - \ | / done

@@ -35,10 +35,10 @@ def calculate_length_bi_optimized(edge_df):
     is_none = edge_df['type_bike'] == "None"
 
     conditions = [
-        (is_none & (edge_df['flow_car'] < 1500)),
-        (is_none & (edge_df['flow_car'] >= 3000)),
-        (is_none & (edge_df['flow_car'] >= 1500) & (edge_df['flow_car'] < 2500)),
-        (is_none & (edge_df['flow_car'] >= 2500) & (edge_df['flow_car'] < 3000)),
+        (is_none & (edge_df['flow_car'] < 500)),
+        (is_none & (edge_df['flow_car'] >= 1500)),
+        (is_none & (edge_df['flow_car'] >= 500) & (edge_df['flow_car'] < 1000)),
+        (is_none & (edge_df['flow_car'] >= 1000) & (edge_df['flow_car'] < 1500)),
         (~is_none)  # Cas "else" (type_bike != "None")
     ]
     choices = [0.8, 1.4, 1.0, 1.2, 0.5]
@@ -159,8 +159,7 @@ def apply_bike_infra_scenario(edge_df:pd.DataFrame, num_scenario:int):
         change_type_bike_infra_loop(edge_df, "bike_path",list_node)
         return edge_df
     if num_scenario == 2:
-        list_node = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-        edge_df = change_type_bike_infra_loop(edge_df, "bike_path", list_node)
+        edge_df["type_bike"] = "bike_path"
         return edge_df
     if num_scenario == 3:
         list_road = [[2, 6, 10, 14],[3,7,11,15],[5,6,7,8],[9,10,11,12]]

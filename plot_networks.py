@@ -48,7 +48,8 @@ plot_network(edge_delft_df, node_delft_df, node_id_col='id',
 plt.show()
 
 edge_delft_df = gpd.read_file("data/Delft/links.gpkg")
-
+m = edge_delft_df.explore()
+m.show_in_browser()
 edge_delft_df["capacity_cars"] = edge_delft_df["capacity"]
 edge_delft_df["type_bike"] = "None"
 edge_delft_df["speed_car"] = edge_delft_df["speed"]
@@ -56,7 +57,6 @@ edge_delft_df["speed_bike"] = 15
 edge_delft_df["length"] = edge_delft_df["length"]*1000
 edge_delft_df["free_flow_time_car"]=edge_delft_df["free_flow_time"]*3600
 edge_delft_df.drop(columns=["speed","capacity","free_flow_time"], inplace=True)
-print(edge_delft_df.to_string())
 edge_delft_df.to_csv("data/Delft/edges.csv")
 #
 # od_gdf = gpd.read_file("data/Delft/od.gpkg")

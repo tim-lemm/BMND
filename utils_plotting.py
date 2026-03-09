@@ -333,7 +333,7 @@ def plot_optimization_different_budgets(list_test_name:list, list_budget:list, s
             list_index_of_bike_infra = edge_df.index[mask].tolist()
 
             edge_df = change_type_bike_infra_with_index(edge_df, "bike_path", list_index_of_bike_infra)
-            plot_network(edge_df, node_df, node_id_col='node',
+            plot_network(edge_df, node_df, node_id_col='id',
                          node_label=True,
                          color_col_str='type_bike',
                          base_width=1,

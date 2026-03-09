@@ -29,8 +29,7 @@ plot = True
 
 size_od = max(node_df['id']) + 1
 
-plot_od_matrix(od_df,edge_df,node_df)
-plt.show()
+
 
 for scenario in [0]:
     edge_df = apply_bike_infra_scenario(edge_df, scenario)
@@ -60,7 +59,7 @@ fig, axes = plt.subplots(1,3, figsize=(30,10))
 plot_network(edge_df_results, node_df, width_col='flow_car', color_col_num='flow_car', cmap='Reds',
                  title=f'Delft - Car flows', node_size=3, colorbar_label='Flow (cars)',
                  base_width=0.1, width_scale=10, ax=axes[0])
-plot_network(edge_df_results, node_df,node_label=False,color_col_num='coef_bi', base_width=1, title=f"Delft with coef_bi",node_size=15, ax=axes[1],cmap="summer")
+plot_network(edge_df_results, node_df,node_label=False,color_col_num='coef_bi', base_width=1, title=f"Delft with coef_bi",node_size=15, ax=axes[1],cmap="summer_r")
 plot_network(edge_df_results, node_df, width_col='flow_bike', color_col_num='flow_bike', cmap='Greens',
              title=f'Delft - Bike flows', node_size=3, colorbar_label='Flow (bikes)',
              base_width=0.1, width_scale=10, ax=axes[2])

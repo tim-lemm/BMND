@@ -14,7 +14,6 @@ numexpr==2.14.1
 matplotlib==3.10.8
 pillow==11.1.0
 ipykernel==7.1.0
-jupyter_client==8.8.0
 requests==2.32.5
 tqdm==4.67.1
 pyyaml==6.0.3

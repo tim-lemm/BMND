@@ -1,4 +1,4 @@
-#TODO: termine le transfert des fonction d'optimization de test_optimization ici
+
 
 import pandas as pd
 from config import *
@@ -14,16 +14,18 @@ def _create_empty_result_df_optimization():
                          'modal_share_car': [np.nan],
                          'modal_share_bike': [np.nan],
                          'index_removed': [np.nan],
-                         'flow_of_removed_edge': [np.nan]})
+                         'flow_of_removed_edge': [np.nan],
+                         'average_bi_coef':[np.nan]})
 
-def update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bike_lanes, modal_share_car, modal_share_bike, index_least_used, flow_of_removed_edge):
+def update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bike_lanes, modal_share_car, modal_share_bike, index_least_used, flow_of_removed_edge, average_bi_coef):
     return pd.concat([results_df_opt,pd.DataFrame({'iteration': [int(i)],
                                                    'nbr_bike_lanes': [nbr_bike_lanes],
                                                    'nbr_none_bike_lanes': [nbr_none_bike_lanes],
                                                    'modal_share_car': [modal_share_car],
                                                    'modal_share_bike':[modal_share_bike],
                                                    'index_removed': [index_least_used],
-                                                   'flow_of_removed_edge': [flow_of_removed_edge]})],
+                                                   'flow_of_removed_edge': [flow_of_removed_edge],
+                                                   'average_bi_coef': [average_bi_coef]})],
                      ignore_index=True)
 
 def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = False, od_shape = 'squared', nbr_removal = 1):
@@ -47,12 +49,13 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = 
     results_df_opt.loc[0, "nbr_bike_lanes"] = nbr_bike_lanes
     results_df_opt.loc[0, "nbr_none_bike_lanes"] = nbr_none_bike_lanes
     print(f"Initial number of bike infrastructures: {nbr_bike_lanes}")
-
+    edge_df.loc[edge_df["road_type"] == 12, "type_bike"] = "None"
     edge_df_results = edge_df.copy()
     edge_df_results.drop(['travel_time_car', 'travel_time_bike', 'flow_car', 'flow_bike', 'length_bi'], axis=1,
                          inplace=True)
-
-    while nbr_bike_lanes > 0 and i < limit:
+    nbr_connector = (edge_df["road_type"] == 12).sum()
+    print(f"Initial number of connectors: {nbr_connector}")
+    while nbr_bike_lanes > nbr_connector and i < limit:
 
         print(f"\n--- Iteration {i} ---")
 
@@ -90,7 +93,7 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = 
         })
 
         # identify edges considered for removal
-        edges_considered_for_removal = edge_df_results[edge_df_results['type_bike'] != "None"]
+        edges_considered_for_removal = edge_df_results[(edge_df_results['type_bike'] != "None") & (edge_df_results["road_type"] != 12)]
         #remove all edges with no flow
         index_with_no_flow = edges_considered_for_removal[edges_considered_for_removal[name_col_flow_bike] < 1]["id"].values.tolist()
         edge_df_results.loc[edge_df_results['id'].isin(index_with_no_flow), 'type_bike'] = "None"
@@ -99,7 +102,7 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = 
         nbr_removed_bike_lanes = len(index_with_no_flow)
 
         # identify edges considered for removal
-        edges_considered_for_removal = edge_df_results[edge_df_results['type_bike'] != "None"]
+        edges_considered_for_removal = edge_df_results[(edge_df_results['type_bike'] != "None") & (edge_df_results["road_type"] != 12)]
         # select index of the nbr_removal least used edge
         # Sort the DataFrame first, then pull the 'id' column
         index_least_used = edges_considered_for_removal.sort_values(by=name_col_flow_bike, ascending=True)["id"].tolist()[:nbr_removal - 1]
@@ -122,8 +125,10 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = 
         nbr_none_bike_lanes = nbr_none_bike_lanes + nbr_removed_bike_lanes
         modal_share_car = results_df["modal_share_car"].iloc[-1]
         modal_share_bike = results_df["modal_share_bike"].iloc[-1]
+        edge_df['bi_coef'] = edge_df["length_bi"]/edge_df["length"]
+        average_bi_coef = edge_df['bi_coef'].mean()
         results_df_opt = update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bike_lanes,
                                                        modal_share_car, modal_share_bike, list_index_removed,
-                                                       avg_flow_removed)
+                                                       avg_flow_removed, average_bi_coef)
         i += 1
     return edge_df_results, results_df_opt

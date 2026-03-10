@@ -36,12 +36,12 @@ def calculate_length_bi_optimized(edge_df):
 
     conditions = [
         (is_none & (edge_df['flow_car'] < 500)),
-        (is_none & (edge_df['flow_car'] >= 1500)),
-        (is_none & (edge_df['flow_car'] >= 500) & (edge_df['flow_car'] < 1000)),
-        (is_none & (edge_df['flow_car'] >= 1000) & (edge_df['flow_car'] < 1500)),
+        (is_none & (edge_df['flow_car'] >= 2000)),
+        (is_none & (edge_df['flow_car'] >= 500) & (edge_df['flow_car'] < 1500)),
+        (is_none & (edge_df['flow_car'] >= 1500) & (edge_df['flow_car'] < 2000)),
         (~is_none)  # Cas "else" (type_bike != "None")
     ]
-    choices = [0.8, 1.4, 1.0, 1.2, 0.5]
+    choices = [1, 1.8, 1.2, 1.4, 0.5]
 
     # On crée une colonne de multiplicateurs et on multiplie par la longueur
     multipliers = np.select(conditions, choices, default=1.0)
@@ -122,6 +122,7 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 3000
     return edge_df, node_df
 
 def initialization_delft(edge_df:pd.DataFrame):
+    edge_df["speed_bike"]=20
     edge_df["speed_car"] /= 3.6
     edge_df["speed_bike"] /= 3.6
     edge_df["length_bi"] = edge_df["length"]
@@ -137,10 +138,12 @@ def initialization_delft(edge_df:pd.DataFrame):
 
 def change_type_bike_infra(edge_df:pd.DataFrame, new_type_bike:str, a_node:int, b_node:int):
     mask = (edge_df["a_node"] == a_node) & (edge_df["b_node"] == b_node)
+    edge_df["type_bike"] = edge_df["type_bike"].astype(object)
     edge_df.loc[mask, "type_bike"] = new_type_bike
     return edge_df
 
 def change_type_bike_infra_with_index(edge_df:pd.DataFrame, new_type_bike:str, index):
+    edge_df["type_bike"] = edge_df["type_bike"].astype(object)
     edge_df.loc[index, "type_bike"] = new_type_bike
     return edge_df
 

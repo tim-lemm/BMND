@@ -53,8 +53,20 @@ plt.show()
 # plt.show()
 #
 edge_delft_df = gpd.read_file("data/Delft/links.gpkg")
-m = edge_delft_df.explore()
-m.show_in_browser()
+node_delft_df = gpd.read_file("data/Delft/nodes.gpkg")
+
+# m = edge_delft_df.explore()
+# m.show_in_browser()
+edge_df = pd.read_csv("data/Delft/edges.csv")
+edge_df = initialization_delft(edge_df)
+node_df = pd.read_csv("data/Delft/nodes.csv")
+plot_network(edge_df, node_df, node_id_col='id',
+              color_col_str='type_bike',
+                      base_width=0.1,
+                      legend=True,
+                      title=f"Network of Delft",
+              node_size=10)
+plt.show()
 #
 # edge_delft_df["capacity_cars"] = edge_delft_df["capacity"]
 # edge_delft_df["type_bike"] = "None"
@@ -71,7 +83,7 @@ m.show_in_browser()
 # # od_df.drop(columns=["geometry"], inplace=True)
 # # od_df.to_csv("data/Delft/od.csv", index=False)
 #
-# od_matrix = pd.read_csv("data/Delft/od.csv")
-# plot_od_matrix(od_matrix, edge_delft_df, node_delft_df, ax=None, figsize=(10, 10), title='OD Matrix',
-#                    label=False, color='red', vmax=None)
-# plt.show()
+od_matrix = pd.read_csv("data/Delft/od.csv")
+plot_od_matrix(od_matrix, edge_delft_df, node_delft_df, ax=None, figsize=(10, 10), title='OD Matrix for Delft',
+                   label=False, color='red', vmax=None, node_size=100)
+plt.show()

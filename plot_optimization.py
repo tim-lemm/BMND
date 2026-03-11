@@ -11,7 +11,7 @@ edge_df, node_df = import_network("data/edges_small_grid_2.csv", "data/nodes_sma
 # for test_name in list_test_name:
 #     plot_optimization_results(test_name, edge_df, node_df, save = True)
 # plt.close('all')
-
+#
 # list_test_name = ['homog_500','homog_1000','random_500','random_1000','random_2000', 'random_1_2000','random_2_2000','random_3_2000','random_4_2000','random_5_2000', 'random_1_2000_bi2','random_2_2000_bi2','random_3_2000_bi2','random_4_2000_bi2','random_5_2000_bi2']
 # fig,ax = plt.subplots(figsize=(10,10))
 # for test_name in list_test_name:

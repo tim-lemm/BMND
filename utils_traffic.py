@@ -80,7 +80,7 @@ def calculate_proba_matrice (skim_matrice_car, skim_matrice_bike, ASC_car:float,
                 prob_matrice_bike[origin, destination] = P_bike
     return prob_matrice_car, prob_matrice_bike
 
-def plot_mc_results(edge_df, node_df, results_df):
+def plot_mc_results(edge_df, node_df, results_df, save = False, file_path = ""):
     edge_df_affich = edge_df.copy()
     edge_df_affich["coef_bi"] = edge_df_affich["length_bi"] / edge_df_affich["length"]
     edge_df_affich["real_speed_car"]= edge_df_affich["length"]/edge_df_affich["travel_time_car"]
@@ -96,7 +96,10 @@ def plot_mc_results(edge_df, node_df, results_df):
                  node_size=3, colorbar_label='Speed (m/s)', base_width=1, ax=axes[1, 0])
     plot_network(edge_df_affich, node_df, color_col_num='coef_bi', cmap='summer', title=f'Bikeability Coefficient',
                  node_size=3, colorbar_label='Coefficient', base_width=1, ax=axes[1, 1])
-    plt.show()
+    if save:
+        plt.savefig(f"{file_path}/networks.png")
+    else:
+        plt.show()
 
     _,axes = plt.subplots(1, 2, figsize=(20, 7))
     results_df.plot.area(x='iteration', y=['modal_share_car', 'modal_share_bike'], title='Evolution of modal shares',
@@ -118,7 +121,10 @@ def plot_mc_results(edge_df, node_df, results_df):
                  ha='center', va='center', fontweight='bold', fontsize=12)
     axes[0].text(final_it, val_car + val_bike / 2, f'{val_bike:.4f}%',
                  ha='center', va='center', fontweight='bold', fontsize=12)
-    plt.show()
+    if save:
+        plt.savefig(f"{file_path}/mode_share.png")
+    else:
+        plt.show()
 
 def mode_choice(edge_df,
                 node_df,
@@ -129,6 +135,8 @@ def mode_choice(edge_df,
                 mu_mode=1.0,
                 max_iter_mode_choice=3,
                 plot=True,
+                save = False,
+                file_path = "",
                 return_network=False,
                 od_shape = "square"):
     if od_shape == "square":
@@ -219,7 +227,10 @@ def mode_choice(edge_df,
     print(
         f"Mode shares with skimming: Car = {modal_share_car :.3f} %, Bike = {modal_share_bike:.3f}%")
     if plot:
-        plot_mc_results(edge_df, node_df, results_df)
+        if save:
+            plot_mc_results(edge_df, node_df, results_df, save = True, file_path=file_path)
+        else :
+            plot_mc_results(edge_df, node_df, results_df)
     if return_network:
         return results_df, updated_od_car, updated_od_bike, prob_matrice_car, prob_matrice_bike, edge_df
     else:

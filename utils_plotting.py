@@ -160,11 +160,11 @@ def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', 
 
 
 def plot_od_matrix(od_matrix, edges_df, nodes_df, ax=None, figsize=(10, 10), title='OD Matrix',
-                   label=False, color='red', vmax=None):
+                   label=False, color='red', vmax=None, node_size = 300):
     """ Plot OD matrix as arrows on the network."""
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
-    plot_network(edges_df, nodes_df, ax=ax, show_nodes=True, node_label=True, node_size=300, title=title)
+    plot_network(edges_df, nodes_df, ax=ax, show_nodes=True, node_label=True, node_size=node_size, title=title)
     od_matrix_plot = od_matrix.copy()[od_matrix['demand'] > 0]
     if vmax is None:
         od_matrix_plot['linewidth'] = od_matrix_plot['demand'] / od_matrix_plot['demand'].max() * 5
@@ -231,7 +231,7 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
     list_index_of_bike_infra = edge_df.index[mask].tolist()
 
     edge_df = change_type_bike_infra_with_index(edge_df, "bike_path", list_index_of_bike_infra)
-    plot_network(edge_df, node_df, node_id_col='node',
+    plot_network(edge_df, node_df, node_id_col='id',
                      node_label=True,
                      color_col_str='type_bike',
                      base_width=1,
@@ -282,7 +282,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False):
          "flow_of_removed_edge"], axis=1, inplace=True)
     edge_df.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
 
-    plot_network(edge_df, node_df, node_id_col='node',
+    plot_network(edge_df, node_df, node_id_col='id',
                      node_label=True,
                      color_col_num='iteration_of_removal',
                      base_width=1,

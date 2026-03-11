@@ -17,7 +17,7 @@ edge_df, node_df = import_network(CURRENT_DIR + "data/edges_small_grid_2.csv", C
 
 # parameters for mode choice
 parameter_dict = parameter()
-beta_time = parameter_dict['beta_time']
+beta_time = parameter_dict['beta_time_grid']
 ASC_car = parameter_dict['ASC_car']
 ASC_bike = parameter_dict['ASC_bike']
 mu_mode = parameter_dict['mu_mode']
@@ -32,7 +32,7 @@ od_df = generate_od_df(size_od, od_scenario="RANDOM_OD", max_demand=2000)
 plot_od_matrix(convert_to_eaquilibrae_od_matrix(od_df),edge_df,node_df)
 plt.show()
 
-for scenario in [0]:
+for scenario in [0,1,2,3,4,5]:
     edge_df = apply_bike_infra_scenario(edge_df, scenario)
     plot_network(edge_df, node_df,
                  node_id_col='id',
@@ -41,6 +41,7 @@ for scenario in [0]:
                  base_width=1,
                  legend=True,
                  title=f"Network with type of bike infrastructure, scenario {scenario}")
+
     result_df, _, _,_,_ = mode_choice(edge_df,
                                                          node_df,
                                                          od_df,
@@ -50,8 +51,9 @@ for scenario in [0]:
                                                          mu_mode=mu_mode,
                                                          max_iter_mode_choice=max_iter_mode_choice,
                                                          plot=plot,
+                                      save = True,
+                                      file_path=f"output/mode_choice/bi_1/scenario_{scenario}",
                                       od_shape="square")
-
 # result_all_df = pd.DataFrame(columns = ['number_of_bike_path',
 #                         'modal_share_car',
 #                         'modal_share_bike'])

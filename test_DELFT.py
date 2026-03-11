@@ -24,13 +24,13 @@ beta_time = parameter_dict['beta_time']
 ASC_car = parameter_dict['ASC_car']
 ASC_bike = parameter_dict['ASC_bike']
 mu_mode = parameter_dict['mu_mode']
-max_iter_mode_choice = parameter_dict['max_iter_mode_choice']
-plot = False
-beta_time = -1.354e-8
+max_iter_mode_choice = parameter_dict['max_iter_mode_choice']+5
+plot = True
+#beta_time = -1.354e-8
 step = 1e-13
 n_points = 5
-list_beta_time = [beta_time - (i * step) for i in range(n_points + 1)]
-#list_beta_time = [beta_time]
+#list_beta_time = [beta_time - (i * step) for i in range(n_points + 1)]
+list_beta_time = [beta_time]
 fig, ax = plt.subplots(1,2, figsize=(15,5))
 
 for beta_time in list_beta_time:

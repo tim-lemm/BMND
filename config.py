@@ -4,7 +4,7 @@ def parameter (name_parameter = "all"):
                       'ASC_bike':-2.5,
                       'ASC_car':0,
                       'mu_mode':1,
-                        #'beta_time':-0.000694,
+                        'beta_time_grid':-0.000235,
                         'beta_time': -1.351e-8,
                         #'beta_time': -1.354e-8,
                       'max_iter_mode_choice':10,

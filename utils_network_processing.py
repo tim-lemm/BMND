@@ -18,13 +18,13 @@ def calculate_length_bi(edge_df, weight = 0):
     list_length_bi = []
     for row in edge_df.itertuples():
         if row.type_bike == "None":
-            if row.flow_car < 1500:
+            if row.flow_car < 6000:
                 list_length_bi.append(row.length * (0.8 - weight))
-            elif row.flow_car >= 3000:
+            elif row.flow_car >= 8000:
                 list_length_bi.append(row.length * (1.4 + weight))
-            elif 1500 <= row.flow_car < 2500:
+            elif 6000 <= row.flow_car < 7500:
                 list_length_bi.append(row.length * 1)
-            elif 2500 <= row.flow_car < 3000:
+            elif 7500 <= row.flow_car < 8000:
                 list_length_bi.append(row.length * (1.2 + weight))
         else:
             list_length_bi.append(row.length * (0.5 - weight))
@@ -95,7 +95,7 @@ def calculate_congested_time(edge_df, free_flow_time_name="free_flow_time", cong
 
 def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4):
     edge_df = calculate_congested_time(edge_df, free_flow_time_name, congested_time_name, flow_name, capacity_name, alpha, beta)
-    edge_df = calculate_length_bi_optimized(edge_df)
+    edge_df = calculate_length_bi(edge_df)
     edge_df["travel_time_bike"] = edge_df["length_bi"]/edge_df["speed_bike"]
     return edge_df
 

@@ -6,8 +6,8 @@ def calculate_length(node_df, edge_df):
     """ Calculate Euclidean length of edges based on node coordinates. """
     lengths = []
     for edge in edge_df.itertuples():
-        a_node = node_df.loc[node_df['node'] == edge.a_node]
-        b_node = node_df.loc[node_df['node'] == edge.b_node]
+        a_node = node_df.loc[node_df['id'] == edge.a_node]
+        b_node = node_df.loc[node_df['id'] == edge.b_node]
         length = np.sqrt((a_node['x'].values[0] - b_node['x'].values[0])**2 + (a_node['y'].values[0] - b_node['y'].values[0])**2)
         lengths.append(length)
     return edge_df.assign(length=lengths)
@@ -109,7 +109,9 @@ def change_type_bike_infra(edge_df:pd.DataFrame, new_type_bike:str, a_node:int, 
     return edge_df
 
 def change_type_bike_infra_with_index(edge_df:pd.DataFrame, new_type_bike:str, index):
-    edge_df.loc[index, "type_bike"] = new_type_bike
+    if type(index) == int:
+        index = [index]
+    edge_df.loc[edge_df['id'].isin(index), "type_bike"] = new_type_bike
     return edge_df
 
 def change_type_bike_infra_loop(edge_df:pd.DataFrame, new_type_bike:str,list_node:list):

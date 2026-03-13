@@ -39,7 +39,7 @@ def _create_offset_polygon(coords, width):
 
 
 def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', node_y_col='y',
-                 width_col=None, base_width=0.1, width_scale=2.1, node_id_col='node', color_col_num=None,
+                 width_col=None, base_width=0.1, width_scale=2.1, node_id_col='id', color_col_num=None,
                  color_col_str=None, dict_colors_str=None,
                  vmin=None, vmax=None, a_node_col='a_node', b_node_col='b_node', show_nodes=True,
                  node_size=100, cmap='viridis', colorbar_label=None, title=None, node_label=False, legend=False,
@@ -172,10 +172,10 @@ def plot_od_matrix(od_matrix, edges_df, nodes_df, ax=None, figsize=(10, 10), cma
         od_matrix_plot['linewidth'] = od_matrix_plot['demand'] / vmax * 5
 
     for i, row in od_matrix_plot.iterrows():
-        x0 = nodes_df.loc[nodes_df['node'] == row['origin'], 'x'].values[0]
-        y0 = nodes_df.loc[nodes_df['node'] == row['origin'], 'y'].values[0]
-        x1 = nodes_df.loc[nodes_df['node'] == row['destination'], 'x'].values[0]
-        y1 = nodes_df.loc[nodes_df['node'] == row['destination'], 'y'].values[0]
+        x0 = nodes_df.loc[nodes_df['id'] == row['origin'], 'x'].values[0]
+        y0 = nodes_df.loc[nodes_df['id'] == row['origin'], 'y'].values[0]
+        x1 = nodes_df.loc[nodes_df['id'] == row['destination'], 'x'].values[0]
+        y1 = nodes_df.loc[nodes_df['id'] == row['destination'], 'y'].values[0]
 
         ax.annotate(
             "",
@@ -231,7 +231,7 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
     list_index_of_bike_infra = edge_df.index[mask].tolist()
 
     edge_df = change_type_bike_infra_with_index(edge_df, "bike_path", list_index_of_bike_infra)
-    plot_network(edge_df, node_df, node_id_col='node',
+    plot_network(edge_df, node_df, node_id_col='id',
                      node_label=True,
                      color_col_str='type_bike',
                      base_width=1,
@@ -251,13 +251,16 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
     plot_network(edge_df_results, node_df, width_col=f'flow_bike_iteration_{iteration_corresponding_to_budget}',
                      color_col_num=f'flow_bike_iteration_{iteration_corresponding_to_budget}', cmap='Greens',
                      title=f'Bike flows - budget: {budget}', node_size=3, colorbar_label='Flow (bikes)',
-                     base_width=0.1, width_scale=10, ax=axes[0, 1])
-    plot_network(edge_df_results, node_df, color_col_num=f'travel_time_car_{iteration_corresponding_to_budget}',
-                     cmap='hot_r', title=f'Car Travel Time',
-                     node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 0])
-    plot_network(edge_df_results, node_df, color_col_num=f'travel_time_bike_{iteration_corresponding_to_budget}',
-                     cmap='hot_r', title=f'Bike Travel Time',
-                     node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 1])
+                     base_width=1, width_scale=10, ax=axes[0, 1], vmax=edge_df_results[f'flow_bike_iteration_{iteration_corresponding_to_budget}'].max())
+    plot_network(edge_df, node_df, node_id_col='id',
+                 node_label=True,
+                 color_col_str='type_bike',
+                 base_width=1,
+                 legend=True,
+                 title=f"Network for a budget of {budget}", ax=axes[1,0])
+    plot_network(edge_df_results, node_df, color_col_num=f'coef_bi_{iteration_corresponding_to_budget}',
+                     cmap='hot_r', title=f'Coef BI',
+                     node_size=3, colorbar_label='coef bi', base_width=1, ax=axes[1, 1])
     if save:
         file_path = output_dir_network / f"networks_budget_{budget}_{test_name}.png"
         plt.savefig(file_path)
@@ -282,7 +285,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False):
          "flow_of_removed_edge"], axis=1, inplace=True)
     edge_df.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
 
-    plot_network(edge_df, node_df, node_id_col='node',
+    plot_network(edge_df, node_df, node_id_col='id',
                      node_label=True,
                      color_col_num='iteration_of_removal',
                      base_width=1,
@@ -306,6 +309,17 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False):
     else:
         plt.show()
 
+    ax = results_df_opt.plot(kind='line', x="iteration", y="average_bi_coef",
+                             color='blue', label="Coef_bi", grid=True, title=f"Results for {test_name}")
+
+    results_df_opt.plot(kind='line', x="iteration", y="modal_share_bike",
+                        color='red', label="Modal share bike", secondary_y=True, ax=ax)
+
+    if save:
+        file_path = output_dir / f"graph_results_coef_bi_{test_name}.png"
+        plt.savefig(file_path)
+    else:
+        plt.show()
     list_budget = list(range(1, 49))
     for budget in list_budget:
         plot_optimization_network(edge_df, edge_df_results,node_df, budget, save, output_dir_infra, output_dir_network, test_name)
@@ -333,7 +347,7 @@ def plot_optimization_different_budgets(list_test_name:list, list_budget:list, s
             list_index_of_bike_infra = edge_df.index[mask].tolist()
 
             edge_df = change_type_bike_infra_with_index(edge_df, "bike_path", list_index_of_bike_infra)
-            plot_network(edge_df, node_df, node_id_col='node',
+            plot_network(edge_df, node_df, node_id_col='id',
                          node_label=True,
                          color_col_str='type_bike',
                          base_width=1,

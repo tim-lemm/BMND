@@ -17,11 +17,11 @@ logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 edge_df, node_df = import_network("data/edges_small_grid_2.csv", "data/nodes_small_grid_2.csv")
 
 #od matrix creation
-size_od = max(node_df['node']) + 1
-list_i = [1,2,3,4,5]
-for i in list_i:
-    od_df = generate_od_df(size_od, od_scenario="RANDOM_OD", max_demand=2000,seed=i)
-    test_name = f"random_{i}_2000_bi2"
+size_od = max(node_df['id']) + 1
+list_demand = [100,200,500,1000,2000]
+for demand in list_demand:
+    od_df = generate_od_df(size_od, od_scenario="CORNER", max_demand=demand)
+    test_name = f"corner_{demand}_bi2"
 
     edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df)
 

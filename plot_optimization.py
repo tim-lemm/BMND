@@ -5,7 +5,7 @@ from utils_network_processing import *
 
 edge_df, node_df = import_network("data/edges_small_grid_2.csv", "data/nodes_small_grid_2.csv")
 
-list_test_name = [f"corner_{demand}_bi2" for demand in [100,200,500,1000,2000]]
+list_test_name = [f"corner_{demand}_bi2" for demand in [100,200,500,1000,2000,4000]]
 for test_name in list_test_name:
     plot_optimization_results(test_name, edge_df, node_df, save = True)
 plt.close('all')

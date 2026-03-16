@@ -29,7 +29,7 @@ def update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bi
                      ignore_index=True)
 
 
-def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = False):
+def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bool = False, nbr_removal:int = 1):
     # construct bike lane on all edge
     edge_df = apply_bike_infra_scenario(edge_df, 2)
 
@@ -96,13 +96,13 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = 
         # identify edges considered for removal
         edges_considered_for_removal = edge_df_results[edge_df_results['type_bike'] != "None"]
         # select index of least used edge
-        index_least_used = edges_considered_for_removal[name_col_flow_bike].sort_values(ascending=True).index[0]  # using only the least used edge
-        flow_of_removed_edge = edge_df_results.loc[index_least_used, name_col_flow_bike]
+        index_least_used = edges_considered_for_removal.sort_values(by=name_col_flow_bike, ascending=True)["id"].tolist()[:nbr_removal]
+        flow_of_removed_edge = edge_df_results.loc[edge_df_results['id'].isin(index_least_used), name_col_flow_bike].mean()
 
         # remove infrastructures from selected edges
         print(f"Iteration {i} - Removing bike lane on edge {index_least_used} with flow {flow_of_removed_edge}")
-        edge_df.loc[index_least_used, 'type_bike'] = "None"
-        edge_df_results.loc[index_least_used, 'type_bike'] = "None"
+        edge_df.loc[edge_df['id'].isin(index_least_used), 'type_bike'] = "None"
+        edge_df_results.loc[edge_df_results['id'].isin(index_least_used), 'type_bike'] = "None"
         if plot:
             plot_network(edge_df, node_df, color_col_str='type_bike', base_width=1, width_scale=5, node_size=200,
                          legend=True,

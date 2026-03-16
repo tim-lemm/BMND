@@ -7,8 +7,8 @@ def generate_od_df (
         seed:int = 69,
         max_demand: int = 1000
 )-> pd.DataFrame:
-    if od_scenario not in ["RANDOM_OD", "1OD","2OD","HOMOG","CORNER"]:
-        raise ValueError("Invalid OD scenario. You can choose between RANDOM_OD, 1OD, 2OD, HOMOG, CORNER")
+    if od_scenario not in ["RANDOM_OD", "1OD","2OD","HOMOG","CORNER", "CORNER_2"]:
+        raise ValueError("Invalid OD scenario. You can choose between RANDOM_OD, 1OD, 2OD, HOMOG, CORNER, CORNER_2")
     np.random.seed(seed)
     od_matrix = pd.DataFrame(0, index=range(1, size_od), columns=range(1,size_od))
     if od_scenario == "1OD":
@@ -34,6 +34,11 @@ def generate_od_df (
             for j in list_i:
                 if i != j:
                     od_matrix.loc[i, j] = max_demand
+    elif od_scenario == "CORNER_2":
+        od_matrix.loc[4, 1] = max_demand
+        od_matrix.loc[1, 16] = max_demand
+        od_matrix.loc[13, 4] = max_demand
+        od_matrix.loc[16, 13] = max_demand
     return od_matrix
 
 def convert_od_df_to_matrix(od_df: pd.DataFrame)-> np.ndarray:

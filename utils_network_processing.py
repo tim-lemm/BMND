@@ -130,8 +130,7 @@ def apply_bike_infra_scenario(edge_df:pd.DataFrame, num_scenario:int):
         change_type_bike_infra_loop(edge_df, "bike_path",list_node)
         return edge_df
     if num_scenario == 2:
-        list_node = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-        edge_df = change_type_bike_infra_loop(edge_df, "bike_path", list_node)
+        edge_df["type_bike"] = "bike_path"
         return edge_df
     if num_scenario == 3:
         list_road = [[2, 6, 10, 14],[3,7,11,15],[5,6,7,8],[9,10,11,12]]

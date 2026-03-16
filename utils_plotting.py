@@ -5,7 +5,7 @@ from shapely.geometry import Polygon
 import pandas as pd
 from utils_network_processing import *
 from pathlib import Path
-
+import ast
 
 #### plotting functions
 def _create_offset_polygon(coords, width):
@@ -277,11 +277,15 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False):
     edge_df_results = pd.read_csv(f"output/optimization/rgo_edge_df_results_{test_name}.csv")
     results_df_opt = pd.read_csv(f"output/optimization/rgo_results_df_opt_{test_name}.csv")
 
-    edge_df = edge_df.merge(results_df_opt, how="inner", left_index=True, right_on="index_removed").set_index(
-        edge_df.index)
-
+    results_df_opt.drop("Unnamed: 0", axis=1, inplace=True)
+    results_df_opt = results_df_opt.iloc[1:].reset_index(drop=True)
+    results_df_opt["index_removed"] = results_df_opt["index_removed"].apply(ast.literal_eval)
+    results_df_opt = results_df_opt.explode('index_removed')
+    edge_df = edge_df.merge(results_df_opt, how="inner", left_on="id", right_on="index_removed")
+    edge_df.index = edge_df["id"]
     edge_df.drop(
-        ["Unnamed: 0", "nbr_bike_lanes", "nbr_none_bike_lanes", "modal_share_car", "modal_share_bike", "index_removed",
+        ["nbr_bike_lanes", "nbr_none_bike_lanes", "modal_share_car", "modal_share_bike",
+         "index_removed",
          "flow_of_removed_edge"], axis=1, inplace=True)
     edge_df.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
 
@@ -320,7 +324,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False):
         plt.savefig(file_path)
     else:
         plt.show()
-    list_budget = list(range(1, 49))
+    list_budget = list(range(1, max(results_df_opt["iteration"]) + 1))
     for budget in list_budget:
         plot_optimization_network(edge_df, edge_df_results,node_df, budget, save, output_dir_infra, output_dir_network, test_name)
 

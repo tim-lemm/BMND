@@ -22,14 +22,14 @@ plot_network(edge_df, node_df, node_id_col='id',
 
 plt.show()
 size_od = max(node_df['id']) + 1
-od_df = generate_od_df(size_od, od_scenario="CORNER", max_demand=2000)
+od_df = generate_od_df(size_od, od_scenario="CORNER_2", max_demand=4000)
 plot_od_matrix(convert_to_eaquilibrae_od_matrix(od_df), edge_df, node_df)
 plt.show()
 
 results_test_random_df = pd.read_csv("output/results_test_random_df.csv")
 
-results_test_random_df["modal_share"].plot.kde(title="Modal Share Density for 10 bike lanes randomly selected")
-plt.grid()
-plt.xlabel("Modal Share (%)")
-plt.axvline(x=7.886975627149402, color='red', linestyle='--', linewidth=2, label=f'Mode share from Optimization : {7.886975627149402}')
-plt.show()
+# results_test_random_df["modal_share"].plot.kde(title="Modal Share Density for 10 bike lanes randomly selected")
+# plt.grid()
+# plt.xlabel("Modal Share (%)")
+# plt.axvline(x=7.886975627149402, color='red', linestyle='--', linewidth=2, label=f'Mode share from Optimization : {7.886975627149402}')
+# plt.show()

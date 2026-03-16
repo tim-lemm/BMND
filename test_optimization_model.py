@@ -21,7 +21,7 @@ size_od = max(node_df['id']) + 1
 list_demand = [4000]
 for demand in list_demand:
     od_df = generate_od_df(size_od, od_scenario="CORNER_2", max_demand=demand)
-    test_name = f"CAP_corner_{demand}_bi2"
+    test_name = f"CAP_1_corner_{demand}_bi2"
 
     edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=48)
 

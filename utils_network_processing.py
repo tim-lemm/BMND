@@ -6,8 +6,8 @@ def calculate_length(node_df, edge_df):
     """ Calculate Euclidean length of edges based on node coordinates. """
     lengths = []
     for edge in edge_df.itertuples():
-        a_node = node_df.loc[node_df['node'] == edge.a_node]
-        b_node = node_df.loc[node_df['node'] == edge.b_node]
+        a_node = node_df.loc[node_df['id'] == edge.a_node]
+        b_node = node_df.loc[node_df['id'] == edge.b_node]
         length = np.sqrt((a_node['x'].values[0] - b_node['x'].values[0])**2 + (a_node['y'].values[0] - b_node['y'].values[0])**2)
         lengths.append(length)
     return edge_df.assign(length=lengths)
@@ -109,7 +109,9 @@ def change_type_bike_infra(edge_df:pd.DataFrame, new_type_bike:str, a_node:int, 
     return edge_df
 
 def change_type_bike_infra_with_index(edge_df:pd.DataFrame, new_type_bike:str, index):
-    edge_df.loc[index, "type_bike"] = new_type_bike
+    if type(index) == int:
+        index = [index]
+    edge_df.loc[edge_df['id'].isin(index), "type_bike"] = new_type_bike
     return edge_df
 
 def change_type_bike_infra_loop(edge_df:pd.DataFrame, new_type_bike:str,list_node:list):
@@ -128,8 +130,7 @@ def apply_bike_infra_scenario(edge_df:pd.DataFrame, num_scenario:int):
         change_type_bike_infra_loop(edge_df, "bike_path",list_node)
         return edge_df
     if num_scenario == 2:
-        list_node = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-        edge_df = change_type_bike_infra_loop(edge_df, "bike_path", list_node)
+        edge_df["type_bike"] = "bike_path"
         return edge_df
     if num_scenario == 3:
         list_road = [[2, 6, 10, 14],[3,7,11,15],[5,6,7,8],[9,10,11,12]]

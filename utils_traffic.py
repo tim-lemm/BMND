@@ -87,11 +87,12 @@ def plot_mc_results(edge_df, node_df, results_df):
                  base_width=0.1, width_scale=10, ax=axes[0, 0])
     plot_network(edge_df, node_df, width_col='flow_bike', color_col_num='flow_bike', cmap='Greens',
                  title=f'Bike flows - Mode Choice Assignment ', node_size=3, colorbar_label='Flow (bikes)',
-                 base_width=0.1, width_scale=10, ax=axes[0, 1])
-    plot_network(edge_df, node_df, color_col_num='travel_time_car', cmap='hot_r', title=f'Car Travel Time',
-                 node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 0])
-    plot_network(edge_df, node_df, color_col_num='travel_time_bike', cmap='hot_r', title=f'Bike Travel Time',
-                 node_size=3, colorbar_label='Travel Time (s)', base_width=1, ax=axes[1, 1])
+                 base_width=1, width_scale=10, ax=axes[0, 1], vmax=edge_df['flow_bike'].max())
+    plot_network(edge_df, node_df, color_col_str='type_bike', title=f'Bike Infrastructure',
+                 node_size=3, base_width=1, ax=axes[1, 0])
+    plot_network(edge_df, node_df, color_col_num=f'coef_bi',
+                 cmap='hot_r', title=f'Coef BI',
+                 node_size=3, colorbar_label='coef bi', base_width=1, ax=axes[1, 1])
     plt.show()
 
     _,axes = plt.subplots(1, 2, figsize=(20, 7))
@@ -202,7 +203,7 @@ def mode_choice(edge_df,
                                          total_travel_time_bike,
                                          total_car_skim,
                                          total_bike_skim)
-
+        edge_df["coef_bi"]=edge_df["length_bi"]/edge_df["length"]
     print(
         f"Mode shares with skimming: Car = {modal_share_car :.3f} %, Bike = {modal_share_bike:.3f}%")
     if plot:

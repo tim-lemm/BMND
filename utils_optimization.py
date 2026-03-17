@@ -14,19 +14,22 @@ def _create_empty_result_df_optimization():
                          'modal_share_car': [np.nan],
                          'modal_share_bike': [np.nan],
                          'index_removed': [np.nan],
-                         'flow_of_removed_edge': [np.nan]})
+                         'flow_of_removed_edge': [np.nan],
+                         'average_bi_coef':[np.nan]})
 
-def update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bike_lanes, modal_share_car, modal_share_bike, index_least_used, flow_of_removed_edge):
+def update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bike_lanes, modal_share_car, modal_share_bike, index_least_used, flow_of_removed_edge, average_bi_coef):
     return pd.concat([results_df_opt,pd.DataFrame({'iteration': [int(i)],
                                                    'nbr_bike_lanes': [nbr_bike_lanes],
                                                    'nbr_none_bike_lanes': [nbr_none_bike_lanes],
                                                    'modal_share_car': [modal_share_car],
                                                    'modal_share_bike':[modal_share_bike],
                                                    'index_removed': [index_least_used],
-                                                   'flow_of_removed_edge': [flow_of_removed_edge]})],
+                                                   'flow_of_removed_edge': [flow_of_removed_edge],
+                                                   'average_bi_coef': [average_bi_coef]})],
                      ignore_index=True)
 
-def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = False):
+
+def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bool = False, nbr_removal:int = 1):
     # construct bike lane on all edge
     edge_df = apply_bike_infra_scenario(edge_df, 2)
 
@@ -69,27 +72,37 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = 
                                                                                                                 plot=plot,
                                                                                                                 return_network=True)
 
+        edge_df["coef_bi"] = edge_df["length_bi"] / edge_df["length"]
         # update edge_df_results
         name_col_flow_car = 'flow_car_iteration_' + str(i)
         name_col_flow_bike = 'flow_bike_iteration_' + str(i)
         name_col_tt_car = 'travel_time_car_' + str(i)
         name_col_tt_bike = 'travel_time_bike_' + str(i)
+        name_col_coef_bi = 'coef_bi_' + str(i)
 
-        edge_df_results[name_col_flow_car] = edge_df['flow_car']
-        edge_df_results[name_col_flow_bike] = edge_df['flow_bike']
-        edge_df_results[name_col_tt_car] = edge_df['travel_time_car']
-        edge_df_results[name_col_tt_bike] = edge_df['travel_time_bike']
-
+        cols_to_transfer = ['id', 'flow_car', 'flow_bike', 'travel_time_car', 'travel_time_bike', "coef_bi"]
+        edge_df_results = edge_df_results.merge(
+            edge_df[cols_to_transfer],
+            on='id',
+            how='left'
+        )
+        edge_df_results = edge_df_results.rename(columns={
+            'flow_car': name_col_flow_car,
+            'flow_bike': name_col_flow_bike,
+            'travel_time_car': name_col_tt_car,
+            'travel_time_bike': name_col_tt_bike,
+            'coef_bi': name_col_coef_bi
+        })
         # identify edges considered for removal
         edges_considered_for_removal = edge_df_results[edge_df_results['type_bike'] != "None"]
         # select index of least used edge
-        index_least_used = edges_considered_for_removal[name_col_flow_bike].sort_values(ascending=True).index[0]  # using only the least used edge
-        flow_of_removed_edge = edge_df_results.loc[index_least_used, name_col_flow_bike]
+        index_least_used = edges_considered_for_removal.sort_values(by=name_col_flow_bike, ascending=True)["id"].tolist()[:nbr_removal]
+        flow_of_removed_edge = edge_df_results.loc[edge_df_results['id'].isin(index_least_used), name_col_flow_bike].mean()
 
         # remove infrastructures from selected edges
         print(f"Iteration {i} - Removing bike lane on edge {index_least_used} with flow {flow_of_removed_edge}")
-        edge_df.loc[index_least_used, 'type_bike'] = "None"
-        edge_df_results.loc[index_least_used, 'type_bike'] = "None"
+        edge_df.loc[edge_df['id'].isin(index_least_used), 'type_bike'] = "None"
+        edge_df_results.loc[edge_df_results['id'].isin(index_least_used), 'type_bike'] = "None"
         if plot:
             plot_network(edge_df, node_df, color_col_str='type_bike', base_width=1, width_scale=5, node_size=200,
                          legend=True,
@@ -101,8 +114,9 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot = 
         nbr_none_bike_lanes = nbr_none_bike_lanes + 1
         modal_share_car = results_df["modal_share_car"].iloc[-1]
         modal_share_bike = results_df["modal_share_bike"].iloc[-1]
-        results_df_opt = update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bike_lanes,
-                                                       modal_share_car, modal_share_bike, index_least_used,
-                                                       flow_of_removed_edge)
+        average_bi_coef = edge_df['coef_bi'].mean()
+        results_df_opt = update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bike_lanes,modal_share_car, modal_share_bike, index_least_used,
+                                                       flow_of_removed_edge, average_bi_coef)
+
         i += 1
     return edge_df_results, results_df_opt

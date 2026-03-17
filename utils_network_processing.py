@@ -75,13 +75,20 @@ def calculate_congested_time(edge_df, free_flow_time_name="free_flow_time", cong
     edge_df[congested_time_name]=edge_df[free_flow_time_name]*(1+alpha*(edge_df[flow_name]/edge_df[capacity_name])**beta)
     return edge_df
 
+def update_car_capacity(edge_df:pd.DataFrame, capacity_car:int = 1500):
+    edge_df.loc[edge_df["type_bike"] == "bike_path", "nbr_car_lane"] = 1
+    edge_df.loc[edge_df["type_bike"] == "None", "nbr_car_lane"] = 2
+    edge_df["capacity_cars"] = edge_df["nbr_car_lane"] * capacity_car
+    return edge_df
+
 def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4):
     edge_df = calculate_congested_time(edge_df, free_flow_time_name, congested_time_name, flow_name, capacity_name, alpha, beta)
     edge_df = calculate_length_bi_2(edge_df)
+    edge_df = update_car_capacity(edge_df)
     edge_df["travel_time_bike"] = edge_df["length_bi"]/edge_df["speed_bike"]
     return edge_df
 
-def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 3000):
+def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500):
     edge_df = pd.read_csv(edge_filepath)
     node_df = pd.read_csv(node_filepath)
 
@@ -94,7 +101,8 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 3000
     edge_df["free_flow_time_bike"] = edge_df["length"] / edge_df["speed_bike"]
     edge_df["travel_time_car"] = edge_df["free_flow_time_car"]
     edge_df["travel_time_bike"] = edge_df["free_flow_time_bike"]
-    edge_df["capacity_cars"] = capacity_car
+    edge_df["nbr_car_lane"] = 2
+    edge_df["capacity_cars"] = edge_df["nbr_car_lane"]*capacity_car
     edge_df["capacity_bikes"] = 99999
     edge_df["alpha"] = 0.15
     edge_df["beta"] = 4

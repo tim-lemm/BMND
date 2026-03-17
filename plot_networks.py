@@ -4,7 +4,7 @@ from utils_plotting import *
 from utils_network_processing import *
 import matplotlib.pyplot as plt
 
-edge_df, node_df = import_network("data/edges_small_grid_2.csv", "data/nodes_small_grid_2.csv")
+edge_df, node_df = import_network("data/edges_small_grid_3.csv", "data/nodes_small_grid_3.csv")
 
 fig, ax = plt.subplots(1,2, figsize=(20,10))
 plot_network(edge_df, node_df, node_id_col='id',
@@ -20,11 +20,12 @@ plot_network(edge_df, node_df, node_id_col='id',
                          legend=True,
                          title=f"Network with slope",cmap="coolwarm", ax=ax[1])
 
-plt.show()
+plt.savefig("output/figures/network_H_tunnel.png")
+
 size_od = max(node_df['id']) + 1
 od_df = generate_od_df(size_od, od_scenario="CORNER_2", max_demand=4000)
 plot_od_matrix(convert_to_eaquilibrae_od_matrix(od_df), edge_df, node_df)
-plt.show()
+plt.savefig("output/figures/od_matrix.png")
 
 results_test_random_df = pd.read_csv("output/results_test_random_df.csv")
 

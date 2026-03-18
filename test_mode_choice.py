@@ -14,7 +14,7 @@ CURRENT_DIR = ""
 warnings.filterwarnings('ignore')
 logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 
-edge_df, node_df = import_network(CURRENT_DIR + "data/edges_small_grid_2.csv", CURRENT_DIR + "data/nodes_small_grid_2.csv")
+edge_df, node_df = import_network(CURRENT_DIR + "data/edges_small_grid_H.csv", CURRENT_DIR + "data/nodes_small_grid_2.csv")
 
 # parameters for mode choice
 parameter_dict = parameter()
@@ -27,15 +27,25 @@ plot = False
 
 size_od = max(node_df['id']) + 1
 
-od_df = generate_od_df(size_od, od_scenario="CORNER", max_demand=2000)
+od_df = generate_od_df(size_od, od_scenario="CORNER_2", max_demand=4000)
 
 plot_od_matrix(convert_to_eaquilibrae_od_matrix(od_df),edge_df,node_df)
 plt.show()
 list_mode_share = []
 list_seed = random.sample(range(1, 10000000000000), 100)
+#tunnel
+#list_edge = [1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 4, 3, 33, 34,35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 47, 48]
+#grid
+#list_edge = range(1,49)
+#H
+list_edge = [
+    1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+    21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
+    37, 38, 39, 40, 41, 42, 43, 44, 47, 48
+]
 for seed in list_seed:
     random.seed(seed)
-    list_random_edges = random.sample(range(1, 49), 10)
+    list_random_edges = random.sample(list_edge, 10)
     print(list_random_edges)
     edge_df = change_type_bike_infra_with_index(edge_df,'bike_path',list_random_edges)
 
@@ -58,7 +68,7 @@ results_test_random_df = pd.DataFrame({
     'modal_share': list_mode_share
 })
 
-results_test_random_df.to_csv('output/results_test_random_df.csv')
+results_test_random_df.to_csv('output/results_test_random_CAP_2_H_corner_2_4000_bi2.csv')
 # for scenario in [0,1,2,3,4,5]:
 #     edge_df = apply_bike_infra_scenario(edge_df, scenario)
 #     plot_network(edge_df, node_df,

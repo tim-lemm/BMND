@@ -14,14 +14,14 @@ warnings.filterwarnings('ignore')
 logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 
 #import network
-edge_df, node_df = import_network("data/edges_small_grid_3.csv", "data/nodes_small_grid_3.csv")
+edge_df, node_df = import_network("data/edges_small_grid_2.csv", "data/nodes_small_grid_2.csv")
 
 #od matrix creation
 size_od = max(node_df['id']) + 1
 list_demand = [4000]
 for demand in list_demand:
     od_df = generate_od_df(size_od, od_scenario="CORNER_2", max_demand=demand)
-    test_name = f"Tunnel_CAP_2_corner_{demand}_bi2"
+    test_name = f"CAP_2_tunnel_corner_2_{demand}_bi2"
 
     edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=48)
 

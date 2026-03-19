@@ -126,7 +126,8 @@ def mode_choice(edge_df,
                 mu_mode=1.0,
                 max_iter_mode_choice=3,
                 plot=True,
-                return_network=False):
+                return_network=False,
+                CAP = True):
 
     od_matrix = convert_od_df_to_matrix(od_df)
     size_od = len(od_matrix)
@@ -194,7 +195,7 @@ def mode_choice(edge_df,
 
         # calculate congested time for cars and length bi
         edge_df = update_network(edge_df, flow_name='flow_car', free_flow_time_name='free_flow_time_car',
-                       capacity_name="capacity_cars", congested_time_name='travel_time_car', alpha=0.15, beta=4)
+                       capacity_name="capacity_cars", congested_time_name='travel_time_car', alpha=0.15, beta=4, CAP=CAP)
 
         results_df = update_result_df_mc(results_df, j,
                                          modal_share_car,

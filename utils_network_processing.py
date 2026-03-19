@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from utils_od_matrix_generator import *
 
 
 def calculate_length(node_df, edge_df):
@@ -33,10 +34,7 @@ def calculate_length_bi(edge_df, weight = 0):
 
 def slope_coef(value, slope):
     if slope <= -2.5:
-        if value-0.2 > 0.05:
-            return value-0.2
-        else:
-            return 0.1
+        return value - 0.1
     elif slope >= 2.5:
         return value + 0.1
     else:
@@ -81,10 +79,11 @@ def update_car_capacity(edge_df:pd.DataFrame, capacity_car:int = 1500):
     edge_df["capacity_cars"] = edge_df["nbr_car_lane"] * capacity_car
     return edge_df
 
-def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4):
+def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4, CAP = True):
     edge_df = calculate_congested_time(edge_df, free_flow_time_name, congested_time_name, flow_name, capacity_name, alpha, beta)
     edge_df = calculate_length_bi_2(edge_df)
-    edge_df = update_car_capacity(edge_df)
+    if CAP:
+        edge_df = update_car_capacity(edge_df)
     edge_df["travel_time_bike"] = edge_df["length_bi"]/edge_df["speed_bike"]
     return edge_df
 
@@ -110,6 +109,15 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500
     edge_df["flow_bike"] = 0
     edge_df["length_bi"]= edge_df["length"]
     return edge_df, node_df
+
+def load_test_scenario(name_test_scenario:str, od_scenario:str, demand:int = 4000):
+    edge_file_path = f"data/edges_{name_test_scenario}.csv"
+    node_file_path = f"data/nodes_{name_test_scenario}.csv"
+    edge_df, node_df = import_network(edge_file_path, node_file_path)
+
+    size_od = max(node_df['id']) + 1
+    od_df = generate_od_df(size_od, od_scenario=od_scenario, max_demand=demand)
+    return edge_df, node_df, od_df
 
 def change_type_bike_infra(edge_df:pd.DataFrame, new_type_bike:str, a_node:int, b_node:int):
     mask = (edge_df["a_node"] == a_node) & (edge_df["b_node"] == b_node)

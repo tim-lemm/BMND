@@ -267,15 +267,16 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
     else:
         plt.show()
 
-def plot_optimization_results(test_name:str, edge_df, node_df, save = False):
-    output_dir = Path(f"output/optimization/images/{test_name}")
+def plot_optimization_results(test_name:str, edge_df, node_df, save = False, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True):
+    output_dir = Path(file_path + test_name)
     output_dir_network = output_dir / "network"
     output_dir_infra = output_dir / "infrastructure"
     output_dir.mkdir(parents=True, exist_ok=True)
     output_dir_infra.mkdir(parents=True, exist_ok=True)
     output_dir_network.mkdir(parents=True, exist_ok=True)
-    edge_df_results = pd.read_csv(f"output/optimization/rgo_edge_df_results_{test_name}.csv")
-    results_df_opt = pd.read_csv(f"output/optimization/rgo_results_df_opt_{test_name}.csv")
+    if type(edge_df_results) != pd.DataFrame and type(results_df_opt) != pd.DataFrame:
+        edge_df_results = pd.read_csv(f"output/optimization/rgo_edge_df_results_{test_name}.csv")
+        results_df_opt = pd.read_csv(f"output/optimization/rgo_results_df_opt_{test_name}.csv")
 
     results_df_opt.drop("Unnamed: 0", axis=1, inplace=True)
     results_df_opt = results_df_opt.iloc[1:].reset_index(drop=True)
@@ -330,7 +331,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False):
 
 def plot_optimization_different_budgets(list_test_name:list, list_budget:list, save = False):
     for test_name in list_test_name:
-        edge_df, node_df = import_network("data/edges_small_grid_2.csv", "data/nodes_small_grid_2.csv")
+        edge_df, node_df = import_network("data/_old/edges_small_grid_2.csv", "data/_old/nodes_small_grid_2.csv")
         results_df_opt = pd.read_csv(f"output/optimization/rgo_results_df_opt_{test_name}.csv")
 
         edge_df = edge_df.merge(results_df_opt, how="inner", left_index=True, right_on="index_removed").set_index(

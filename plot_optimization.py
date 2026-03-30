@@ -29,127 +29,142 @@ from utils_network_processing import *
 # plt.show()
 
 
+import matplotlib.lines as mlines
+
 # list_test_name = ["grid_CAP", "H_CAP", "tunnel_CAP", "tunnel_ng_CAP"]
+# new_labels = ["A","B", "C", "D"]
 # list_color = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
-#
 # fig, ax1 = plt.subplots(figsize=(10, 6))
-# # Create the second axes that shares the same x-axis
 # ax2 = ax1.twinx()
+# line_handles = []
 #
-# for test_name, color in zip(list_test_name, list_color):
-#      # Load data
+# for i, (test_name, color) in enumerate(zip(list_test_name, list_color)):
 #      fp = f"output/_hEART_article/csv/optimization/{test_name}_rgo_results_df_opt.csv"
 #      df = pd.read_csv(fp)
 #
-#      # Plot primary Y (Solid line)
-#      df.plot(kind='line', x="nbr_bike_lanes", y="modal_share_bike",
-#              ax=ax1, color=color, label=test_name, linewidth=0.8)
+#      # Plot primaire
+#      l1, = ax1.plot(df["nbr_bike_lanes"], df["modal_share_bike"],
+#                     color=color, label=new_labels[i], linewidth=1.2)
+#      line_handles.append(l1)
+#      # Plot secondaire (on ne met pas de label ici pour ne pas polluer la liste)
+#      ax2.plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"],
+#               color=color, linestyle='--', linewidth=1.2)
 #
-#      # Plot secondary Y (Dashed line)
-#      df.plot(kind='line', x="nbr_bike_lanes", y="flow_of_removed_edge",
-#              ax=ax2, color=color, linestyle='--', legend=False, linewidth=0.8)
+# # --- GESTION DE LA LÉGENDE PERSONNALISÉE ---
+# style_solid = mlines.Line2D([], [], color='grey', label='Bicycle modal \n share (%)')
+# style_dashed = mlines.Line2D([], [], color='grey', linestyle='--', label='Flow of least \n used edge')
+# # 2. Créer des entrées fictives pour expliquer les styles de lignes
+# line_solid = mlines.Line2D([], [], color='black', label='Bicycle modal share (%)')
+# line_dashed = mlines.Line2D([], [], color='black', linestyle='--', label='Flow of least used edge')
 #
-#
-# # Formatting
-# ax1.set_xlabel("Number of dedicated bike lanes")
-# ax1.set_ylabel("Bicycle modal share (%)", color='black')
-# ax2.set_ylabel("Flow of removed edge", color='black')
-# ax1.grid(True, alpha=0.3)
-#
-# # Handle combined legend if necessary (ax1 will only show solid lines)
-# ax1.legend(title="Test Scenario", bbox_to_anchor=(1, 0.7))
-#
-#
-# plt.tight_layout()
-# # plt.show()
-#
-# plt.savefig("output/_hEART_article/figures/_results/CAP_mode_share_nbr_bike_lane.png")
-
-
-
-
-# list_test_name = ["grid", "H", "tunnel", "tunnel_ng"]
-# list_color = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
-#
-# fig, ax1 = plt.subplots(figsize=(10, 6))
-#
-# for test_name, color in zip(list_test_name, list_color):
-#     # Chargement des données
-#     df = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_rgo_results_df_opt.csv")
-#     df_CAP = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_CAP_rgo_results_df_opt.csv")
-#
-#     # Scénario Standard (Plein)
-#     df.plot(kind='line', x="nbr_bike_lanes", y="modal_share_bike",
-#              ax=ax1, color=color, linestyle='--', label=test_name, linewidth=0.8)
-#
-#     # Scénario CAP (Pointillé)
-#     df_CAP.plot(kind='line', x="nbr_bike_lanes", y="modal_share_bike",
-#              ax=ax1, color=color, label=test_name+" with capacity", linewidth=0.8)
+# all_handles = line_handles + [mlines.Line2D([], [], linestyle='None'), style_solid, style_dashed]
 #
 #
-# ax1.legend(bbox_to_anchor=(1, 0.8), title="Test Scenario",labelspacing=0.3, fontsize='small')
 #
-# # Mise en forme finale
+# ax1.legend(handles=all_handles, loc='upper left', bbox_to_anchor=(0.8, 0.75), title="Scenarios")
+#
+#
+# # --- FIN FORMATTING ---
 # ax1.set_xlabel("Number of dedicated bike lanes")
 # ax1.set_ylabel("Bicycle modal share (%)")
+# ax2.set_ylabel("Flow of least used edge")
 # ax1.grid(True, alpha=0.3)
 #
 # plt.tight_layout()
-# # plt.show()
+# # plt.savefig("output/_hEART_article/figures/_results/mode_share_nbr_bike_lane.png", bbox_inches='tight')
+# plt.show()
+
+
+
+
+list_test_name = ["grid", "H", "tunnel", "tunnel_ng"]
+list_color = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
+new_labels = ["A","B", "C", "D"]
+fig, ax1 = plt.subplots(figsize=(10, 6))
+line_handles = []
+for i, (test_name, color) in enumerate(zip(list_test_name, list_color)):
+    df = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_rgo_results_df_opt.csv")
+    df_CAP = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_CAP_rgo_results_df_opt.csv")
+
+    # Plot primaire
+    l1, = ax1.plot(df["nbr_bike_lanes"], df["modal_share_bike"],
+                     color=color, label=new_labels[i], linewidth=1.2, linestyle='--')
+    l1_bis, = ax1.plot(df_CAP["nbr_bike_lanes"], df_CAP["modal_share_bike"],
+                   color=color, label=new_labels[i], linewidth=1.2)
+    line_handles.append(l1_bis)
+
+style_solid = mlines.Line2D([], [], color='grey', label='Capacity Aware \n Model')
+style_dashed = mlines.Line2D([], [], color='grey', linestyle='--', label='Base Model')
+# # 2. Créer des entrées fictives pour expliquer les styles de lignes
+line_solid = mlines.Line2D([], [], color='black', label='Base Model')
+line_dashed = mlines.Line2D([], [], color='black', linestyle='--', label='Capacity Aware Model')
 #
-# plt.savefig("output/_hEART_article/figures/_results/comparison_CAP_mode_share_nbr_bike_lane.png")
+all_handles = line_handles + [mlines.Line2D([], [], linestyle='None'), style_solid, style_dashed]
+#
 
-fig, ax = plt.subplots(2,2, figsize=(20,20))
+ax1.legend(handles=all_handles, loc='upper left', bbox_to_anchor=(0.8, 0.79), title="Scenarios")
 
-edge_df = pd.read_csv("data/edges_tunnel.csv")
-edge_df_results_tunnel = pd.read_csv("output/_hEART_article/csv/optimization/tunnel_CAP_rgo_edge_results.csv")
-results_df_tunnel = pd.read_csv("output/_hEART_article/csv/optimization/tunnel_CAP_rgo_results_df_opt.csv")
-results_df_tunnel.drop("Unnamed: 0", axis=1, inplace=True)
-results_df_tunnel = results_df_tunnel.iloc[1:].reset_index(drop=True)
-results_df_tunnel["index_removed"] = results_df_tunnel["index_removed"].apply(ast.literal_eval)
-results_df_tunnel = results_df_tunnel.explode('index_removed')
-edge_df_results_tunnel = edge_df_results_tunnel.merge(results_df_tunnel, how="inner", left_on="id", right_on="index_removed")
-edge_df_results_tunnel.index = edge_df["id"]
-edge_df_results_tunnel.drop(
-        ["nbr_bike_lanes", "nbr_none_bike_lanes", "modal_share_car", "modal_share_bike",
-         "index_removed",
-         "flow_of_removed_edge"], axis=1, inplace=True)
-edge_df_results_tunnel.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
+# Mise en forme finale
+ax1.set_xlabel("Number of dedicated bike lanes")
+ax1.set_ylabel("Bicycle modal share (%)")
+ax1.grid(True, alpha=0.3)
 
-edge_df_results_tunnel_ng = pd.read_csv("output/_hEART_article/csv/optimization/tunnel_ng_CAP_rgo_edge_results.csv")
-results_df_tunnel_ng = pd.read_csv("output/_hEART_article/csv/optimization/tunnel_ng_CAP_rgo_results_df_opt.csv")
-results_df_tunnel_ng.drop("Unnamed: 0", axis=1, inplace=True)
-results_df_tunnel_ng = results_df_tunnel_ng.iloc[1:].reset_index(drop=True)
-results_df_tunnel_ng["index_removed"] = results_df_tunnel_ng["index_removed"].apply(ast.literal_eval)
-results_df_tunnel_ng = results_df_tunnel_ng.explode('index_removed')
-edge_df_results_tunnel_ng = edge_df_results_tunnel_ng.merge(results_df_tunnel_ng, how="inner", left_on="id", right_on="index_removed")
-edge_df_results_tunnel_ng.index = edge_df["id"]
-edge_df_results_tunnel_ng.drop(
-        ["nbr_bike_lanes", "nbr_none_bike_lanes", "modal_share_car", "modal_share_bike",
-         "index_removed",
-         "flow_of_removed_edge"], axis=1, inplace=True)
-edge_df_results_tunnel_ng.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
+plt.tight_layout()
+# plt.show()
+#
+plt.savefig("output/_hEART_article/figures/_results/comparison_CAP_mode_share_nbr_bike_lane.png")
 
-node_df = pd.read_csv("data/nodes_tunnel.csv")
-plot_network(edge_df_results_tunnel, node_df, node_id_col='id',
-                     node_label=True,
-                     color_col_num='iteration_of_removal',
-                     base_width=1,
-                     legend=True,
-                     title=f"With a park (tunnel)", ax=ax[0,0])
-plot_network(edge_df_results_tunnel_ng, node_df, node_id_col='id',
-                     node_label=True,
-                     color_col_num='iteration_of_removal',
-                     base_width=1,
-                     legend=True,
-                     title=f"Without a park (tunnel_ng)", ax=ax[0,1])
-plot_network(edge_df_results_tunnel, node_df, node_id_col='id',
-             node_label=True,
-                 color_col_num='coef_bi_0',base_width=1,cmap="hot_r",ax=ax[1,0], title=f"Bikeability coefficient \n (tunnel, bicycle lanes on all edges)")
-plot_network(edge_df_results_tunnel_ng, node_df, node_id_col='id',
-             node_label=True,
-                 color_col_num='coef_bi_0',base_width=1,cmap="hot_r",ax=ax[1,1],title=f"Bikeability coefficient \n (tunnel_ng, bicycle lanes on all edges)", vmin= 0.2)
-plt.savefig("output/_hEART_article/figures/_results/CAP_comparaison_tunnels.png")
+# fig, ax = plt.subplots(2,2, figsize=(20,20))
+#
+# edge_df = pd.read_csv("data/edges_tunnel.csv")
+# edge_df_results_tunnel = pd.read_csv("output/_hEART_article/csv/optimization/tunnel_CAP_rgo_edge_results.csv")
+# results_df_tunnel = pd.read_csv("output/_hEART_article/csv/optimization/tunnel_CAP_rgo_results_df_opt.csv")
+# results_df_tunnel.drop("Unnamed: 0", axis=1, inplace=True)
+# results_df_tunnel = results_df_tunnel.iloc[1:].reset_index(drop=True)
+# results_df_tunnel["index_removed"] = results_df_tunnel["index_removed"].apply(ast.literal_eval)
+# results_df_tunnel = results_df_tunnel.explode('index_removed')
+# edge_df_results_tunnel = edge_df_results_tunnel.merge(results_df_tunnel, how="inner", left_on="id", right_on="index_removed")
+# edge_df_results_tunnel.index = edge_df["id"]
+# edge_df_results_tunnel.drop(
+#         ["nbr_bike_lanes", "nbr_none_bike_lanes", "modal_share_car", "modal_share_bike",
+#          "index_removed",
+#          "flow_of_removed_edge"], axis=1, inplace=True)
+# edge_df_results_tunnel.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
+#
+# edge_df_results_tunnel_ng = pd.read_csv("output/_hEART_article/csv/optimization/tunnel_ng_CAP_rgo_edge_results.csv")
+# results_df_tunnel_ng = pd.read_csv("output/_hEART_article/csv/optimization/tunnel_ng_CAP_rgo_results_df_opt.csv")
+# results_df_tunnel_ng.drop("Unnamed: 0", axis=1, inplace=True)
+# results_df_tunnel_ng = results_df_tunnel_ng.iloc[1:].reset_index(drop=True)
+# results_df_tunnel_ng["index_removed"] = results_df_tunnel_ng["index_removed"].apply(ast.literal_eval)
+# results_df_tunnel_ng = results_df_tunnel_ng.explode('index_removed')
+# edge_df_results_tunnel_ng = edge_df_results_tunnel_ng.merge(results_df_tunnel_ng, how="inner", left_on="id", right_on="index_removed")
+# edge_df_results_tunnel_ng.index = edge_df["id"]
+# edge_df_results_tunnel_ng.drop(
+#         ["nbr_bike_lanes", "nbr_none_bike_lanes", "modal_share_car", "modal_share_bike",
+#          "index_removed",
+#          "flow_of_removed_edge"], axis=1, inplace=True)
+# edge_df_results_tunnel_ng.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
+#
+# node_df = pd.read_csv("data/nodes_tunnel.csv")
+# plot_network(edge_df_results_tunnel, node_df, node_id_col='id',
+#                      node_label=True,
+#                      color_col_num='iteration_of_removal',
+#                      base_width=1,
+#                      legend=True,
+#                      title=f"With a park (tunnel)", ax=ax[0,0])
+# plot_network(edge_df_results_tunnel_ng, node_df, node_id_col='id',
+#                      node_label=True,
+#                      color_col_num='iteration_of_removal',
+#                      base_width=1,
+#                      legend=True,
+#                      title=f"Without a park (tunnel_ng)", ax=ax[0,1])
+# plot_network(edge_df_results_tunnel, node_df, node_id_col='id',
+#              node_label=True,
+#                  color_col_num='coef_bi_0',base_width=1,cmap="hot_r",ax=ax[1,0], title=f"Bikeability coefficient \n (tunnel, bicycle lanes on all edges)")
+# plot_network(edge_df_results_tunnel_ng, node_df, node_id_col='id',
+#              node_label=True,
+#                  color_col_num='coef_bi_0',base_width=1,cmap="hot_r",ax=ax[1,1],title=f"Bikeability coefficient \n (tunnel_ng, bicycle lanes on all edges)", vmin= 0.2)
+# plt.savefig("output/_hEART_article/figures/_results/CAP_comparaison_tunnels.png")
 # plt.show()
 # KPI = "modal_share_bike"
 # CAP = False

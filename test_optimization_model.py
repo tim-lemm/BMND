@@ -33,3 +33,19 @@ list_CAP = [False,True]
 #         results_test_random_df = test_random(edge_df, node_df, od_df, CAP=CAP)
 #         results_test_random_df.to_csv(f'output/_hEART_article/csv/random/{test_name}_results_test_random.csv')
 
+list_speed_bike = [5,10,15,20,25]
+list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+
+test_name = "grid"
+edge_df, node_df, od_df = load_test_scenario(test_name, "CORNER_2")
+parameter_dict = parameter()
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            parameter_dict['speed_bike'] = speed_bike
+            parameter_dict['ASC_bike'] = ASC_bike
+            parameter_dict['beta_time'] = beta_time
+            edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=48, CAP=True, custom_parameter_dict=parameter_dict)
+            edge_df_results.to_csv(f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_edge_results.csv")
+            results_df_opt.to_csv(f"output/_hEART_article/csv//sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv")

@@ -77,42 +77,42 @@ import matplotlib.lines as mlines
 
 
 
-list_test_name = ["grid", "H", "tunnel", "tunnel_ng"]
-list_color = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
-new_labels = ["A","B", "C", "D"]
-fig, ax1 = plt.subplots(figsize=(10, 6))
-line_handles = []
-for i, (test_name, color) in enumerate(zip(list_test_name, list_color)):
-    df = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_rgo_results_df_opt.csv")
-    df_CAP = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_CAP_rgo_results_df_opt.csv")
-
-    # Plot primaire
-    l1, = ax1.plot(df["nbr_bike_lanes"], df["modal_share_bike"],
-                     color=color, label=new_labels[i], linewidth=1.2, linestyle='--')
-    l1_bis, = ax1.plot(df_CAP["nbr_bike_lanes"], df_CAP["modal_share_bike"],
-                   color=color, label=new_labels[i], linewidth=1.2)
-    line_handles.append(l1_bis)
-
-style_solid = mlines.Line2D([], [], color='grey', label='Capacity Aware \n Model')
-style_dashed = mlines.Line2D([], [], color='grey', linestyle='--', label='Base Model')
-# # 2. Créer des entrées fictives pour expliquer les styles de lignes
-line_solid = mlines.Line2D([], [], color='black', label='Base Model')
-line_dashed = mlines.Line2D([], [], color='black', linestyle='--', label='Capacity Aware Model')
+# list_test_name = ["grid", "H", "tunnel", "tunnel_ng"]
+# list_color = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
+# new_labels = ["A","B", "C", "D"]
+# fig, ax1 = plt.subplots(figsize=(10, 6))
+# line_handles = []
+# for i, (test_name, color) in enumerate(zip(list_test_name, list_color)):
+#     df = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_rgo_results_df_opt.csv")
+#     df_CAP = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_CAP_rgo_results_df_opt.csv")
 #
-all_handles = line_handles + [mlines.Line2D([], [], linestyle='None'), style_solid, style_dashed]
+#     # Plot primaire
+#     l1, = ax1.plot(df["nbr_bike_lanes"], df["modal_share_bike"],
+#                      color=color, label=new_labels[i], linewidth=1.2, linestyle='--')
+#     l1_bis, = ax1.plot(df_CAP["nbr_bike_lanes"], df_CAP["modal_share_bike"],
+#                    color=color, label=new_labels[i], linewidth=1.2)
+#     line_handles.append(l1_bis)
 #
-
-ax1.legend(handles=all_handles, loc='upper left', bbox_to_anchor=(0.8, 0.79), title="Scenarios")
-
-# Mise en forme finale
-ax1.set_xlabel("Number of dedicated bike lanes")
-ax1.set_ylabel("Bicycle modal share (%)")
-ax1.grid(True, alpha=0.3)
-
-plt.tight_layout()
-# plt.show()
+# style_solid = mlines.Line2D([], [], color='grey', label='Capacity Aware \n Model')
+# style_dashed = mlines.Line2D([], [], color='grey', linestyle='--', label='Base Model')
+# # # 2. Créer des entrées fictives pour expliquer les styles de lignes
+# line_solid = mlines.Line2D([], [], color='black', label='Base Model')
+# line_dashed = mlines.Line2D([], [], color='black', linestyle='--', label='Capacity Aware Model')
+# #
+# all_handles = line_handles + [mlines.Line2D([], [], linestyle='None'), style_solid, style_dashed]
+# #
 #
-plt.savefig("output/_hEART_article/figures/_results/comparison_CAP_mode_share_nbr_bike_lane.png")
+# ax1.legend(handles=all_handles, loc='upper left', bbox_to_anchor=(0.8, 0.79), title="Scenarios")
+#
+# # Mise en forme finale
+# ax1.set_xlabel("Number of dedicated bike lanes")
+# ax1.set_ylabel("Bicycle modal share (%)")
+# ax1.grid(True, alpha=0.3)
+#
+# plt.tight_layout()
+# # plt.show()
+# #
+# plt.savefig("output/_hEART_article/figures/_results/comparison_CAP_mode_share_nbr_bike_lane.png")
 
 # fig, ax = plt.subplots(2,2, figsize=(20,20))
 #
@@ -280,3 +280,174 @@ plt.savefig("output/_hEART_article/figures/_results/comparison_CAP_mode_share_nb
 # plt.title(f"{KPI.strip("_")} for different network.")
 # plt.legend()
 # plt.savefig(f"output/_hEART_article/figures/_random/{KPI}{"_CAP" if CAP else ""}.png")
+
+list_speed_bike = [5,10,15,20,25]
+# list_speed_bike = [15]
+list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+list_ASC_bike = [-2.5]
+list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+list_beta_time = [-0.000235]
+
+fig, axes = plt.subplots(1,3,figsize=(30,15))
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
+            result_df = pd.read_csv(filename)
+            result_df.plot(x="nbr_bike_lanes", y="modal_share_bike", ax=axes[0], label=f"{speed_bike} km/h")
+
+
+list_speed_bike = [15]
+list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+# list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+list_beta_time = [-0.000235]
+
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
+            result_df = pd.read_csv(filename)
+            result_df.plot(x="nbr_bike_lanes", y="modal_share_bike", ax=axes[1], label=ASC_bike)
+
+
+list_speed_bike = [15]
+# list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+list_ASC_bike = [-2.5]
+list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+# list_beta_time = [-0.000235]
+
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
+            result_df = pd.read_csv(filename)
+            result_df.plot(x="nbr_bike_lanes", y="modal_share_bike", ax=axes[2], label=beta_time)
+
+for ax in axes.flatten():
+    ax.set_xlabel("Number of dedicated bike lanes")
+    ax.set_ylabel("Bicycle modal share (%)")
+    ax.grid(True, alpha=0.3)
+
+axes[0].legend(title="Speed of bicycle")
+axes[0].title.set_text("Speed of bicycle impact for set ASC (-2.5) and Beta time (-0.000235)")
+
+axes[1].legend(title="ASC Bike")
+axes[1].title.set_text("ASC Bike impact for set speed (15 km/h) and Beta time (-0.000235)")
+
+axes[2].legend(title="Beta time")
+axes[2].title.set_text("Beta time impact for set speed (15 km/h) and ASC (-2.5)")
+plt.show()
+
+list_speed_bike = [5,10,15,20,25]
+# list_speed_bike = [15]
+list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+list_ASC_bike = [-2.5]
+list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+list_beta_time = [-0.000235]
+
+fig, axes = plt.subplots(1,3,figsize=(30,15))
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
+            result_df = pd.read_csv(filename)
+            result_df.plot(x="nbr_bike_lanes", y="average_bi_coef", ax=axes[0], label=f"{speed_bike} km/h")
+
+
+list_speed_bike = [15]
+list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+# list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+list_beta_time = [-0.000235]
+
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
+            result_df = pd.read_csv(filename)
+            result_df.plot(x="nbr_bike_lanes", y="average_bi_coef", ax=axes[1], label=ASC_bike)
+
+
+list_speed_bike = [15]
+# list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+list_ASC_bike = [-2.5]
+list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+# list_beta_time = [-0.000235]
+
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
+            result_df = pd.read_csv(filename)
+            result_df.plot(x="nbr_bike_lanes", y="average_bi_coef", ax=axes[2], label=beta_time)
+
+for ax in axes.flatten():
+    ax.set_xlabel("Number of dedicated bike lanes")
+    ax.set_ylabel("Average bikeability coefficient")
+    ax.grid(True, alpha=0.3)
+
+axes[0].legend(title="Speed of bicycle")
+axes[0].title.set_text("Speed of bicycle impact for set ASC (-2.5) and Beta time (-0.000235)")
+
+axes[1].legend(title="ASC Bike")
+axes[1].title.set_text("ASC Bike impact for set speed (15 km/h) and Beta time (-0.000235)")
+
+axes[2].legend(title="Beta time")
+axes[2].title.set_text("Beta time impact for set speed (15 km/h) and ASC (-2.5)")
+plt.show()
+
+list_speed_bike = [5,10,15,20,25]
+# list_speed_bike = [15]
+list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+list_ASC_bike = [-2.5]
+list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+list_beta_time = [-0.000235]
+
+fig, axes = plt.subplots(1,3,figsize=(30,15))
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
+            result_df = pd.read_csv(filename)
+            result_df.plot(x="nbr_bike_lanes", y="flow_of_removed_edge", ax=axes[0], label=f"{speed_bike} km/h")
+
+
+list_speed_bike = [15]
+list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+# list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+list_beta_time = [-0.000235]
+
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
+            result_df = pd.read_csv(filename)
+            result_df.plot(x="nbr_bike_lanes", y="flow_of_removed_edge", ax=axes[1], label=ASC_bike)
+
+
+list_speed_bike = [15]
+# list_ASC_bike = [0,-1,-2,-2.5,-3,-10]
+list_ASC_bike = [-2.5]
+list_beta_time = [-0.0002,-0.00021,-0.00022,-0.00023,-0.000235,-0.00024]
+# list_beta_time = [-0.000235]
+
+for speed_bike in list_speed_bike:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
+            result_df = pd.read_csv(filename)
+            result_df.plot(x="nbr_bike_lanes", y="flow_of_removed_edge", ax=axes[2], label=beta_time)
+
+for ax in axes.flatten():
+    ax.set_xlabel("Flow of least used edge")
+    ax.set_ylabel("Average bikeability coefficient")
+    ax.grid(True, alpha=0.3)
+
+axes[0].legend(title="Speed of bicycle")
+axes[0].title.set_text("Speed of bicycle impact for set ASC (-2.5) and Beta time (-0.000235)")
+
+axes[1].legend(title="ASC Bike")
+axes[1].title.set_text("ASC Bike impact for set speed (15 km/h) and Beta time (-0.000235)")
+
+axes[2].legend(title="Beta time")
+axes[2].title.set_text("Beta time impact for set speed (15 km/h) and ASC (-2.5)")
+plt.show()

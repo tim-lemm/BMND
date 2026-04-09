@@ -2,6 +2,7 @@
 
 import pandas as pd
 from config import *
+from test_parameters import speed_bike
 from utils_network_processing import *
 from utils_plotting import *
 from utils_traffic import *
@@ -29,18 +30,25 @@ def update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bi
                      ignore_index=True)
 
 
-def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bool = False, nbr_removal:int = 1, CAP:bool = True):
+def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bool = False, nbr_removal:int = 1, CAP:bool = True, custom_parameter_dict:dict = None):
     # construct bike lane on all edge
     edge_df = apply_bike_infra_scenario(edge_df, 2)
-
-    # parameters for mode choice
-    parameter_dict = parameter()
-    beta_time = parameter_dict['beta_time']
-    ASC_car = parameter_dict['ASC_car']
-    ASC_bike = parameter_dict['ASC_bike']
-    mu_mode = parameter_dict['mu_mode']
-    max_iter_mode_choice = parameter_dict['max_iter_mode_choice']
-
+    if custom_parameter_dict is None:
+        # parameters for mode choice
+        parameter_dict = parameter()
+        beta_time = parameter_dict['beta_time']
+        ASC_car = parameter_dict['ASC_car']
+        ASC_bike = parameter_dict['ASC_bike']
+        mu_mode = parameter_dict['mu_mode']
+        max_iter_mode_choice = parameter_dict['max_iter_mode_choice']
+    else:
+        beta_time = custom_parameter_dict['beta_time']
+        ASC_car = custom_parameter_dict['ASC_car']
+        ASC_bike = custom_parameter_dict['ASC_bike']
+        mu_mode = custom_parameter_dict['mu_mode']
+        max_iter_mode_choice = custom_parameter_dict['max_iter_mode_choice']
+        speed_bike = custom_parameter_dict['speed_bike']
+        edge_df["speed_bike"] = speed_bike/3.6
     i = 0
 
     nbr_bike_lanes = edge_df['type_bike'].notnull().sum()

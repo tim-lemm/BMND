@@ -408,7 +408,7 @@ for speed_bike in list_speed_bike:
         for beta_time in list_beta_time:
             filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
             result_df = pd.read_csv(filename)
-            result_df.plot(x="nbr_bike_lanes", y="flow_of_removed_edge", ax=axes[0], label=f"{speed_bike} km/h")
+            result_df.plot(x="nbr_none_bike_lanes", y="flow_of_removed_edge", ax=axes[0], label=f"{speed_bike} km/h")
 
 
 list_speed_bike = [15]
@@ -421,7 +421,7 @@ for speed_bike in list_speed_bike:
         for beta_time in list_beta_time:
             filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
             result_df = pd.read_csv(filename)
-            result_df.plot(x="nbr_bike_lanes", y="flow_of_removed_edge", ax=axes[1], label=ASC_bike)
+            result_df.plot(x="nbr_none_bike_lanes", y="flow_of_removed_edge", ax=axes[1], label=ASC_bike)
 
 
 list_speed_bike = [15]
@@ -435,11 +435,11 @@ for speed_bike in list_speed_bike:
         for beta_time in list_beta_time:
             filename = f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv"
             result_df = pd.read_csv(filename)
-            result_df.plot(x="nbr_bike_lanes", y="flow_of_removed_edge", ax=axes[2], label=beta_time)
+            result_df.plot(x="nbr_none_bike_lanes", y="flow_of_removed_edge", ax=axes[2], label=beta_time)
 
 for ax in axes.flatten():
-    ax.set_xlabel("Flow of least used edge")
-    ax.set_ylabel("Average bikeability coefficient")
+    ax.set_xlabel("Number of dedicated bike lanes")
+    ax.set_ylabel("Flow of least used edge")
     ax.grid(True, alpha=0.3)
 
 axes[0].legend(title="Speed of bicycle")

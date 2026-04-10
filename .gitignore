@@ -28,3 +28,8 @@ output/.DS_Store
 output/.DS_Store
 .DS_Store
 pycache
+__pycache__/utils_eaquilibrea_interface.cpython-311.pyc
+__pycache__/utils_network_processing.cpython-311.pyc
+__pycache__/utils_od_matrix_generator.cpython-311.pyc
+__pycache__/utils_plotting.cpython-311.pyc
+__pycache__

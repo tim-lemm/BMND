@@ -32,89 +32,89 @@ plt.rcParams.update({'font.size': 30})
 
 import matplotlib.lines as mlines
 
-list_test_name = ["grid", "H", "tunnel", "tunnel_ng"]
-new_labels = ["A","B","C","D"]
-list_color = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
-fig, ax = plt.subplots(2,1,figsize=(30, 20))
-line_handles = []
-
-for i, (test_name, color) in enumerate(zip(list_test_name, list_color)):
-     fp = f"output/_hEART_article/csv/optimization/{test_name}_rgo_results_df_opt.csv"
-     df = pd.read_csv(fp)
-
-     # Plot primaire
-     l1, = ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"],
-                    color=color, label=new_labels[i], linewidth=2)
-     line_handles.append(l1)
-     # Plot secondaire (on ne met pas de label ici pour ne pas polluer la liste)
-     ax[1].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"],
-              color=color, linewidth=2)
-
-# --- GESTION DE LA LÉGENDE PERSONNALISÉE ---
-style_solid = mlines.Line2D([], [], color='grey', label='Bicycle modal \n share (%)')
-style_dashed = mlines.Line2D([], [], color='grey', linestyle='--', label='Flow of least \n used edge')
-# 2. Créer des entrées fictives pour expliquer les styles de lignes
-line_solid = mlines.Line2D([], [], color='black', label='Bicycle modal share (%)')
-line_dashed = mlines.Line2D([], [], color='black', linestyle='--', label='Flow of least used edge')
-
-all_handles = line_handles
-
-
-
-ax[0].legend(handles=all_handles, loc='upper left', bbox_to_anchor=(0.8, 0.75), title="Scenarios")
-
-
-# --- FIN FORMATTING ---
-ax[1].set_xlabel("Number of dedicated bike lanes")
-ax[0].set_ylabel("Bicycle modal share (%)")
-ax[1].set_ylabel("Flow of least used edge")
-ax[1].grid(True, alpha=0.3)
-ax[0].grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.savefig("output/_hEART_article/figures/_results/mode_share_nbr_bike_lane.png", bbox_inches='tight')
-# plt.show()
-
-
-
-
-list_test_name = ["grid", "H", "tunnel", "tunnel_ng"]
-list_color = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
-new_labels = ["A","B", "C", "D"]
-fig, ax1 = plt.subplots(figsize=(30, 15))
-line_handles = []
-for i, (test_name, color) in enumerate(zip(list_test_name, list_color)):
-    df = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_rgo_results_df_opt.csv")
-    df_CAP = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_CAP_rgo_results_df_opt.csv")
-
-    # Plot primaire
-    l1, = ax1.plot(df["nbr_bike_lanes"], df["modal_share_bike"],
-                     color=color, label=new_labels[i]+' CAP', linewidth=2, linestyle='--')
-    line_handles.append(l1)
-    l1_bis, = ax1.plot(df_CAP["nbr_bike_lanes"], df_CAP["modal_share_bike"],
-                   color=color, label=new_labels[i], linewidth=2)
-    line_handles.append(l1_bis)
-
-style_solid = mlines.Line2D([], [], color='grey', label='Capacity Aware \n Model')
-style_dashed = mlines.Line2D([], [], color='grey', linestyle='--', label='Base Model')
+# list_test_name = ["grid", "H", "tunnel", "tunnel_ng"]
+# new_labels = ["A","B","C","D"]
+# list_color = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
+# fig, ax = plt.subplots(2,1,figsize=(30, 20))
+# line_handles = []
+#
+# for i, (test_name, color) in enumerate(zip(list_test_name, list_color)):
+#      fp = f"output/_hEART_article/csv/optimization/{test_name}_rgo_results_df_opt.csv"
+#      df = pd.read_csv(fp)
+#
+#      # Plot primaire
+#      l1, = ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"],
+#                     color=color, label=new_labels[i], linewidth=2)
+#      line_handles.append(l1)
+#      # Plot secondaire (on ne met pas de label ici pour ne pas polluer la liste)
+#      ax[1].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"],
+#               color=color, linewidth=2)
+#
+# # --- GESTION DE LA LÉGENDE PERSONNALISÉE ---
+# style_solid = mlines.Line2D([], [], color='grey', label='Bicycle modal \n share (%)')
+# style_dashed = mlines.Line2D([], [], color='grey', linestyle='--', label='Flow of least \n used edge')
 # # 2. Créer des entrées fictives pour expliquer les styles de lignes
-line_solid = mlines.Line2D([], [], color='black', label='Base Model')
-line_dashed = mlines.Line2D([], [], color='black', linestyle='--', label='Capacity Aware Model')
+# line_solid = mlines.Line2D([], [], color='black', label='Bicycle modal share (%)')
+# line_dashed = mlines.Line2D([], [], color='black', linestyle='--', label='Flow of least used edge')
 #
-all_handles = line_handles
+# all_handles = line_handles
 #
-
-ax1.legend(handles=all_handles, loc='upper left', bbox_to_anchor=(0.8, 0.79), title="Scenarios")
-
-# Mise en forme finale
-ax1.set_xlabel("Number of dedicated bike lanes")
-ax1.set_ylabel("Bicycle modal share (%)")
-ax1.grid(True, alpha=0.3)
-
-plt.tight_layout()
-# plt.show()
 #
-plt.savefig("output/_hEART_article/figures/_results/comparison_CAP_mode_share_nbr_bike_lane.png")
+#
+# ax[0].legend(handles=all_handles, loc='upper left', bbox_to_anchor=(0.8, 0.75), title="Scenarios")
+#
+#
+# # --- FIN FORMATTING ---
+# ax[1].set_xlabel("Number of dedicated bike lanes")
+# ax[0].set_ylabel("Bicycle modal share (%)")
+# ax[1].set_ylabel("Flow of least used edge")
+# ax[1].grid(True, alpha=0.3)
+# ax[0].grid(True, alpha=0.3)
+#
+# plt.tight_layout()
+# plt.savefig("output/_hEART_article/figures/_results/mode_share_nbr_bike_lane.png", bbox_inches='tight')
+# # plt.show()
+#
+#
+#
+#
+# list_test_name = ["grid", "H", "tunnel", "tunnel_ng"]
+# list_color = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
+# new_labels = ["A","B", "C", "D"]
+# fig, ax1 = plt.subplots(figsize=(30, 15))
+# line_handles = []
+# for i, (test_name, color) in enumerate(zip(list_test_name, list_color)):
+#     df = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_rgo_results_df_opt.csv")
+#     df_CAP = pd.read_csv(f"output/_hEART_article/csv/optimization/{test_name}_CAP_rgo_results_df_opt.csv")
+#
+#     # Plot primaire
+#     l1, = ax1.plot(df["nbr_bike_lanes"], df["modal_share_bike"],
+#                      color=color, label=new_labels[i]+' CAP', linewidth=2, linestyle='--')
+#     line_handles.append(l1)
+#     l1_bis, = ax1.plot(df_CAP["nbr_bike_lanes"], df_CAP["modal_share_bike"],
+#                    color=color, label=new_labels[i], linewidth=2)
+#     line_handles.append(l1_bis)
+#
+# style_solid = mlines.Line2D([], [], color='grey', label='Capacity Aware \n Model')
+# style_dashed = mlines.Line2D([], [], color='grey', linestyle='--', label='Base Model')
+# # # 2. Créer des entrées fictives pour expliquer les styles de lignes
+# line_solid = mlines.Line2D([], [], color='black', label='Base Model')
+# line_dashed = mlines.Line2D([], [], color='black', linestyle='--', label='Capacity Aware Model')
+# #
+# all_handles = line_handles
+# #
+#
+# ax1.legend(handles=all_handles, loc='upper left', bbox_to_anchor=(0.8, 0.79), title="Scenarios")
+#
+# # Mise en forme finale
+# ax1.set_xlabel("Number of dedicated bike lanes")
+# ax1.set_ylabel("Bicycle modal share (%)")
+# ax1.grid(True, alpha=0.3)
+#
+# plt.tight_layout()
+# # plt.show()
+# #
+# plt.savefig("output/_hEART_article/figures/_results/comparison_CAP_mode_share_nbr_bike_lane.png")
 
 # fig, ax = plt.subplots(2,2, figsize=(30,30))
 #
@@ -455,3 +455,20 @@ plt.savefig("output/_hEART_article/figures/_results/comparison_CAP_mode_share_nb
 # axes[2].legend(title="Beta time")
 # axes[2].title.set_text("Beta time impact for set speed (15 km/h) and ASC (-2.5)")
 # plt.show()
+
+fig, ax = plt.subplots(2,1,figsize=(30, 20))
+fp = f"output/optimization/rgo_results_df_opt_SF.csv"
+df = pd.read_csv(fp)
+
+# Plot primaire
+ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2)
+ax[1].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"], linewidth=2)
+ax[0].set_xlabel("Number of dedicated bike lanes")
+ax[1].set_xlabel("Number of dedicated bike lanes")
+ax[0].set_ylabel("Bicycle modal share (%)")
+ax[1].set_ylabel("Flow of least used edge")
+ax[0].grid(True, alpha=0.3)
+ax[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()

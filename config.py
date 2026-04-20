@@ -1,11 +1,11 @@
 def parameter (name_parameter = "all"):
     parameter_dict = {
         #mode choice
-                      'ASC_bike':-2.5,
+                      'ASC_bike':-3.5,
                       'ASC_car':0,
                       'mu_mode':1,
                       'beta_time':-0.000235,
-                      'max_iter_mode_choice':10,
+                      'max_iter_mode_choice':3,
         #traffic assignement
                       'ta_due_algorithm':'bfw',
                       'ta_sto_algorithm': 'bfsle',

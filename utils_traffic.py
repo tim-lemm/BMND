@@ -4,6 +4,7 @@ from utils_od_matrix_generator import *
 from utils_eaquilibrea_interface import *
 from utils_network_processing import *
 from src.utils_sta import ta_due, ta_stochastic
+import numpy as np
 
 def _create_empty_skim_matrice (size_od:int):
     return np.zeros((size_od, size_od))
@@ -83,11 +84,11 @@ def calculate_proba_matrice (skim_matrice_car, skim_matrice_bike, ASC_car:float,
 def plot_mc_results(edge_df, node_df, results_df):
     fig, axes = plt.subplots(2, 2, figsize=(10, 10))
     plot_network(edge_df, node_df, width_col='flow_car', color_col_num='flow_car', cmap='Reds',
-                 title=f'Car flows- Mode Choice Assignment ', node_size=3, colorbar_label='Flow (cars)',
-                 base_width=0.1, width_scale=10, ax=axes[0, 0])
+                 title=f'Car flows - Mode Choice Assignment ', node_size=3, colorbar_label='Flow (cars)',
+                 base_width=0.1, width_scale=1, ax=axes[0, 0])
     plot_network(edge_df, node_df, width_col='flow_bike', color_col_num='flow_bike', cmap='Greens',
                  title=f'Bike flows - Mode Choice Assignment ', node_size=3, colorbar_label='Flow (bikes)',
-                 base_width=1, width_scale=10, ax=axes[0, 1], vmax=edge_df['flow_bike'].max())
+                 base_width=0.1, width_scale=5, ax=axes[0, 1], vmax=edge_df['flow_bike'].max())
     plot_network(edge_df, node_df, color_col_str='type_bike', title=f'Bike Infrastructure',
                  node_size=3, base_width=1, ax=axes[1, 0])
     plot_network(edge_df, node_df, color_col_num=f'coef_bi',
@@ -128,7 +129,6 @@ def mode_choice(edge_df,
                 plot=True,
                 return_network=False,
                 CAP = True):
-
     od_matrix = convert_od_df_to_matrix(od_df)
     size_od = len(od_matrix)
     results_df = create_empty_result_df_mc()
@@ -146,8 +146,8 @@ def mode_choice(edge_df,
         od_matrix_car = od_matrix * prob_matrice_car
         od_matrix_bike = od_matrix * prob_matrice_bike
 
-        total_car_skim = od_matrix_car.sum()
-        total_bike_skim = od_matrix_bike.sum()
+        total_car_skim = np.nansum(od_matrix_car)
+        total_bike_skim = np.nansum(od_matrix_bike)
 
         total_skim = total_car_skim + total_bike_skim
 

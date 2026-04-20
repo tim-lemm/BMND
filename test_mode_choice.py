@@ -6,153 +6,42 @@ from utils_plotting import *
 from utils_od_matrix_generator import generate_od_df
 from config import parameter
 import random
+import pandas as pd
 
 #TODO: update readme
 
-CURRENT_DIR = ""
 
 warnings.filterwarnings('ignore')
 logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 
-edge_df, node_df = import_network(CURRENT_DIR + "data/edges_small_grid_H.csv", CURRENT_DIR + "data/nodes_small_grid_2.csv")
-
+edge_df, node_df = import_network("data/Sioux_Falls/edges_Sioux_Falls.csv", "data/Sioux_Falls/nodes_Sioux_Falls.csv")
+od_df = pd.read_csv("data/Sioux_Falls/SiouxFalls_od.csv")
+od_df = convert_from_aequilibrae_od_matrix(od_df)
 # parameters for mode choice
 parameter_dict = parameter()
 beta_time = parameter_dict['beta_time']
 ASC_car = parameter_dict['ASC_car']
-ASC_bike = parameter_dict['ASC_bike']
+ASC_bike = parameter_dict['ASC_bike']-1
 mu_mode = parameter_dict['mu_mode']
 max_iter_mode_choice = parameter_dict['max_iter_mode_choice']
 plot = False
 
 size_od = max(node_df['id']) + 1
 
-od_df = generate_od_df(size_od, od_scenario="CORNER_2", max_demand=4000)
+# od_df = generate_od_df(size_od, od_scenario="CORNER_2", max_demand=4000)
 
 plot_od_matrix(convert_to_eaquilibrae_od_matrix(od_df),edge_df,node_df)
+# plot_od_matrix(od_df,edge_df,node_df)
 plt.show()
-list_mode_share = []
-list_seed = random.sample(range(1, 10000000000000), 100)
-#tunnel
-#list_edge = [1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 4, 3, 33, 34,35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 47, 48]
-#grid
-#list_edge = range(1,49)
-#H
-list_edge = [
-    1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
-    37, 38, 39, 40, 41, 42, 43, 44, 47, 48
-]
-for seed in list_seed:
-    random.seed(seed)
-    list_random_edges = random.sample(list_edge, 10)
-    print(list_random_edges)
-    edge_df = change_type_bike_infra_with_index(edge_df,'bike_path',list_random_edges)
 
-    result_df, _, _,_,_ = mode_choice(
-        edge_df,
-        node_df,
-        od_df,
-        beta_time,
-        ASC_car,
-        ASC_bike,
-        mu_mode=mu_mode,
-        max_iter_mode_choice=max_iter_mode_choice,
-        plot=plot)
-    result_df.head()
-
-    list_mode_share.append(result_df['modal_share_bike'].iloc[-1])
-    edge_df = apply_bike_infra_scenario(edge_df,0)
-results_test_random_df = pd.DataFrame({
-    'seed': list_seed,
-    'modal_share': list_mode_share
-})
-
-results_test_random_df.to_csv('output/results_test_random_CAP_2_H_corner_2_4000_bi2.csv')
-# for scenario in [0,1,2,3,4,5]:
-#     edge_df = apply_bike_infra_scenario(edge_df, scenario)
-#     plot_network(edge_df, node_df,
-#                  node_id_col='node',
-#                  node_label=True,
-#                  color_col_str='type_bike',
-#                  base_width=1,
-#                  legend=True,
-#                  title=f"Network with type of bike infrastructure, scenario {scenario}")
-#     result_df, _, _,_,_ = mode_choice(edge_df,
-#                                                          node_df,
-#                                                          od_df,
-#                                                          beta_time,
-#                                                          ASC_car,
-#                                                          ASC_bike,
-#                                                          mu_mode=mu_mode,
-#                                                          max_iter_mode_choice=max_iter_mode_choice,
-#                                                          plot=plot)
-
-# result_all_df = pd.DataFrame(columns = ['number_of_bike_path',
-#                         'modal_share_car',
-#                         'modal_share_bike'])
-# nbr_bike_lane = 0
-#
-# result_df, updated_od_car, updated_od_bike,_,_ = mode_choice(edge_df,
-#                                                          node_df,
-#                                                          od_df,
-#                                                          beta_time,
-#                                                          ASC_car,
-#                                                          ASC_bike,
-#                                                          mu_mode=mu_mode,
-#                                                          max_iter_mode_choice=max_iter_mode_choice,
-#                                                          plot=False)
-#
-#
-# new_row = pd.DataFrame([{
-#     "number_of_bike_path": nbr_bike_lane,
-#     "modal_share_car": result_df["modal_share_car"].iloc[-1],
-#     "modal_share_bike": result_df["modal_share_bike"].iloc[-1]
-# }])
-# result_all_df = pd.concat([result_all_df, new_row], ignore_index=True)
-#
-# for i, edge in edge_df.iterrows():
-#
-#     a_node = edge["a_node"]
-#     b_node = edge["b_node"]
-#     print(a_node, b_node)
-#     edge_df = change_type_bike_infra(edge_df, "bike_path",a_node,b_node)
-#     nbr_bike_lane += 1
-#     result_df, updated_od_car, updated_od_bike,_,_ = mode_choice(edge_df,
-#                                                             node_df,
-#                                                             od_df,
-#                                                             beta_time,
-#                                                             ASC_car,
-#                                                             ASC_bike,
-#                                                             mu_mode=mu_mode,
-#                                                             max_iter_mode_choice=10,
-#                                                             plot=False)
-#
-#     new_row = pd.DataFrame([{
-#                 "number_of_bike_path": nbr_bike_lane,
-#                 "modal_share_car": result_df["modal_share_car"].iloc[-1],
-#                 "modal_share_bike": result_df["modal_share_bike"].iloc[-1]
-#             }])
-#     result_all_df = pd.concat([result_all_df, new_row], ignore_index=True)
-#     edge_df = change_type_bike_infra(edge_df, "bike_path", b_node, a_node)
-#     nbr_bike_lane += 1
-#     result_df, updated_od_car, updated_od_bike,_,_ = mode_choice(edge_df,
-#                                                                  node_df,
-#                                                                  od_df,
-#                                                                  beta_time,
-#                                                                  ASC_car,
-#                                                                  ASC_bike,
-#                                                                  mu_mode=mu_mode,
-#                                                                  max_iter_mode_choice=10,
-#                                                                  plot=False)
-#
-#     new_row = pd.DataFrame([{
-#             "number_of_bike_path": nbr_bike_lane,
-#             "modal_share_car": result_df["modal_share_car"].iloc[-1],
-#             "modal_share_bike": result_df["modal_share_bike"].iloc[-1]
-#         }])
-#     result_all_df = pd.concat([result_all_df, new_row], ignore_index=True)
-#
-# result_all_df.plot(x="number_of_bike_path", y="modal_share_car", kind="line")
-# result_all_df.to_csv("output/test_mc_df_homog_demand_1000.csv")
-# plt.show()
+results_df, updated_od_car, updated_od_bike, prob_matrice_car, prob_matrice_bike, edge_df = mode_choice(edge_df,
+                node_df,
+                od_df,
+                beta_time=beta_time,
+                ASC_car=ASC_car,
+                ASC_bike=ASC_bike,
+                mu_mode=mu_mode,
+                max_iter_mode_choice=max_iter_mode_choice,
+                plot=True,
+                return_network=True,
+                CAP = True)

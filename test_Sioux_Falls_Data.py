@@ -12,7 +12,7 @@ plt.rcParams.update({'font.size': 10})
 
 fig,ax = plt.subplots()
 edge_df, node_df = import_network("data/Sioux_Falls/edges_Sioux_Falls.csv", "data/Sioux_Falls/nodes_Sioux_Falls.csv", real_network=True)
-plot_network(edge_df, node_df, node_label=True, title="Sioux Falls Network", ax=ax)
+plot_network(edge_df, node_df, node_label=True, title="Sioux Falls Network", ax=ax, base_width=1)
 
 # tags = { 'leisure': ['park','dog_park','pitch','garden','nature_reserve','marina'],
 #                'landuse':['forest','meadow','grassland','farmland','farmyard','vineyard','orchard','farmland','recreation_ground','allotments','village_green','grass','greenfield','bassin'],

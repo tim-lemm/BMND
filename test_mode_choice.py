@@ -45,3 +45,9 @@ results_df, updated_od_car, updated_od_bike, prob_matrice_car, prob_matrice_bike
                 plot=True,
                 return_network=True,
                 CAP = True)
+
+plot_network(edge_df, node_df, width_col=f'flow_car',
+                     color_col_num=f'flow_car', cmap='Reds',
+                     title=f'Car flows', node_size=3, colorbar_label='Flow (cars)',
+                     base_width=0.1, width_scale=10)
+plt.show()

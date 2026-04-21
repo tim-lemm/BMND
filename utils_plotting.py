@@ -290,6 +290,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
          "flow_of_removed_edge"], axis=1, inplace=True)
     edge_df.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
 
+
     plot_network(edge_df, node_df, node_id_col='id',
                      node_label=True,
                      color_col_num='iteration_of_removal',
@@ -301,30 +302,28 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
         plt.savefig(file_path)
     else:
         plt.show()
+    plt.rcParams.update({'font.size': 30})
+    fig, ax = plt.subplots(3, 1, figsize=(30, 30))
+    df = results_df_opt.copy()
+    ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2)
+    ax[1].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"].iloc[::-1].values, linewidth=2)
+    ax[2].plot(df["nbr_bike_lanes"], df["average_bi_coef"].iloc[::-1].values, linewidth=2)
+    ax[2].set_xlabel("Number of dedicated bike lanes")
+    ax[0].set_ylabel("Bicycle modal share (%)")
+    ax[1].set_ylabel("Flow of least used edge")
+    ax[2].set_ylabel("Average bikeability coefficient")
+    ax[0].grid(True, alpha=0.3)
+    ax[1].grid(True, alpha=0.3)
+    ax[2].grid(True, alpha=0.3)
 
-    ax = results_df_opt.plot(kind='line', x="iteration", y="flow_of_removed_edge",
-                             color='blue', label="Bike flow", grid=True, title=f"Results for {test_name}")
-
-    results_df_opt.plot(kind='line', x="iteration", y="modal_share_bike",
-                        color='red', label="Modal share bike", secondary_y=True, ax=ax)
+    plt.tight_layout()
 
     if save:
         file_path = output_dir / f"graph_results_{test_name}.png"
         plt.savefig(file_path)
     else:
         plt.show()
-
-    ax = results_df_opt.plot(kind='line', x="iteration", y="average_bi_coef",
-                             color='blue', label="Coef_bi", grid=True, title=f"Results for {test_name}")
-
-    results_df_opt.plot(kind='line', x="iteration", y="modal_share_bike",
-                        color='red', label="Modal share bike", secondary_y=True, ax=ax)
-
-    if save:
-        file_path = output_dir / f"graph_results_coef_bi_{test_name}.png"
-        plt.savefig(file_path)
-    else:
-        plt.show()
+    plt.rcParams.update({'font.size': 10})
     list_budget = list(range(1, max(results_df_opt["iteration"]) + 1))
     for budget in list_budget:
         plot_optimization_network(edge_df, edge_df_results,node_df, budget, save, output_dir_infra, output_dir_network, test_name)

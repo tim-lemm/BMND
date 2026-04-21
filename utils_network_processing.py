@@ -91,8 +91,8 @@ def calculate_congested_time(edge_df, free_flow_time_name="free_flow_time", cong
     return edge_df
 
 def update_car_capacity(edge_df:pd.DataFrame, capacity_car:int = 1500):
-    edge_df.loc[edge_df["type_bike"] == "bike_path", "nbr_car_lane"] = 1
-    edge_df.loc[edge_df["type_bike"] == "None", "nbr_car_lane"] = 2
+    edge_df.loc[edge_df["type_bike"] == "bike_path", "nbr_car_lane"] = edge_df.loc[edge_df["type_bike"] == "bike_path", "init_nbr_car_lane"] - 1
+    edge_df.loc[edge_df["type_bike"] == "None", "nbr_car_lane"] = edge_df.loc[edge_df["type_bike"] == "bike_path", "init_nbr_car_lane"]
     edge_df["capacity_cars"] = edge_df["nbr_car_lane"] * capacity_car
     return edge_df
 
@@ -110,8 +110,12 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500
 
     if real_network:
         edge_df = calculate_length_real(node_df, edge_df)
+        edge_df['nbr_car_lane'] = edge_df['init_nbr_car_lane']
     else :
         edge_df = calculate_length(node_df, edge_df)
+        edge_df["nbr_car_lane"] = 2
+
+    edge_df["capacity_cars"] = edge_df["nbr_car_lane"] * capacity_car
     #edge_df["length"] *= 10
     edge_df["type_bike"] = "None"
     edge_df["speed_bike"] /= 3.6
@@ -120,8 +124,7 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500
     edge_df["free_flow_time_bike"] = edge_df["length"] / edge_df["speed_bike"]
     edge_df["travel_time_car"] = edge_df["free_flow_time_car"]
     edge_df["travel_time_bike"] = edge_df["free_flow_time_bike"]
-    edge_df["nbr_car_lane"] = 2
-    edge_df["capacity_cars"] = edge_df["nbr_car_lane"]*capacity_car
+
     edge_df["capacity_bikes"] = 99999
     edge_df["alpha"] = 0.15
     edge_df["beta"] = 4
@@ -129,6 +132,7 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500
     edge_df["flow_bike"] = 0
     edge_df["length_bi"]= edge_df["length"]
     return edge_df, node_df
+
 
 def load_test_scenario(name_test_scenario:str, od_scenario:str, demand:int = 4000):
     edge_file_path = f"data/edges_{name_test_scenario}.csv"

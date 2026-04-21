@@ -462,7 +462,7 @@ df = pd.read_csv(fp)
 
 # Plot primaire
 ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2)
-ax[1].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"], linewidth=2)
+ax[1].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"].iloc[::-1].values, linewidth=2)
 ax[0].set_xlabel("Number of dedicated bike lanes")
 ax[1].set_xlabel("Number of dedicated bike lanes")
 ax[0].set_ylabel("Bicycle modal share (%)")
@@ -472,3 +472,6 @@ ax[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.show()
+plt.rcParams.update({'font.size': 10})
+edge_df, node_df = import_network("data/Sioux_Falls/edges_Sioux_Falls.csv", "data/Sioux_Falls/nodes_Sioux_Falls.csv", real_network=True)
+plot_optimization_results("SF", edge_df, node_df, save = True, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True)

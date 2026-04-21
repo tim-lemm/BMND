@@ -1,4 +1,6 @@
 import networkx as nx
+import pandas as pd
+
 from utils_plotting import *
 from utils_od_matrix_generator import *
 from utils_eaquilibrea_interface import *
@@ -125,10 +127,12 @@ def mode_choice(edge_df,
                 ASC_car=0,
                 ASC_bike=-2.5,
                 mu_mode=1.0,
+                algorithm_due="fw",
                 max_iter_mode_choice=3,
                 plot=True,
                 return_network=False,
-                CAP = True):
+                CAP = True,
+                capacity_field = "capacity"):
     od_matrix = convert_od_df_to_matrix(od_df)
     size_od = len(od_matrix)
     results_df = create_empty_result_df_mc()
@@ -158,15 +162,17 @@ def mode_choice(edge_df,
         od_df_bike = convert_od_matrix_to_df(od_matrix_bike)
         updated_od_car = convert_to_eaquilibrae_od_matrix(od_df_car)
         updated_od_bike = convert_to_eaquilibrae_od_matrix(od_df_bike)
+        updated_od_car=updated_od_car.dropna()
+        updated_od_bike=updated_od_bike.dropna()
 
         # run traffic assignments with updated OD matrices
         car_results_mode_choice = ta_due(
             edge_df,
             updated_od_car,
-            algorithm='bfw',
+            algorithm=algorithm_due,
             time_field='travel_time_car',
             cost_field='travel_time_car',
-            capacity_field='capacity_cars',
+            capacity_field=capacity_field,
             max_iter=500,
             tolerance=1e-4,
             verbose=plot
@@ -195,7 +201,7 @@ def mode_choice(edge_df,
 
         # calculate congested time for cars and length bi
         edge_df = update_network(edge_df, flow_name='flow_car', free_flow_time_name='free_flow_time_car',
-                       capacity_name="capacity_cars", congested_time_name='travel_time_car', alpha=0.15, beta=4, CAP=CAP)
+                       capacity_name=capacity_field, congested_time_name='travel_time_car', alpha=0.15, beta=4, CAP=CAP)
 
         results_df = update_result_df_mc(results_df, j,
                                          modal_share_car,

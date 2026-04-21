@@ -57,17 +57,17 @@ def slope_coef(value, slope):
     else:
         return value
 
-def calculate_length_bi_2(edge_df):
+def calculate_length_bi_2(edge_df, bias = 0, weight=1):
     list_length_bi = []
     for row in edge_df.itertuples():
         if row.type_bike == "None":
-            if row.flow_car < 6000:
+            if row.flow_car < weight*(6000+bias):
                 list_length_bi.append(row.length * slope_coef(0.8, row.slope))
-            elif row.flow_car >= 8000:
+            elif row.flow_car >= weight*(8000+bias):
                 list_length_bi.append(row.length * slope_coef(1.4, row.slope))
-            elif 6000 <= row.flow_car < 7500:
+            elif weight*(6000+bias) <= row.flow_car < weight*(7500+bias):
                 list_length_bi.append(row.length * slope_coef(1, row.slope))
-            elif 7500 <= row.flow_car < 8000:
+            elif weight*(7500+bias) <= row.flow_car < weight*(8000+bias):
                 list_length_bi.append(row.length * slope_coef(1.2, row.slope))
         else:
             if row.green_overlap_percentage > 51:
@@ -92,13 +92,13 @@ def calculate_congested_time(edge_df, free_flow_time_name="free_flow_time", cong
 
 def update_car_capacity(edge_df:pd.DataFrame, capacity_car:int = 1500):
     edge_df.loc[edge_df["type_bike"] == "bike_path", "nbr_car_lane"] = edge_df.loc[edge_df["type_bike"] == "bike_path", "init_nbr_car_lane"] - 1
-    edge_df.loc[edge_df["type_bike"] == "None", "nbr_car_lane"] = edge_df.loc[edge_df["type_bike"] == "bike_path", "init_nbr_car_lane"]
+    edge_df.loc[edge_df["type_bike"] == "None", "nbr_car_lane"] = edge_df.loc[edge_df["type_bike"] == "None", "init_nbr_car_lane"]
     edge_df["capacity_cars"] = edge_df["nbr_car_lane"] * capacity_car
     return edge_df
 
 def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4, CAP = True):
     edge_df = calculate_congested_time(edge_df, free_flow_time_name, congested_time_name, flow_name, capacity_name, alpha, beta)
-    edge_df = calculate_length_bi_2(edge_df)
+    edge_df = calculate_length_bi_2(edge_df, bias=5000, weight=1)
     if CAP:
         edge_df = update_car_capacity(edge_df)
     edge_df["travel_time_bike"] = edge_df["length_bi"]/edge_df["speed_bike"]

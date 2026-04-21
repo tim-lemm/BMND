@@ -25,9 +25,9 @@ plot_network(edge_df, node_df,
              figsize=(8, 8))
 plt.show()
 
-# od_df_eaq = pd.read_csv("data/Sioux_Falls/SiouxFalls_od.csv")
-od_df = generate_od_df(17, od_scenario="2OD_SF", max_demand=3000)
-od_df_eaq = convert_to_eaquilibrae_od_matrix(od_df)
+od_df_eaq = pd.read_csv("data/Sioux_Falls/SiouxFalls_od.csv")
+# od_df = generate_od_df(17, od_scenario="2OD_SF", max_demand=3000)
+# od_df_eaq = convert_to_eaquilibrae_od_matrix(od_df)
 plot_od_matrix(od_df_eaq, edge_df, node_df)
 plt.show()
 #
@@ -38,9 +38,10 @@ max_iter = parameter_dict['max_iter_ta']
 tolerance = parameter_dict['tolerance']
 max_route = parameter_dict['max_route']
 ## ta_due tests
+
 results_ta_due = ta_due(edge_df,
                         od_df_eaq,
-                        algorithm=algorithm_due,
+                        algorithm="fw",
                         max_iter=max_iter,
                         tolerance=tolerance,
                         time_field='free_flow_time_car',

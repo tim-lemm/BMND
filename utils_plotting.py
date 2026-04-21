@@ -247,7 +247,7 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
     plot_network(edge_df_results, node_df, width_col=f'flow_car_iteration_{iteration_corresponding_to_budget}',
                      color_col_num=f'flow_car_iteration_{iteration_corresponding_to_budget}', cmap='Reds',
                      title=f'Car flows - budget: {budget}', node_size=3, colorbar_label='Flow (cars)',
-                     base_width=0.1, width_scale=10, ax=axes[0, 0])
+                     base_width=0.1, width_scale=1, ax=axes[0, 0])
     plot_network(edge_df_results, node_df, width_col=f'flow_bike_iteration_{iteration_corresponding_to_budget}',
                      color_col_num=f'flow_bike_iteration_{iteration_corresponding_to_budget}', cmap='Greens',
                      title=f'Bike flows - budget: {budget}', node_size=3, colorbar_label='Flow (bikes)',

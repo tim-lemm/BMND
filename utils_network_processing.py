@@ -3,6 +3,69 @@ import pandas as pd
 from utils_od_matrix_generator import *
 from geopy.distance import geodesic
 
+def estimate_FFS(edge_df):
+    edge_df["FFS"]=edge_df["speed_car"]
+    edge_df["TRD"]=edge_df["nbr_access_point"]/(edge_df["length"]/1000)
+    for row in edge_df.itertuples():
+        if row.type_car == "freeway":
+            row.FFS = row.speed_car - adjf_lane_width(row.lane_width) - adjf_right_side_clearance_freeway(row.lane_width, row.nbr_car_lane)-adjf_TRD(row.TRD)
+        else:
+            row.FFS = row.speed_car - adjf_lane_width(row.lane_width) - adjf_right_side_clearance_highway(row.lane_width, row.nbr_car_lane)-adjf_median_sep(row.median_type)-adjf_access_point_density(row.TRD)
+    return edge_df
+
+def estimate_capacity(edge_df):
+    edge_df["capacity"] = 0
+    for row in edge_df.itertuples():
+        if row.type_car == "freeway":
+            row.capacity = row.nbr_car_lane * (2200 + 10 * row.FFS - 80)
+        else:
+            row.capacity = row.nbr_car_lane * (1900 + 20 * row.FFS - 72)
+    return edge_df
+
+def adjf_access_point_density(TRD):
+    TRD = TRD*0.62
+    if TRD < 10:
+        return 0
+    elif TRD < 20:
+        return 2.5
+    elif TRD < 30:
+        return 5.0
+    elif TRD < 40:
+        return 7.5
+    else:
+        return 10
+def adjf_median_sep(median_type):
+    if median_type == "undivided":
+        return 1.6
+    else:
+        return 0
+
+def adjf_lane_width(lane_width):
+    if lane_width >= 3.66:
+        return 0
+    elif 3.35 <= lane_width < 3.66:
+        return 1.9
+    else:
+        return 6.6
+
+def adjf_right_side_clearance_freeway(width, nbr_lane):
+        clearance_values = [0, 0.30, 0.61, 0.91, 1.22, 1.52, 1.83]
+        lanes_values = {
+            2: [3.6, 3.0, 2.4, 1.8, 1.2, 0.6, 0.0],
+            3: [2.4, 2.0, 1.6, 1.2, 0.8, 0.4, 0.0],
+            4: [1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.0],
+            5: [0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0]
+        }
+        l = 5 if nbr_lane >= 5 else nbr_lane
+        return np.interp(width, clearance_values, lanes_values[l])
+
+
+def adjf_right_side_clearance_highway(width, nbr_lane):
+    return 1.6
+
+def adjf_TRD(TRD):
+    return 2.155*TRD^0.84
+
 def calculate_length(node_df, edge_df):
     """ Calculate Euclidean length of edges based on node coordinates. """
     lengths = []

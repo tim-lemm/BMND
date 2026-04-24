@@ -2,7 +2,6 @@
 
 import pandas as pd
 from config import *
-from test_parameters import speed_bike
 from utils_network_processing import *
 from utils_plotting import *
 from utils_traffic import *

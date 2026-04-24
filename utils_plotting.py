@@ -277,8 +277,8 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
     if type(edge_df_results) != pd.DataFrame and type(results_df_opt) != pd.DataFrame:
         edge_df_results = pd.read_csv(f"output/optimization/rgo_edge_df_results_{test_name}.csv")
         results_df_opt = pd.read_csv(f"output/optimization/rgo_results_df_opt_{test_name}.csv")
+        results_df_opt.drop("Unnamed: 0", axis=1, inplace=True)
 
-    results_df_opt.drop("Unnamed: 0", axis=1, inplace=True)
     results_df_opt = results_df_opt.iloc[1:].reset_index(drop=True)
     results_df_opt["index_removed"] = results_df_opt["index_removed"].apply(ast.literal_eval)
     results_df_opt = results_df_opt.explode('index_removed')

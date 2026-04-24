@@ -2,7 +2,6 @@
 This repository provides a Python-based framework for modeling, simulating, and optimizing urban transport networks.
 It specifically focuses on the interaction between car and bicycle modes, incorporating mode choice modeling, traffic assignment, 
 and infrastructure optimization.
-
 The toolkit is designed to help researchers and urban planners evaluate how the introduction of cycling infrastructure 
 (like bike lanes and paths) influences modal shift and overall network performance.
 ---

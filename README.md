@@ -4,7 +4,6 @@ It specifically focuses on the interaction between car and bicycle modes, incorp
 and infrastructure optimization.
 The toolkit is designed to help researchers and urban planners evaluate how the introduction of cycling infrastructure 
 (like bike lanes and paths) influences modal shift and overall network performance.
----
 
 ## Key Features
 

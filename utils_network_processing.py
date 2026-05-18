@@ -3,23 +3,32 @@ import pandas as pd
 from utils_od_matrix_generator import *
 from geopy.distance import geodesic
 
+def calculate_row_ffs(row):
+    if row["type_car"] == "freeway":
+        return (row["free_flow_speed_car"]
+                - adjf_lane_width(row["lane_width"])
+                - adjf_right_side_clearance_freeway(row["lane_width"], row["nbr_car_lane"])
+                - adjf_TRD(row["trd"]))
+    else:
+        return (row["free_flow_speed_car"]
+                - adjf_lane_width(row["lane_width"])
+                - adjf_right_side_clearance_highway(row["lane_width"], row["nbr_car_lane"])
+                - adjf_median_sep(row["median_type"])
+                - adjf_access_point_density(row["trd"]))
+
 def estimate_FFS(edge_df):
-    edge_df["FFS"]=edge_df["speed_car"]
-    edge_df["TRD"]=edge_df["nbr_access_point"]/(edge_df["length"]/1000)
-    for row in edge_df.itertuples():
-        if row.type_car == "freeway":
-            row.FFS = row.speed_car - adjf_lane_width(row.lane_width) - adjf_right_side_clearance_freeway(row.lane_width, row.nbr_car_lane)-adjf_TRD(row.TRD)
-        else:
-            row.FFS = row.speed_car - adjf_lane_width(row.lane_width) - adjf_right_side_clearance_highway(row.lane_width, row.nbr_car_lane)-adjf_median_sep(row.median_type)-adjf_access_point_density(row.TRD)
+    edge_df["free_flow_speed_car"] = edge_df["speed_car"].astype(float)
+    edge_df["trd"] = edge_df["nbr_access_point"] / (edge_df["length"] / 1000)
+    edge_df["ffs"] = edge_df.apply(calculate_row_ffs, axis=1)
     return edge_df
 
 def estimate_capacity(edge_df):
-    edge_df["capacity"] = 0
-    for row in edge_df.itertuples():
-        if row.type_car == "freeway":
-            row.capacity = row.nbr_car_lane * (2200 + 10 * row.FFS - 80)
-        else:
-            row.capacity = row.nbr_car_lane * (1900 + 20 * row.FFS - 72)
+    edge_df = estimate_FFS(edge_df)
+    edge_df["capacity_cars"] = edge_df["nbr_car_lane"] * (1900 + 20 * edge_df["ffs"] - 72)
+
+    is_freeway = edge_df["type_car"] == "freeway"
+    edge_df.loc[is_freeway, "capacity_cars"] = edge_df.loc[is_freeway, "nbr_car_lane"] * (
+                2200 + 10 * edge_df.loc[is_freeway, "ffs"] - 80)
     return edge_df
 
 def adjf_access_point_density(TRD):
@@ -56,7 +65,7 @@ def adjf_right_side_clearance_freeway(width, nbr_lane):
             4: [1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.0],
             5: [0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0]
         }
-        l = 5 if nbr_lane >= 5 else nbr_lane
+        l = int(max(2, min(nbr_lane, 5)))
         return np.interp(width, clearance_values, lanes_values[l])
 
 
@@ -64,7 +73,7 @@ def adjf_right_side_clearance_highway(width, nbr_lane):
     return 1.6
 
 def adjf_TRD(TRD):
-    return 2.155*TRD^0.84
+    return 2.155*TRD**0.84
 
 def calculate_length(node_df, edge_df):
     """ Calculate Euclidean length of edges based on node coordinates. """
@@ -156,10 +165,10 @@ def calculate_congested_time(edge_df, free_flow_time_name="free_flow_time", cong
 def update_car_capacity(edge_df:pd.DataFrame, capacity_car:int = 1500):
     edge_df.loc[edge_df["type_bike"] == "bike_path", "nbr_car_lane"] = edge_df.loc[edge_df["type_bike"] == "bike_path", "init_nbr_car_lane"] - 1
     edge_df.loc[edge_df["type_bike"] == "None", "nbr_car_lane"] = edge_df.loc[edge_df["type_bike"] == "None", "init_nbr_car_lane"]
-    edge_df["capacity_cars"] = edge_df["nbr_car_lane"] * capacity_car
+    edge_df = estimate_capacity(edge_df)
     return edge_df
 
-def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4, CAP = True):
+def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity_cars", alpha=0.15, beta=4, CAP = True):
     edge_df = calculate_congested_time(edge_df, free_flow_time_name, congested_time_name, flow_name, capacity_name, alpha, beta)
     edge_df = calculate_length_bi_2(edge_df, bias=5000, weight=1)
     if CAP:
@@ -177,12 +186,14 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500
     else :
         edge_df = calculate_length(node_df, edge_df)
         edge_df["nbr_car_lane"] = 2
-
-    edge_df["capacity_cars"] = edge_df["nbr_car_lane"] * capacity_car
+    edge_df = estimate_capacity(edge_df)
+    edge_df.drop(columns=["capacity"], inplace=True)
     #edge_df["length"] *= 10
     edge_df["type_bike"] = "None"
     edge_df["speed_bike"] /= 3.6
     edge_df["speed_car"] /= 3.6
+    edge_df['free_flow_speed_car']=edge_df['speed_car']
+    edge_df['free_flow_speed_bike'] = edge_df['speed_bike']
     edge_df["free_flow_time_car"] = edge_df["length"] / edge_df["speed_car"]
     edge_df["free_flow_time_bike"] = edge_df["length"] / edge_df["speed_bike"]
     edge_df["travel_time_car"] = edge_df["free_flow_time_car"]

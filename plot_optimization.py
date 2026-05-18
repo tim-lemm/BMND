@@ -457,7 +457,7 @@ import matplotlib.lines as mlines
 # plt.show()
 
 fig, ax = plt.subplots(2,1,figsize=(30, 20))
-fp = f"output/optimization/rgo_results_df_opt_SF.csv"
+fp = f"output/optimization/rgo_results_df_opt_CAP_SF.csv"
 df = pd.read_csv(fp)
 
 # Plot primaire

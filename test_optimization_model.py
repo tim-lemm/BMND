@@ -55,6 +55,6 @@ od_df = pd.read_csv("data/Sioux_Falls/SiouxFalls_od.csv")
 od_df = convert_from_aequilibrae_od_matrix(od_df)
 plot = False
 
-edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=80, CAP=False)
-edge_df_results.to_csv(f"output/optimization/rgo_edge_df_results_SF.csv")
-results_df_opt.to_csv(f"output/optimization/rgo_results_df_opt_SF.csv")
+edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=80, CAP=True)
+edge_df_results.to_csv(f"output/optimization/rgo_edge_df_results_CAP_SF.csv")
+results_df_opt.to_csv(f"output/optimization/rgo_results_df_opt_CAP_SF.csv")

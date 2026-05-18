@@ -76,7 +76,7 @@ def _build_graph_for_stochastic(network_df, zones, time_field, cost_field, capac
 # =============================================================================
 
 def ta_due(edges_gdf, od_gdf, algorithm='bfw', max_iter=500, tolerance=1e-4,
-           time_field='free_flow_time', cost_field='free_flow_time', capacity_field='capacity', verbose=False):
+           time_field='free_flow_time', cost_field='free_flow_time', capacity_field='capacity_cars', verbose=False):
     """
     Deterministic User Equilibrium (DUE) traffic assignment.
     """

@@ -132,7 +132,8 @@ def mode_choice(edge_df,
                 plot=True,
                 return_network=False,
                 CAP = True,
-                capacity_field = "capacity"):
+                capacity_field_car = "capacity_cars",
+                capacity_field_bike = "capacity_bikes",):
     od_matrix = convert_od_df_to_matrix(od_df)
     size_od = len(od_matrix)
     results_df = create_empty_result_df_mc()
@@ -172,7 +173,7 @@ def mode_choice(edge_df,
             algorithm=algorithm_due,
             time_field='travel_time_car',
             cost_field='travel_time_car',
-            capacity_field=capacity_field,
+            capacity_field=capacity_field_car,
             max_iter=500,
             tolerance=1e-4,
             verbose=plot
@@ -191,7 +192,7 @@ def mode_choice(edge_df,
             cost_field='length_bi',
             algorithm='bfsle',
             max_routes=3,
-            capacity_field='capacity_bikes',
+            capacity_field=capacity_field_bike,
             verbose=plot
         )
         total_travel_time_bike = bike_results_mode_choice['total_travel_time']
@@ -201,7 +202,7 @@ def mode_choice(edge_df,
 
         # calculate congested time for cars and length bi
         edge_df = update_network(edge_df, flow_name='flow_car', free_flow_time_name='free_flow_time_car',
-                       capacity_name=capacity_field, congested_time_name='travel_time_car', alpha=0.15, beta=4, CAP=CAP)
+                       capacity_name=capacity_field_car, congested_time_name='travel_time_car', alpha=0.15, beta=4, CAP=CAP)
 
         results_df = update_result_df_mc(results_df, j,
                                          modal_share_car,

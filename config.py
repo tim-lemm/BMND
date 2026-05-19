@@ -4,7 +4,8 @@ def parameter (name_parameter = "all"):
                       'ASC_bike':-3.5,
                       'ASC_car':0,
                       'mu_mode':1,
-                      'beta_time':-0.000235,
+                      # 'beta_time':-0.000235,
+                        'beta_time':-0.000005,
                       'max_iter_mode_choice':5,
         #traffic assignement
                       'ta_due_algorithm':'bfw',

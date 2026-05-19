@@ -57,10 +57,3 @@ import matplotlib.pyplot as plt
 # plot_network(edge_df, node_df, node_id_col='id',base_width=1, node_label=True, title="Slope (%)", ax=ax[1], color_col_num="slope", cmap="bwr")
 # plt.tight_layout()
 # plt.savefig("output/_hEART_article/figures/_networks/grid_networks.png")
-
-# fig, ax = plt.subplots(2,1, figsize=(15,30))
-# edge_df, node_df = import_network("data/edges_tunnel.csv", "data/nodes_tunnel.csv")
-# plot_network(edge_df, node_df, node_id_col='id',base_width=1, node_label=True, title="Green overlap percentage", ax=ax[0], color_col_num="green_overlap_percentage", cmap="Greens")
-# plot_network(edge_df, node_df, node_id_col='id',base_width=1, node_label=True, title="Slope (%)", ax=ax[1], color_col_num="slope", cmap="bwr")
-# plt.tight_layout()
-# plt.savefig("output/_hEART_article/figures/_networks/tunnel_networks.png")

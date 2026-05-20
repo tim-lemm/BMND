@@ -22,49 +22,16 @@ parameter_dict = parameter()
 # beta_time = -0.000235
 beta_time = parameter_dict['beta_time']
 ASC_car = parameter_dict['ASC_car']
-ASC_bike = parameter_dict['ASC_bike']-1
+ASC_bike = parameter_dict['ASC_bike']
 mu_mode = parameter_dict['mu_mode']
 max_iter_mode_choice = parameter_dict['max_iter_mode_choice']
 plot = False
 
 size_od = max(node_df['id']) + 1
 
-# def bi_coef(traffic, weight=1, bias=0):
-#     if traffic < weight * (6000 + bias):
-#         return 0.8
-#     elif traffic >= weight * (8000 + bias):
-#         return 1.4
-#     elif weight * (6000 + bias) <= traffic < weight * (7500 + bias):
-#         return 1
-#     elif weight * (7500 + bias) <= traffic < weight * (8000 + bias):
-#         return 1.2
-#     else:
-#         return 0
-#
-# traffics = list(range(1,50000))
-#
-# list_bias = [0,5000]
-# list_weight = [1,1.1,1.2,1.3]
-# for weight in list_weight:
-#     for bias in list_bias:
-#         coeffs = []
-#         for traffic in traffics:
-#             coeffs.append(bi_coef(traffic, weight = weight, bias= bias))
-#         plt.plot(traffics, coeffs, label = f"{weight} - {bias}")
-# plt.legend()
-# plt.show()
-
-
-# od_df = generate_od_df(size_od, od_scenario="CORNER_2", max_demand=4000)
-
-plot_od_matrix(convert_to_eaquilibrae_od_matrix(od_df),edge_df,node_df)
-# plot_od_matrix(od_df,edge_df,node_df)
-plt.show()
-
-
-centre = -0.00001
+centre = -0.000001
 pas = 0.0000001
-n_valeurs = 100
+n_valeurs = 10
 debut = centre - (n_valeurs // 2) * pas
 fin = debut + n_valeurs * pas
 liste_beta_time = np.arange(debut, fin, pas).tolist()

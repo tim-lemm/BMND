@@ -34,3 +34,6 @@ __pycache__/utils_od_matrix_generator.cpython-311.pyc
 __pycache__/utils_plotting.cpython-311.pyc
 __pycache__
 cache
+output/optimization/images/.DS_Store
+output/optimization/images/corner_2_4000_bi2/.DS_Store
+output/optimization/images/H_corner_2_4000_bi2/.DS_Store

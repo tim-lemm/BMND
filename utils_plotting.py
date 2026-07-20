@@ -307,7 +307,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
     df = results_df_opt.copy()
     ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2)
     ax[1].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"].iloc[::-1].values, linewidth=2)
-    ax[2].plot(df["nbr_bike_lanes"], df["average_bi_coef"].iloc[::-1].values, linewidth=2)
+    ax[2].plot(df["nbr_bike_lanes"], df["average_bi_coef"].values, linewidth=2)
     ax[2].set_xlabel("Number of dedicated bike lanes")
     ax[0].set_ylabel("Bicycle modal share (%)")
     ax[1].set_ylabel("Flow of least used edge")

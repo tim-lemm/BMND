@@ -153,15 +153,16 @@ ax.set_ylim(43.477,43.617)
 plt.show()
 
 fig, ax = plt.subplots(figsize=(5, 7.5))
-plot_network(edge_df, node_df, node_label=True, title="Sioux Falls Network (capacity)", ax=ax, color_col_num="capacity", base_width=1, cmap="summer_r")
+plot_network(edge_df, node_df, node_label=True, title="Sioux Falls Network (capacity)", ax=ax, color_col_num="capacity", base_width=1, cmap="summer_r", vmax=25000, vmin=4000)
 ax.set_xlim(-96.8,-96.69)
 ax.set_ylim(43.477,43.617)
 plt.show()
 
-edge_df = estimate_capacity(edge_df)
+edge_df["type_bike"]="bike_path"
+edge_df = update_car_capacity(edge_df)
 
 fig, ax = plt.subplots(figsize=(5, 7.5))
-plot_network(edge_df, node_df, node_label=True, title="Sioux Falls Network (capacity)", ax=ax, color_col_num="capacity_cars", base_width=1, cmap="summer_r")
+plot_network(edge_df, node_df, node_label=True, title="Sioux Falls Network (capacity)", ax=ax, color_col_num="capacity_cars", base_width=1, cmap="summer_r", vmax=25000, vmin=4000)
 ax.set_xlim(-96.8,-96.69)
 ax.set_ylim(43.477,43.617)
 plt.show()

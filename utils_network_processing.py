@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from utils_od_matrix_generator import *
+from utils_model_handeling import *
 from geopy.distance import geodesic
 
 def calculate_row_ffs(row):
@@ -149,6 +150,55 @@ def calculate_length_bi_2(edge_df, bias = 0, weight=1):
     edge_df["length_bi"] = list_length_bi
     return edge_df
 
+def calculate_length_bi_3(edge_df, model_name = "GradientBoostingClassifier", bias=5000, weight=1):
+    edge_df = apply_bi_model(edge_df, model_name)
+
+    grille_trafic = pd.DataFrame(
+        {
+            "<6000": [0.4, 0.2, 0.0, 0.0, 0.0],
+            "6000-7000": [0.5, 0.4, 0.2, 0.0, 0.0],
+            "7000-8000": [0.75, 0.5, 0.4, 0.2, 0.0],
+            ">8000": [1.0, 0.75, 0.5, 0.4, 0.0],
+        },
+        index=[1, 2, 3, 4, 5],
+    )
+
+    coef_note_map = {5:0.5,
+                     4:0.75,
+                     3:1.0,
+                     2:1.25,
+                     1:1.5}
+
+    lookup = (
+        grille_trafic.unstack()
+        .reset_index()
+        .rename(
+            columns={
+                "level_0": "flow_car_cat",
+                "level_1": "note",
+                0: "coef_trafic",
+            }
+        )
+    )
+    mapper = lookup.set_index(["flow_car_cat", "note"])["coef_trafic"]
+
+    bins = [-np.inf, 6000, 7000, 8000, np.inf]
+    labels = ["<6000", "6000-7000", "7000-8000", ">8000"]
+
+    edge_df["flow_car_cat"] = pd.cut(
+        edge_df["flow_car"], bins=bins, labels=labels, right=False
+    )
+
+    edge_df["coef_trafic"] = (
+        pd.MultiIndex.from_arrays([edge_df["flow_car_cat"], edge_df["note"]]).map(mapper).values
+    )
+
+    edge_df["coef_note"] = edge_df["note"].map(coef_note_map)
+    edge_df["coef_bi"] = edge_df["coef_note"] + edge_df["coef_trafic"]
+    edge_df["length_bi"] = edge_df["length"]*edge_df["coef_bi"]
+
+    return edge_df
+
 def calculate_congested_time(edge_df, free_flow_time_name="free_flow_time", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4):
     """Calculate congested travel time using BPR function.
     𝑇=𝑇0(1+α(𝑉/𝐶)^β)
@@ -170,7 +220,7 @@ def update_car_capacity(edge_df:pd.DataFrame, capacity_car:int = 1500):
 
 def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity_cars", alpha=0.15, beta=4, CAP = True):
     edge_df = calculate_congested_time(edge_df, free_flow_time_name, congested_time_name, flow_name, capacity_name, alpha, beta)
-    edge_df = calculate_length_bi_2(edge_df, bias=5000, weight=1)
+    edge_df = calculate_length_bi_3(edge_df, bias=5000, weight=1)
     if CAP:
         edge_df = update_car_capacity(edge_df)
     edge_df["travel_time_bike"] = edge_df["length_bi"]/edge_df["speed_bike"]

@@ -53,8 +53,8 @@ logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 edge_df, node_df = import_network("data/Sioux_Falls/edges_Sioux_Falls.csv", "data/Sioux_Falls/nodes_Sioux_Falls.csv", real_network=True)
 od_df = pd.read_csv("data/Sioux_Falls/SiouxFalls_od.csv")
 od_df = convert_from_aequilibrae_od_matrix(od_df)
-plot = False
+plot = True
 
 edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=80, CAP=True)
-edge_df_results.to_csv(f"output/optimization/rgo_edge_df_results_CAP_SF_BIMODEL.csv")
-results_df_opt.to_csv(f"output/optimization/rgo_results_df_opt_CAP_SF_BIMODEL.csv")
+edge_df_results.to_csv(f"output/optimization/rgo_edge_df_results_CAP_SF_BIMODEL_2.csv")
+results_df_opt.to_csv(f"output/optimization/rgo_results_df_opt_CAP_SF_BIMODEL_2.csv")

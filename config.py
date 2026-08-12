@@ -1,12 +1,14 @@
 def parameter (name_parameter = "all"):
     parameter_dict = {
         #mode choice
-                      'ASC_bike':-2,
+                      'ASC_bike':-1.5,
                       'ASC_car':0,
                       'mu_mode':1,
-                       'beta_time':-0.000235,
-                    #"'beta_time':-0.0000005,
-                      #'beta_time':-0.000005,
+                    # 'beta_time':-0.000235, #for toy network
+                    # 'beta_time':-0.00005,
+                    # 'beta_time':-0.0000075,
+                    # 'beta_time':-0.0000005,
+                     'beta_time':-0.000005,
                       'max_iter_mode_choice':5,
         #traffic assignement
                       'ta_due_algorithm':'bfw',

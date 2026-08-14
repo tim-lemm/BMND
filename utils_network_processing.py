@@ -239,7 +239,7 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500
 
     edge_df["capacity_per_lane"]=edge_df["capacity"]/edge_df["nbr_car_lane"]
     update_car_capacity(edge_df, capacity_car)
-    edge_df["type_bike"] = "None"
+    edge_df["type_bike"] = edge_df["type_bike"].fillna("None")
     edge_df["speed_bike"] /= 3.6
     edge_df["speed_car"] /= 3.6
     edge_df['free_flow_speed_car']=edge_df['speed_car']

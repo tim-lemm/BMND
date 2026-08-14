@@ -40,7 +40,7 @@ def _create_offset_polygon(coords, width):
 
 def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', node_y_col='y',
                  width_col=None, base_width=0.1, width_scale=2.1, node_id_col='id', color_col_num=None,
-                 color_col_str=None, dict_colors_str=None,
+                 color_col_str=None, dict_colors_str=None, unique_color=None, unique_legend=None,
                  vmin=None, vmax=None, a_node_col='a_node', b_node_col='b_node', show_nodes=True,
                  node_size=100, cmap='viridis', colorbar_label=None, title=None, node_label=False, legend=False,
                  edges_label_col=None):
@@ -52,6 +52,7 @@ def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', 
         dict_colors = dict_colors_str
     else:
         dict_colors = {'bike_path': '#4E9F50FF', 'bike_lane': '#EF8A0CFF', 'none': 'black'}
+
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
@@ -113,7 +114,10 @@ def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', 
         polygon = _create_offset_polygon([a_coords, b_coords], width)
 
         if polygon:
-            color = sm.to_rgba(color_vals[idx]) if use_cmap else color_vals[idx]
+            if unique_color is None:
+                color = sm.to_rgba(color_vals[idx]) if use_cmap else color_vals[idx]
+            else:
+                color = unique_color
             x, y = polygon.exterior.xy
             ax.fill(x, y, color=color, alpha=1, edgecolor='black', linewidth=0.1)
 
@@ -129,6 +133,10 @@ def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', 
         for key, color in dict_colors.items():
             legend_elements.append(Line2D([0], [0], color=color, lw=4, label=key))
         ax.legend(handles=legend_elements, loc='lower right')
+
+    if unique_legend is not None:
+        ax.legend(handles=[Line2D([0], [0], color=unique_color, lw=4, label = unique_legend)], loc='lower right')
+
 
     if use_cmap:
         # Determine colorbar label
@@ -223,20 +231,23 @@ def plot_od_matrix(od_matrix, edges_df, nodes_df, ax=None, figsize=(10, 10), cma
     if ax is None:
         return fig, ax
 
-def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra, output_dir_network, test_name):
-    max_budget = max(edge_df["iteration_of_removal"])
+def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra, output_dir_network, test_name, max_budget, existing_network_df=None):
     iteration_corresponding_to_budget = max_budget - budget + 1
 
     mask = edge_df["iteration_of_removal"] >= iteration_corresponding_to_budget
     list_index_of_bike_infra = edge_df.index[mask].tolist()
 
     edge_df = change_type_bike_infra_with_index(edge_df, "bike_path", list_index_of_bike_infra)
+    _,ax = plt.subplots(figsize=(10, 10))
     plot_network(edge_df, node_df, node_id_col='id',
                      node_label=True,
                      color_col_str='type_bike',
                      base_width=1,
                      legend=True,
-                     title=f"Network for a budget of {budget}")
+                     title=f"Network for a budget of {budget}", ax=ax)
+    if existing_network_df is not None:
+        plot_network(existing_network_df, node_df, node_id_col='id', base_width=1, node_size=0,
+                     node_label=False, ax=ax, legend=False, unique_color="silver")
     if save:
         file_path = output_dir_infra / f"infra_budget_{budget}_{test_name}.png"
         plt.savefig(file_path)
@@ -258,6 +269,9 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
                  base_width=1,
                  legend=True,
                  title=f"Network for a budget of {budget}", ax=axes[1,0])
+    if existing_network_df is not None:
+        plot_network(existing_network_df, node_df, node_id_col='id', base_width=1, node_size=0,
+                     node_label=False, ax=axes[1,0], legend=False, unique_color="silver")
     plot_network(edge_df_results, node_df, color_col_num=f'coef_bi_{iteration_corresponding_to_budget}',
                      cmap='hot_r', title=f'Coef BI',
                      node_size=3, colorbar_label='coef bi', base_width=1, ax=axes[1, 1])
@@ -282,6 +296,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
     results_df_opt = results_df_opt.iloc[1:].reset_index(drop=True)
     results_df_opt["index_removed"] = results_df_opt["index_removed"].apply(ast.literal_eval)
     results_df_opt = results_df_opt.explode('index_removed')
+    edge_df_existing = edge_df[edge_df["existing_bike_infra"]]
     edge_df = edge_df.merge(results_df_opt, how="inner", left_on="id", right_on="index_removed")
     edge_df.index = edge_df["id"]
     edge_df.drop(
@@ -289,19 +304,24 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
          "index_removed",
          "flow_of_removed_edge"], axis=1, inplace=True)
     edge_df.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
-
-
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
     plot_network(edge_df, node_df, node_id_col='id',
                      node_label=True,
                      color_col_num='iteration_of_removal',
                      base_width=1,
                      legend=True,
-                     title=f"Network with iteration of removal")
+                     title=f"Network with iteration of removal",
+                 ax=ax)
+    if not edge_df_existing.empty:
+        plot_network(edge_df_existing, node_df, node_id_col='id',base_width=1, node_size=0,
+                 node_label=False, ax=ax, legend=True, unique_legend="Existing Network", unique_color="silver")
+
     if save:
         file_path = output_dir / f"network_iteration_of_removal_results_{test_name}.png"
         plt.savefig(file_path)
     else:
         plt.show()
+
     plt.rcParams.update({'font.size': 30})
     fig, ax = plt.subplots(3, 1, figsize=(30, 30))
     df = results_df_opt.copy()
@@ -323,10 +343,12 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
         plt.savefig(file_path)
     else:
         plt.show()
+
     plt.rcParams.update({'font.size': 10})
     list_budget = list(range(1, max(results_df_opt["iteration"]) + 1))
+    max_budget = max(list_budget)
     for budget in list_budget:
-        plot_optimization_network(edge_df, edge_df_results,node_df, budget, save, output_dir_infra, output_dir_network, test_name)
+        plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra, output_dir_network, test_name, max_budget=max_budget, existing_network_df=edge_df_existing)
 
 def plot_optimization_different_budgets(list_test_name:list, list_budget:list, save = False):
     for test_name in list_test_name:

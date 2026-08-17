@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 from utils_od_matrix_generator import *
 from utils_model_handeling import *
 from geopy.distance import geodesic
@@ -93,14 +91,13 @@ def calculate_length_real(node_df, edge_df):
             return (node_row['y'].values[0], node_row['x'].values[0])
         else:
             raise KeyError(f"Nœud {node_id} non trouvé dans la colonne 'id'")
-
     edge_df['length'] = edge_df.apply(
-        lambda row: geodesic(
-            get_coords(row["a_node"]),
-            get_coords(row["b_node"])
-        ).meters,
-        axis=1
-    )
+            lambda row: geodesic(
+                get_coords(row["a_node"]),
+                get_coords(row["b_node"])
+            ).meters,
+            axis=1
+        )
     return edge_df
 
 def calculate_length_bi(edge_df, weight = 0):
@@ -226,15 +223,26 @@ def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_
     edge_df["travel_time_bike"] = edge_df["length_bi"]/edge_df["speed_bike"]
     return edge_df
 
-def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500, real_network=False):
+def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500, real_network=False, keep_length=False):
     edge_df = pd.read_csv(edge_filepath)
     node_df = pd.read_csv(node_filepath)
 
+    print(f'Importing network... (real_network = {real_network}, keep_length = {keep_length})')
+    if keep_length and 'length' in edge_df and edge_df["length"].notna().all():
+        print('Using provided length.')
+    if keep_length and not ('length' in edge_df and edge_df["length"].notna().all()):
+        raise ImportError("Impossible to use provided length (at least one value is missing).")
+    if not keep_length :
+        print(f'Calculating length...')
+
+
     if real_network:
-        edge_df = calculate_length_real(node_df, edge_df)
+        if not keep_length:
+            edge_df = calculate_length_real(node_df, edge_df)
         edge_df['nbr_car_lane'] = edge_df['init_nbr_car_lane']
     else :
-        edge_df = calculate_length(node_df, edge_df)
+        if not keep_length:
+            edge_df = calculate_length(node_df, edge_df)
         edge_df["nbr_car_lane"] = 2
 
     edge_df["capacity_per_lane"]=edge_df["capacity"]/edge_df["nbr_car_lane"]
@@ -255,6 +263,9 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500
     edge_df["flow_car"] = 0
     edge_df["flow_bike"] = 0
     edge_df["length_bi"]= edge_df["length"]
+
+    print("Network imported.")
+
     return edge_df, node_df
 
 

@@ -18,7 +18,7 @@ def _create_graph_for_skimming (edge_df: pd.DataFrame, time_field)-> nx.Graph:
             graph.add_edge(edge['a_node'], edge['b_node'], time=edge[time_field])
     return graph
 
-def create_empty_result_df_mc()-> pd.DataFrame:
+def _create_empty_result_df_mc()-> pd.DataFrame:
     return pd.DataFrame({'iteration': [0],
                         'modal_share_car': [np.nan],
                         'modal_share_bike': [np.nan],
@@ -51,18 +51,40 @@ def utility_bike(time, ASC, beta_time):
     return ASC + beta_time * time
 
 
-def skimming (edge_df: pd.DataFrame, size_od, time_field:str = 'time'):
-    skim_matrice = _create_empty_skim_matrice(size_od)
+def skimming (edge_df: pd.DataFrame, od_df, time_field:str = 'time'):
+    valid_centroids = od_df.index.values
+    node_to_index = {node_id: idx for idx, node_id in enumerate(valid_centroids)}
+
+    skim_matrice = _create_empty_skim_matrice(len(valid_centroids)+1)
     graph = _create_graph_for_skimming(edge_df, time_field)
-    for nodes_o in graph.nodes(data=True):
-        for nodes_d in graph.nodes(data=True):
-            if nodes_o[0] != nodes_d[0]:
-                try:
-                    skim_matrice[nodes_o[0], nodes_d[0]] = nx.shortest_path_length(graph, source=nodes_o[0],
-                                                                                    target=nodes_d[0], weight='time')
-                except:
-                    skim_matrice[nodes_o[0], nodes_d[0]] = 9999
+
+    for orig in valid_centroids:
+        for dest in valid_centroids:
+            idx_o = node_to_index[orig]
+            idx_d = node_to_index[dest]
+
+            if orig == dest:
+                skim_matrice[idx_o, idx_d] = 0
+                continue
+            try:
+                skim_matrice[idx_o, idx_d] = nx.shortest_path_length(graph,
+                                                                     source=orig,
+                                                                     target=dest,
+                                                                     weight="time")
+            except nx.NetworkXNoPath:
+                skim_matrice[idx_o, idx_d] = 9999
+
     return skim_matrice
+
+    # for nodes_o in graph.nodes(data=True):
+    #     for nodes_d in graph.nodes(data=True):
+    #         if nodes_o[0] != nodes_d[0]:
+    #             try:
+    #                 skim_matrice[nodes_o[0], nodes_d[0]] = nx.shortest_path_length(graph, source=nodes_o[0],
+    #                                                                                 target=nodes_d[0], weight='time')
+    #             except:
+    #                 skim_matrice[nodes_o[0], nodes_d[0]] = 9999
+    # return skim_matrice
 
 def calculate_proba_matrice (skim_matrice_car, skim_matrice_bike, ASC_car:float, ASC_bike:float, beta_time:float, mu_mode:float, size_od:int):
     prob_matrice_car = _create_empty_skim_matrice(size_od)
@@ -132,19 +154,19 @@ def mode_choice(edge_df,
                 plot=True,
                 return_network=False,
                 CAP = True,
-                capacity_field_car = "capacity_cars",
+                capacity_field_car = "capacity",
                 capacity_field_bike = "capacity_bikes",):
     od_matrix = convert_od_df_to_matrix(od_df)
     size_od = len(od_matrix)
-    results_df = create_empty_result_df_mc()
+    results_df = _create_empty_result_df_mc()
     j = 0
     while j < max_iter_mode_choice:
         if plot:
             print(f"\n--- Mode Choice Loop {j + 1} ---")
         j += 1
 
-        skim_car = skimming(edge_df, time_field='travel_time_car', size_od=size_od)
-        skim_bike = skimming(edge_df, time_field='travel_time_bike', size_od=size_od)
+        skim_car = skimming(edge_df, od_df, time_field='travel_time_car')
+        skim_bike = skimming(edge_df, od_df, time_field='travel_time_bike')
         # Calculate utilities and mode share for each OD pair
         prob_matrice_car, prob_matrice_bike = calculate_proba_matrice(skim_car, skim_bike, ASC_car, ASC_bike, beta_time,
                                                                       mu_mode, size_od)
@@ -168,7 +190,7 @@ def mode_choice(edge_df,
 
         # run traffic assignments with updated OD matrices
         car_results_mode_choice = ta_due(
-            edge_df,
+            edge_df[edge_df["capacity"] > 0],
             updated_od_car,
             algorithm=algorithm_due,
             time_field='travel_time_car',

@@ -14,7 +14,8 @@ CURRENT_DIR = "/Users/tristan.lemoalle/Documents/Thèse/Code/code_these/"
 warnings.filterwarnings('ignore')
 logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 
-edge_df, node_df = import_network("data/Sioux_Falls/edges_Sioux_Falls.csv", "data/Sioux_Falls/nodes_Sioux_Falls.csv", real_network=True)
+city_name = "Delft"
+edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True, keep_length=True)
 plot_network(edge_df, node_df,
              node_id_col='id',
              node_label=True,
@@ -25,7 +26,7 @@ plot_network(edge_df, node_df,
              figsize=(8, 8))
 plt.show()
 
-od_df_eaq = pd.read_csv("data/Sioux_Falls/SiouxFalls_od.csv")
+od_df_eaq = pd.read_csv(f"data/{city_name}/od_{city_name}.csv")
 # od_df = generate_od_df(17, od_scenario="2OD_SF", max_demand=3000)
 # od_df_eaq = convert_to_eaquilibrae_od_matrix(od_df)
 plot_od_matrix(od_df_eaq, edge_df, node_df)
@@ -37,16 +38,18 @@ algorithm_sto = parameter_dict['ta_sto_algorithm']
 max_iter = parameter_dict['max_iter_ta']
 tolerance = parameter_dict['tolerance']
 max_route = parameter_dict['max_route']
-## ta_due tests
+## ta_due test
+car_edge_df = edge_df[edge_df['capacity']>0].copy()
 
-results_ta_due = ta_due(edge_df,
+print(car_edge_df.to_string())
+results_ta_due = ta_due(car_edge_df,
                         od_df_eaq,
                         algorithm="fw",
                         max_iter=max_iter,
                         tolerance=tolerance,
                         time_field='free_flow_time_car',
                         cost_field='free_flow_time_car',
-                        capacity_field='capacity_cars',
+                        capacity_field='capacity',
                         verbose=True)
 
 edge_df=results_ta_due['network']

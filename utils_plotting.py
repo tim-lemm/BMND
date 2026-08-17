@@ -253,6 +253,7 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
         plt.savefig(file_path)
     else:
         plt.show()
+    plt.close()
 
     fig, axes = plt.subplots(2, 2, figsize=(10, 10))
     plot_network(edge_df_results, node_df, width_col=f'flow_car_iteration_{iteration_corresponding_to_budget}',
@@ -268,6 +269,7 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
                  color_col_str='type_bike',
                  base_width=1,
                  legend=True,
+                 show_nodes=False,
                  title=f"Network for a budget of {budget}", ax=axes[1,0])
     if existing_network_df is not None:
         plot_network(existing_network_df, node_df, node_id_col='id', base_width=1, node_size=0,
@@ -280,8 +282,9 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
         plt.savefig(file_path)
     else:
         plt.show()
+    plt.close()
 
-def plot_optimization_results(test_name:str, edge_df, node_df, save = False, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True):
+def plot_optimization_results(test_name:str, edge_df, node_df, save = False, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True, step=1):
     output_dir = Path(file_path + test_name)
     output_dir_network = output_dir / "network"
     output_dir_infra = output_dir / "infrastructure"
@@ -311,7 +314,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
                      base_width=1,
                      legend=True,
                      title=f"Network with iteration of removal",
-                 ax=ax)
+                 ax=ax, show_nodes=False)
     if not edge_df_existing.empty:
         plot_network(edge_df_existing, node_df, node_id_col='id',base_width=1, node_size=0,
                  node_label=False, ax=ax, legend=True, unique_legend="Existing Network", unique_color="silver")
@@ -345,7 +348,7 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
         plt.show()
 
     plt.rcParams.update({'font.size': 10})
-    list_budget = list(range(1, max(results_df_opt["iteration"]) + 1))
+    list_budget = list(range(1, max(results_df_opt["iteration"]) + 1, step))
     max_budget = max(list_budget)
     for budget in list_budget:
         plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra, output_dir_network, test_name, max_budget=max_budget, existing_network_df=edge_df_existing)

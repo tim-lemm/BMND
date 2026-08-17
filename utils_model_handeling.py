@@ -24,7 +24,7 @@ def convert_df(edge_df):
 
     edge_df_for_predicition["speed"] = pd.cut(edge_df_for_predicition["speed"],
                                               bins = [-np.inf,20,30,50,np.inf],
-                                              labels = [0,1,2,3]).astype(int)
+                                              labels = [0,1,2,3]).fillna(0).astype(int)
 
     edge_df_for_predicition["slope"] = pd.cut(edge_df_for_predicition["slope"],
                                               bins = [-np.inf,2,6,np.inf],
@@ -40,7 +40,7 @@ def convert_df(edge_df):
 
     edge_df_for_predicition["nbr_lane"] = pd.cut(edge_df_for_predicition["nbr_lane"],
                                               bins=[-np.inf, 1, 2, 3, np.inf],
-                                              labels=[0, 1, 2, 3]).astype(int)
+                                              labels=[0, 1, 2, 3]).fillna(0).astype(int)
 
     return edge_df_for_predicition
 

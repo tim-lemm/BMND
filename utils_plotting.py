@@ -349,9 +349,17 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
 
     plt.rcParams.update({'font.size': 10})
     list_budget = list(range(1, max(results_df_opt["iteration"]) + 1, step))
+
+    print(f"Plotting {len(list_budget)} images...")
     max_budget = max(list_budget)
-    for budget in list_budget:
-        plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra, output_dir_network, test_name, max_budget=max_budget, existing_network_df=edge_df_existing)
+    if len(list_budget) > 100 :
+        if input(f"Warning : more than 100 graph to plot, plot anyway ?") in ["y","yes"]:
+            i = 0
+            for budget in list_budget:
+                if i % 5 == 0 :
+                    print(f"Plotting graph {i} out of {len(list_budget)}")
+                plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra, output_dir_network, test_name, max_budget=max_budget, existing_network_df=edge_df_existing)
+                i += 1
 
 def plot_optimization_different_budgets(list_test_name:list, list_budget:list, save = False):
     for test_name in list_test_name:

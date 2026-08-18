@@ -50,13 +50,13 @@ logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 #             edge_df_results.to_csv(f"output/_hEART_article/csv/sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_edge_results.csv")
 #             results_df_opt.to_csv(f"output/_hEART_article/csv//sensitivity_analysis/{speed_bike}_{ASC_bike}_{beta_time}_rgo_results_df_opt.csv")
 
-city_name = "Delft"
-edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True, keep_length=True)
+city_name = "Sioux_Falls"
+edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True, keep_length=False)
 od_df = pd.read_csv(f"data/{city_name}/od_{city_name}.csv")
 od_df = convert_from_aequilibrae_od_matrix(od_df)
 plot = True
 
-name_test = f"CAP_{city_name}_BIMODEL_test_from_scratch"
+name_test = f"CAP_{city_name}_test_from_scratch_2"
 
 edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=2000, CAP=True, from_scratch=True)
 edge_df_results.to_csv(f"output/optimization/rgo_edge_df_results_{name_test}.csv")

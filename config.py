@@ -8,7 +8,7 @@ def parameter (name_parameter = "all"):
                     # 'beta_time':-0.00005,
                     # 'beta_time':-0.0000075,
                     # 'beta_time':-0.0000005,
-                     'beta_time':-0.000005,
+                     'beta_time':-0.00005,
                       'max_iter_mode_choice':5,
         #traffic assignement
                       'ta_due_algorithm':'bfw',

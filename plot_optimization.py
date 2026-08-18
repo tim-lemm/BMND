@@ -455,26 +455,28 @@ import matplotlib.lines as mlines
 # axes[2].legend(title="Beta time")
 # axes[2].title.set_text("Beta time impact for set speed (15 km/h) and ASC (-2.5)")
 # plt.show()
-city_name = "Sioux_Falls"
-name_test = f"CAP_{city_name}_test_from_scratch_2"
-fig, ax = plt.subplots(2,1,figsize=(30, 20))
-fp = f"output/optimization/rgo_results_df_opt_{name_test}.csv"
-df = pd.read_csv(fp)
 
-# Plot primaire
-ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2)
-ax[1].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"].iloc[::-1].values, linewidth=2)
-ax[0].set_xlabel("Number of dedicated bike lanes")
-ax[1].set_xlabel("Number of dedicated bike lanes")
-ax[0].set_ylabel("Bicycle modal share (%)")
-ax[1].set_ylabel("Flow of least used edge")
-ax[0].grid(True, alpha=0.3)
-ax[1].grid(True, alpha=0.3)
+# fig, ax = plt.subplots(2,1,figsize=(30, 20))
+# fp = f"output/optimization/rgo_results_df_opt_{name_test}.csv"
+# df = pd.read_csv(fp)
+#
+# # Plot primaire
+# ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2)
+# ax[1].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"].iloc[::-1].values, linewidth=2)
+# ax[0].set_xlabel("Number of dedicated bike lanes")
+# ax[1].set_xlabel("Number of dedicated bike lanes")
+# ax[0].set_ylabel("Bicycle modal share (%)")
+# ax[1].set_ylabel("Flow of least used edge")
+# ax[0].grid(True, alpha=0.3)
+# ax[1].grid(True, alpha=0.3)
+#
+# plt.tight_layout()
+# plt.show()
 
-plt.tight_layout()
-plt.show()
+city_name = "Delft"
+name_test = f"CAP_{city_name}_BIMODEL_test_from_scratch"
 plt.rcParams.update({'font.size': 10})
 edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True)
 edge_df['existing_bike_infra']=False
 edge_df['type_bike']=None
-plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True, step = 1)
+plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True, step = 25)

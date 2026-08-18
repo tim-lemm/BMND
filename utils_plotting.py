@@ -267,7 +267,7 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
     plot_network(edge_df, node_df, node_id_col='id',
                  node_label=True,
                  color_col_str='type_bike',
-                 base_width=1,
+                 base_width=0.5,
                  legend=True,
                  show_nodes=False,
                  title=f"Network for a budget of {budget}", ax=axes[1,0])
@@ -276,7 +276,7 @@ def plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, o
                      node_label=False, ax=axes[1,0], legend=False, unique_color="silver")
     plot_network(edge_df_results, node_df, color_col_num=f'coef_bi_{iteration_corresponding_to_budget}',
                      cmap='hot_r', title=f'Coef BI',
-                     node_size=3, colorbar_label='coef bi', base_width=1, ax=axes[1, 1])
+                     node_size=3, colorbar_label='coef bi', base_width=0.5, ax=axes[1, 1])
     if save:
         file_path = output_dir_network / f"networks_budget_{budget}_{test_name}.png"
         plt.savefig(file_path)
@@ -311,12 +311,12 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
     plot_network(edge_df, node_df, node_id_col='id',
                      node_label=True,
                      color_col_num='iteration_of_removal',
-                     base_width=1,
+                     base_width=0.5,
                      legend=True,
                      title=f"Network with iteration of removal",
                  ax=ax, show_nodes=False)
     if not edge_df_existing.empty:
-        plot_network(edge_df_existing, node_df, node_id_col='id',base_width=1, node_size=0,
+        plot_network(edge_df_existing, node_df, node_id_col='id',base_width=0.5, node_size=0,
                  node_label=False, ax=ax, legend=True, unique_legend="Existing Network", unique_color="silver")
 
     if save:

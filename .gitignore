@@ -35,3 +35,5 @@ __pycache__/utils_plotting.cpython-311.pyc
 __pycache__
 cache
 src/__pycache__/utils_sta.cpython-312.pyc
+output/optimization/images/.DS_Store
+.DS_Store

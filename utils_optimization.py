@@ -49,8 +49,8 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bo
         ASC_bike = custom_parameter_dict['ASC_bike']
         mu_mode = custom_parameter_dict['mu_mode']
         max_iter_mode_choice = custom_parameter_dict['max_iter_mode_choice']
-        speed_bike = custom_parameter_dict['speed_bike']
-        edge_df["speed_bike"] = speed_bike/3.6
+        #speed_bike = custom_parameter_dict['speed_bike']
+        #edge_df["speed_bike"] = speed_bike/3.6
 
     if from_scratch:
         edge_df['existing_bike_infra']=False

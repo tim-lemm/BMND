@@ -1,10 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import legend
-
 from utils_plotting import *
 from utils_network_processing import *
 plt.rcParams.update({'font.size': 30})
+import os
 
 # edge_df, node_df = import_network("data/_old/edges_small_grid_3.csv", "data/_old/nodes_small_grid_3.csv")
 #
@@ -473,10 +473,35 @@ import matplotlib.lines as mlines
 # plt.tight_layout()
 # plt.show()
 
-city_name = "Delft"
-name_test = f"CAP_{city_name}_BIMODEL_test_from_scratch"
-plt.rcParams.update({'font.size': 10})
-edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True)
-edge_df['existing_bike_infra']=False
-edge_df['type_bike']=None
-plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True, step = 1)
+# city_name = "Delft"
+# name_test = f"CAP_{city_name}_BIMODEL_test_from_scratch"
+# plt.rcParams.update({'font.size': 10})
+# edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True)
+# edge_df['existing_bike_infra']=False
+# edge_df['type_bike']=None
+# plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True, step = 1)
+
+
+plt.rcParams.update({'font.size': 20})
+# list_ASC_bike = [-1,-2,-2.5,-3]
+list_ASC_bike = [-2]
+list_beta_time = [-0.00006,-0.000065,-0.00007,-0.000075,-0.00008, -0.000085, -0.00009, -0.000095, -0.0001]
+city_name = "Sioux_Falls"
+horodatage = "2026-08-21_11-30-42"
+# os.makedirs(f"output/optimization/test_parametres/{horodatage}/images")
+for ASC_bike in list_ASC_bike:
+    fig, ax = plt.subplots(1,1,figsize=(30, 15))
+    fig.suptitle(f"Test parametres for {city_name}, ASC = {ASC_bike}, ({horodatage})")
+
+    for beta_time in list_beta_time:
+        name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}"
+        filename=f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
+        df = pd.read_csv(filename)
+        ax.plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=beta_time)
+    ax.set_xlabel("Number of dedicated bike lanes")
+    ax.set_ylabel("Bicycle modal share (%)")
+    ax.grid(True, alpha=0.3)
+    ax.legend()
+
+    plt.savefig(f"output/optimization/test_parametres/{horodatage}/images/{ASC_bike}.png")
+    plt.tight_layout()

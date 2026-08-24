@@ -195,6 +195,36 @@ def calculate_length_bi_3(edge_df, model_name = "GradientBoostingClassifier", co
                          3: 2.0,
                          2: 2.5,
                          1: 3}
+    elif coef_map_num == 7:
+        coef_note_map = {5: 1.0,
+                         4: 1.75,
+                         3: 2.5,
+                         2: 3.25,
+                         1: 4}
+    elif coef_map_num == 8:
+        coef_note_map = {5: 1.0,
+                         4: 2,
+                         3: 3.0,
+                         2: 4,
+                         1: 5}
+    elif coef_map_num == 9:
+        coef_note_map = {5: 1.0,
+                         4: 1.5,
+                         3: 3.0,
+                         2: 6,
+                         1: 12}
+    elif coef_map_num == 10:
+        coef_note_map = {5: 0.5,
+                         4: 1,
+                         3: 3.0,
+                         2: 6,
+                         1: 12}
+    elif coef_map_num == 11:
+        coef_note_map = {5: 0.5,
+                         4: 0.75,
+                         3: 1.0,
+                         2: 12,
+                         1: 24}
 
     lookup = (
         grille_trafic.unstack()

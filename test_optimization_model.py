@@ -38,27 +38,28 @@ logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 # list_speed_bike = [5,10,15,20,25]
 
 list_ASC_bike = [-2]
-list_beta_time = [-0.0007,-0.0008,-0.0009,-0.001, -0.0025 ,-0.005]
+list_beta_time = [-0.001]
+list_coef_map_num = [11]
 horodatage = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 city_name = "Sioux_Falls"
 os.makedirs(f"output/optimization/test_parametres/{horodatage}")
 edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True, keep_length=False)
 od_df = pd.read_csv(f"data/{city_name}/od_{city_name}.csv")
 od_df = convert_from_aequilibrae_od_matrix(od_df)
-
-for ASC_bike in list_ASC_bike:
-    for beta_time in list_beta_time:
-        name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}"
-        edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv",
-                                          f"data/{city_name}/nodes_{city_name}.csv", real_network=True,
-                                          keep_length=False)
-        dict_parameter = parameter("all")
-        dict_parameter["ASC_bike"] = ASC_bike
-        dict_parameter["beta_time"] = beta_time
-        edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=100, CAP=True,
-                                                                      from_scratch=True, custom_parameter_dict=dict_parameter)
-        edge_df_results.to_csv(f"output/optimization/test_parametres/{horodatage}/rgo_edge_df_results_{name_test}.csv")
-        results_df_opt.to_csv(f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv")
+for coef_map_num in list_coef_map_num:
+    for ASC_bike in list_ASC_bike:
+        for beta_time in list_beta_time:
+            name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
+            edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv",
+                                              f"data/{city_name}/nodes_{city_name}.csv", real_network=True,
+                                              keep_length=False)
+            dict_parameter = parameter("all")
+            dict_parameter["ASC_bike"] = ASC_bike
+            dict_parameter["beta_time"] = beta_time
+            edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=100, CAP=True,
+                                                                          from_scratch=True, custom_parameter_dict=dict_parameter, coef_map_num=coef_map_num)
+            edge_df_results.to_csv(f"output/optimization/test_parametres/{horodatage}/rgo_edge_df_results_{name_test}.csv")
+            results_df_opt.to_csv(f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv")
 
 # horodatage = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 # beta_time = parameter("beta_time")

@@ -483,27 +483,34 @@ import matplotlib.lines as mlines
 
 
 plt.rcParams.update({'font.size': 20})
-list_ASC_bike = [-1,-2,-2.5,-3]
-list_ASC_bike = [-2]
-list_beta_time = [-0.0007,-0.0008,-0.0009,-0.001, -0.0025 ,-0.005]
+# list_ASC_bike = [-1,-2,-2.5,-3]
+# list_ASC_bike = [-2]
+ASC_bike = -2
+beta_time = -0.001
+# list_beta_time = [-0.0007,-0.0008,-0.0009,-0.001, -0.0025 ,-0.005]
+list_coef_map_num = [1,9,10, 11]
 city_name = "Sioux_Falls"
-horodatage = "2026-08-24_14-07-51"
-os.makedirs(f"output/optimization/test_parametres/{horodatage}/images")
-for ASC_bike in list_ASC_bike:
-    fig, ax = plt.subplots(1,1,figsize=(30, 15))
-    fig.suptitle(f"Test parametres for {city_name}, ASC = {ASC_bike}, ({horodatage})")
+horodatage = "2026-08-24_15-19-07"
+os.makedirs(f"output/optimization/test_parametres/{horodatage}/images", exist_ok=True)
+fig, ax = plt.subplots(2, 1, figsize=(30, 30))
+fig.suptitle(f"Test parametres for {city_name}, ASC = {ASC_bike}, ({horodatage})")
+for coef_map_num in list_coef_map_num:
+    name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
+    filename=f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
+    df = pd.read_csv(filename)
+    ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=coef_map_num)
+    ax[0].set_xlabel("Number of dedicated bike lanes")
+    ax[0].set_ylabel("Bicycle modal share (%)")
+    ax[0].grid(True, alpha=0.3)
+    ax[0].legend(loc="lower right")
 
-    for beta_time in list_beta_time:
-        name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}"
-        filename=f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
-        df = pd.read_csv(filename)
-        ax.plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=beta_time)
-    ax.set_xlabel("Number of dedicated bike lanes")
-    ax.set_ylabel("Bicycle modal share (%)")
-    ax.grid(True, alpha=0.3)
-    ax.legend()
+    ax[1].plot(df["nbr_bike_lanes"], df["average_bi_coef"], linewidth=2, label=coef_map_num)
+    ax[1].set_xlabel("Number of dedicated bike lanes")
+    ax[1].set_ylabel("Average Bikeability coefficient")
+    ax[1].grid(True, alpha=0.3)
+    ax[1].legend(loc="lower right")
 
-    plt.savefig(f"output/optimization/test_parametres/{horodatage}/images/{ASC_bike}.png")
+    plt.savefig(f"output/optimization/test_parametres/{horodatage}/images/bi_models_selected.png")
     plt.tight_layout()
 
 # city_name = "Sioux_Falls"

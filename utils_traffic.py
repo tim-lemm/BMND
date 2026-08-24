@@ -155,7 +155,7 @@ def mode_choice(edge_df,
                 return_network=False,
                 CAP = True,
                 capacity_field_car = "capacity",
-                capacity_field_bike = "capacity_bikes",):
+                capacity_field_bike = "capacity_bikes",coef_map_num=1):
     od_matrix = convert_od_df_to_matrix(od_df)
     size_od = len(od_matrix)
     results_df = _create_empty_result_df_mc()
@@ -224,7 +224,7 @@ def mode_choice(edge_df,
 
         # calculate congested time for cars and length bi
         edge_df = update_network(edge_df, flow_name='flow_car', free_flow_time_name='free_flow_time_car',
-                       capacity_name=capacity_field_car, congested_time_name='travel_time_car', alpha=0.15, beta=4, CAP=CAP)
+                       capacity_name=capacity_field_car, congested_time_name='travel_time_car', alpha=0.15, beta=4, CAP=CAP, coef_map_num=coef_map_num)
 
         results_df = update_result_df_mc(results_df, j,
                                          modal_share_car,

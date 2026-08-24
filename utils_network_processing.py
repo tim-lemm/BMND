@@ -147,7 +147,7 @@ def calculate_length_bi_2(edge_df, bias = 0, weight=1):
     edge_df["length_bi"] = list_length_bi
     return edge_df
 
-def calculate_length_bi_3(edge_df, model_name = "GradientBoostingClassifier", bias=5000, weight=1):
+def calculate_length_bi_3(edge_df, model_name = "GradientBoostingClassifier", coef_map_num=1, weight=1):
     edge_df = apply_bi_model(edge_df, model_name)
 
     grille_trafic = pd.DataFrame(
@@ -159,12 +159,42 @@ def calculate_length_bi_3(edge_df, model_name = "GradientBoostingClassifier", bi
         },
         index=[1, 2, 3, 4, 5],
     )
-
-    coef_note_map = {5:0.5,
-                     4:0.75,
-                     3:1.0,
-                     2:1.25,
-                     1:1.5}
+    if coef_map_num == 1:
+        coef_note_map = {5: 0.5,
+                         4: 0.75,
+                         3: 1.0,
+                         2: 1.25,
+                         1: 1.5}
+    elif coef_map_num == 2:
+        coef_note_map = {5: 0.75,
+                         4: 1.0,
+                         3: 1.25,
+                         2: 1.75,
+                         1: 2.0}
+    elif coef_map_num == 3:
+        coef_note_map = {5: 1,
+                         4: 1.25,
+                         3: 1.5,
+                         2: 1.75,
+                         1: 2}
+    elif coef_map_num == 4:
+        coef_note_map = {5: 0.8,
+                         4: 1.0,
+                         3: 1.5,
+                         2: 1.75,
+                         1: 2}
+    elif coef_map_num == 5:
+        coef_note_map = {5: 1.0,
+                         4: 1.25,
+                         3: 1.5,
+                         2: 2.0,
+                         1: 2.5}
+    elif coef_map_num == 6:
+        coef_note_map = {5: 1.0,
+                         4: 1.5,
+                         3: 2.0,
+                         2: 2.5,
+                         1: 3}
 
     lookup = (
         grille_trafic.unstack()
@@ -215,9 +245,9 @@ def update_car_capacity(edge_df:pd.DataFrame, capacity_car:int = 1500):
     edge_df["capacity_cars"] = edge_df["capacity_per_lane"]*edge_df["nbr_car_lane"]
     return edge_df
 
-def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity_cars", alpha=0.15, beta=4, CAP = True):
+def update_network(edge_df, free_flow_time_name="free_flow_time_car", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity_cars", alpha=0.15, beta=4, CAP = True, coef_map_num = 1):
     edge_df = calculate_congested_time(edge_df, free_flow_time_name, congested_time_name, flow_name, capacity_name, alpha, beta)
-    edge_df = calculate_length_bi_3(edge_df, bias=5000, weight=1)
+    edge_df = calculate_length_bi_3(edge_df, coef_map_num=coef_map_num, weight=1)
     if CAP:
         edge_df = update_car_capacity(edge_df)
     edge_df["travel_time_bike"] = edge_df["length_bi"]/edge_df["speed_bike"]

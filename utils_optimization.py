@@ -29,7 +29,7 @@ def update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bi
                      ignore_index=True)
 
 
-def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bool = False, nbr_removal:int = 1, CAP:bool = True, custom_parameter_dict:dict = None, from_scratch:bool = True):
+def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bool = False, nbr_removal:int = 1, CAP:bool = True, custom_parameter_dict:dict = None, from_scratch:bool = True, coef_map_num = 1):
     # construct bike lane on all edge
     edge_df = apply_bike_infra_scenario(edge_df, 2)
     edge_df = update_network(edge_df, flow_name='flow_car', free_flow_time_name='free_flow_time_car',
@@ -86,7 +86,8 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bo
                                                                                                                 max_iter_mode_choice=max_iter_mode_choice,
                                                                                                                 plot=plot,
                                                                                                                 return_network=True,
-                                                                                                                CAP=CAP)
+                                                                                                                CAP=CAP,
+                                                                                                                coef_map_num = coef_map_num)
 
         edge_df["coef_bi"] = edge_df["length_bi"] / edge_df["length"]
         # update edge_df_results

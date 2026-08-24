@@ -38,7 +38,7 @@ logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 # list_speed_bike = [5,10,15,20,25]
 
 list_ASC_bike = [-2]
-list_beta_time = [-0.000075,-0.00008, -0.000085, -0.00009, -0.000095, -0.0001]
+list_beta_time = [-0.0007,-0.0008,-0.0009,-0.001, -0.0025 ,-0.005]
 horodatage = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 city_name = "Sioux_Falls"
 os.makedirs(f"output/optimization/test_parametres/{horodatage}")

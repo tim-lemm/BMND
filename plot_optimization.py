@@ -483,12 +483,12 @@ import matplotlib.lines as mlines
 
 
 plt.rcParams.update({'font.size': 20})
-# list_ASC_bike = [-1,-2,-2.5,-3]
+list_ASC_bike = [-1,-2,-2.5,-3]
 list_ASC_bike = [-2]
-list_beta_time = [-0.00006,-0.000065,-0.00007,-0.000075,-0.00008, -0.000085, -0.00009, -0.000095, -0.0001]
+list_beta_time = [-0.0007,-0.0008,-0.0009,-0.001, -0.0025 ,-0.005]
 city_name = "Sioux_Falls"
-horodatage = "2026-08-21_11-30-42"
-# os.makedirs(f"output/optimization/test_parametres/{horodatage}/images")
+horodatage = "2026-08-24_14-07-51"
+os.makedirs(f"output/optimization/test_parametres/{horodatage}/images")
 for ASC_bike in list_ASC_bike:
     fig, ax = plt.subplots(1,1,figsize=(30, 15))
     fig.suptitle(f"Test parametres for {city_name}, ASC = {ASC_bike}, ({horodatage})")
@@ -505,3 +505,22 @@ for ASC_bike in list_ASC_bike:
 
     plt.savefig(f"output/optimization/test_parametres/{horodatage}/images/{ASC_bike}.png")
     plt.tight_layout()
+
+# city_name = "Sioux_Falls"
+# horodatage = "2026-08-24_10-09-38"
+# fig, ax = plt.subplots(figsize=(30, 15))
+#
+# fig.suptitle(f"Test parametres for {city_name}, ASC = -2, ({horodatage})")
+#
+# filename = "output/optimization/test_parametres/2026-08-24_11-10-06/rgo_results_df_opt_CAP_Sioux_Falls_test_-0.001_-2.csv"
+# df = pd.read_csv(filename)
+# ax.plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label="18")
+# filename = "output/optimization/test_parametres/2026-08-24_10-09-38/rgo_results_df_opt_CAP_Sioux_Falls_test_-0.001_-2.csv"
+# df = pd.read_csv(filename)
+# ax.plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label="21")
+# ax.set_xlabel("Number of dedicated bike lanes")
+# ax.set_ylabel("Bicycle modal share (%)")
+# ax.grid(True, alpha=0.3)
+# ax.legend()
+#
+# plt.show()

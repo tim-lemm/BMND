@@ -360,7 +360,15 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
                     print(f"Plotting graph {i} out of {len(list_budget)}")
                 plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra, output_dir_network, test_name, max_budget=max_budget, existing_network_df=edge_df_existing)
                 i += 1
-
+    else :
+        i = 0
+        for budget in list_budget:
+            if i % 5 == 0:
+                print(f"Plotting graph {i} out of {len(list_budget)}")
+            plot_optimization_network(edge_df, edge_df_results, node_df, budget, save, output_dir_infra,
+                                      output_dir_network, test_name, max_budget=max_budget,
+                                      existing_network_df=edge_df_existing)
+            i += 1
 def plot_optimization_different_budgets(list_test_name:list, list_budget:list, save = False):
     for test_name in list_test_name:
         edge_df, node_df = import_network("data/_old/edges_small_grid_2.csv", "data/_old/nodes_small_grid_2.csv")

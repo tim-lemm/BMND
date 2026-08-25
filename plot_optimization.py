@@ -485,7 +485,7 @@ filename_results=f"output/optimization/test_parametres/{horodatage}/rgo_results_
 filename_edge = f"output/optimization/test_parametres/{horodatage}/rgo_edge_df_results_{name_test}.csv"
 results_df_opt = pd.read_csv(filename_results)
 edge_df_results = pd.read_csv(filename_edge)
-plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = f"output/optimization/test_parametres/{horodatage}/images/", edge_df_results = edge_df_results, results_df_opt = results_df_opt, step = 1)
+plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = f"output/optimization/test_parametres/{horodatage}/images/", edge_df_results = edge_df_results, results_df_opt = results_df_opt)
 
 # plt.rcParams.update({'font.size': 20})
 # list_ASC_bike = [-1,-2,-2.5,-3]

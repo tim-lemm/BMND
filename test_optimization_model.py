@@ -37,7 +37,8 @@ logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 
 # list_speed_bike = [5,10,15,20,25]
 
-list_ASC_bike = [-2]
+list_ASC_bike = [-1,-2,-2.5,-3]
+# list_beta_time = [-0.005,-0.0001,-0.0005,-0.00001]
 list_beta_time = [-0.001]
 list_coef_map_num = [11]
 horodatage = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

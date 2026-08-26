@@ -2,7 +2,7 @@ import warnings
 import logging
 import random
 import os
-
+import pandas as pd
 from utils_traffic import *
 from utils_network_processing import *
 from utils_plotting import *
@@ -37,10 +37,10 @@ logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 
 # list_speed_bike = [5,10,15,20,25]
 
-list_ASC_bike = [-1,-2,-2.5,-3]
+list_ASC_bike = [-2]
 # list_beta_time = [-0.005,-0.0001,-0.0005,-0.00001]
 list_beta_time = [-0.001]
-list_coef_map_num = [11]
+list_coef_map_num = [16,17,18]
 horodatage = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 city_name = "Sioux_Falls"
 os.makedirs(f"output/optimization/test_parametres/{horodatage}")
@@ -51,6 +51,7 @@ for coef_map_num in list_coef_map_num:
     for ASC_bike in list_ASC_bike:
         for beta_time in list_beta_time:
             name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
+            print(f"Testing {beta_time} - {ASC_bike} - {coef_map_num}")
             edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv",
                                               f"data/{city_name}/nodes_{city_name}.csv", real_network=True,
                                               keep_length=False)

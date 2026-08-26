@@ -149,7 +149,7 @@ def calculate_length_bi_2(edge_df, bias = 0, weight=1):
 
 from config import COEF_NOTE_MAPS, TRAFIC_MAPPER, TRAFIC_BINS, TRAFIC_LABELS
 
-def calculate_length_bi_3(edge_df, model_name="GradientBoostingClassifier", coef_map_num=1):
+def calculate_length_bi_3(edge_df, model_name="GradientBoostingClassifier", coef_map_num=1, weight=1):
     if coef_map_num not in COEF_NOTE_MAPS:
         raise ValueError(
             f"coef_map_num invalide ({coef_map_num}). Choisissez une valeur entre 1 et {len(COEF_NOTE_MAPS)}."

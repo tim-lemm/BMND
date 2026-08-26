@@ -369,29 +369,38 @@ def plot_optimization_results(test_name:str, edge_df, node_df, save = False, fil
                                       output_dir_network, test_name, max_budget=max_budget,
                                       existing_network_df=edge_df_existing)
             i += 1
+
+def prep_edge_df_for_plot(budget:int, edge_df:pd.DataFrame, results_df_opt:pd.DataFrame):
+    if "Unnamed: 0" in results_df_opt.columns:
+        results_df_opt.drop("Unnamed: 0", axis=1, inplace=True)
+    results_df_opt = results_df_opt.iloc[1:].reset_index(drop=True)
+    results_df_opt["index_removed"] = results_df_opt["index_removed"].apply(ast.literal_eval)
+    results_df_opt = results_df_opt.explode('index_removed')
+    edge_df = edge_df.merge(results_df_opt, how="inner", left_on="id", right_on="index_removed")
+    edge_df.index = edge_df["id"]
+    edge_df.drop(
+        ["nbr_bike_lanes", "nbr_none_bike_lanes", "modal_share_car", "modal_share_bike",
+         "index_removed",
+         "flow_of_removed_edge"], axis=1, inplace=True)
+    edge_df.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
+    max_budget = len(edge_df.index)
+    iteration_corresponding_to_budget = max_budget - budget + 1
+
+    mask = edge_df["iteration_of_removal"] >= iteration_corresponding_to_budget
+    list_index_of_bike_infra = edge_df.index[mask].tolist()
+    edge_df["type_bike"]="None"
+    edge_df = change_type_bike_infra_with_index(edge_df, "bike_path", list_index_of_bike_infra)
+
+    return edge_df
+
 def plot_optimization_different_budgets(list_test_name:list, list_budget:list, save = False):
     for test_name in list_test_name:
         edge_df, node_df = import_network("data/_old/edges_small_grid_2.csv", "data/_old/nodes_small_grid_2.csv")
         results_df_opt = pd.read_csv(f"output/optimization/rgo_results_df_opt_{test_name}.csv")
-
-        edge_df = edge_df.merge(results_df_opt, how="inner", left_index=True, right_on="index_removed").set_index(
-            edge_df.index)
-
-        edge_df.drop(
-            ["Unnamed: 0", "nbr_bike_lanes", "nbr_none_bike_lanes", "modal_share_car", "modal_share_bike",
-             "index_removed",
-             "flow_of_removed_edge"], axis=1, inplace=True)
-        edge_df.rename(columns={'iteration': 'iteration_of_removal'}, inplace=True)
         fig, ax = plt.subplots(1, len(list_budget), figsize=(10*len(list_budget), 10))
         i = 0
         for budget in list_budget:
-            max_budget = max(edge_df["iteration_of_removal"])
-            iteration_corresponding_to_budget = max_budget - budget + 1
-
-            mask = edge_df["iteration_of_removal"] >= iteration_corresponding_to_budget
-            list_index_of_bike_infra = edge_df.index[mask].tolist()
-
-            edge_df = change_type_bike_infra_with_index(edge_df, "bike_path", list_index_of_bike_infra)
+            edge_df = prep_edge_df_for_plot(budget, edge_df, results_df_opt)
             plot_network(edge_df, node_df, node_id_col='id',
                          node_label=True,
                          color_col_str='type_bike',
@@ -405,3 +414,49 @@ def plot_optimization_different_budgets(list_test_name:list, list_budget:list, s
             plt.savefig(f"output/optimization/images/{test_name}/networks_for_different_budgets_{test_name}.png")
         else :
             plt.show()
+
+
+
+def plot_results_network(it:int, node_df:pd.DataFrame, edge_df_results:pd.DataFrame, results_df_opt:pd.DataFrame, plot_type:str, ax=None):
+    if ax is None :
+        _,ax = plt.subplots(figsize=(10,10))
+    if plot_type == "bike_network":
+        edge_df = prep_edge_df_for_plot(len(results_df_opt)-it, edge_df_results, results_df_opt)
+        plot_network(edge_df, node_df, node_id_col='id',
+                     node_label=True,
+                     color_col_str='type_bike',
+                     base_width=1,
+                     legend=True,
+                     title=f"Bike network - iteration: {it}", ax=ax)
+    elif plot_type == "car_flow":
+        plot_network(edge_df_results, node_df, width_col=f'flow_car_iteration_{it}',
+                     color_col_num=f'flow_car_iteration_{it}', cmap='Reds',
+                     title=f'Car flows - iteration: {it}', node_size=3, colorbar_label='Flow (cars)',
+                     base_width=0.1, width_scale=1, ax=ax, vmax= edge_df_results[f"flow_car_iteration_{len(results_df_opt)-2}"].max())
+    elif plot_type == "bike_flow":
+        plot_network(edge_df_results, node_df, width_col=f'flow_bike_iteration_{it}',
+                     color_col_num=f'flow_bike_iteration_{it}', cmap='Greens',
+                     title=f'Bike flows - iteration: {it}', node_size=3, colorbar_label='Flow (bikes)',
+                     base_width=1, width_scale=10, ax=ax,
+                     vmax=edge_df_results[f'flow_bike_iteration_0'].max())
+    elif plot_type == "coef_bi":
+        plot_network(edge_df_results, node_df, color_col_num=f'coef_bi_{it}',
+                     cmap='hot_r', title=f'Coef BI - iteration: {it}',
+                     node_size=3, colorbar_label='coef bi', base_width=0.5, ax=ax, vmax= edge_df_results[f"coef_bi_{len(results_df_opt)-2}"].max())
+    else :
+        raise NotImplementedError
+
+    if ax is None:
+        return ax
+
+def plot_two_iterations(it_1:int, it_2:int, node_df:pd.DataFrame, edge_df_results:pd.DataFrame, results_df_opt:pd.DataFrame, plot_type:str, save = False, save_path:str = None):
+    fig, axes = plt.subplots(1, 2, figsize=(20, 10))
+    i = 0
+    for iteration in [it_1, it_2]:
+        plot_results_network(iteration, node_df, edge_df_results, results_df_opt, plot_type, ax=axes[i])
+        i += 1
+
+    if save:
+        plt.savefig(f"{save_path}/{plot_type}.png")
+    else:
+        plt.show()

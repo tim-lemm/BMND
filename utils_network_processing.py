@@ -147,114 +147,31 @@ def calculate_length_bi_2(edge_df, bias = 0, weight=1):
     edge_df["length_bi"] = list_length_bi
     return edge_df
 
-def calculate_length_bi_3(edge_df, model_name = "GradientBoostingClassifier", coef_map_num=1, weight=1):
-    edge_df = apply_bi_model(edge_df, model_name)
+from config import COEF_NOTE_MAPS, TRAFIC_MAPPER, TRAFIC_BINS, TRAFIC_LABELS
 
-    grille_trafic = pd.DataFrame(
-        {
-            "<6000": [0.4, 0.2, 0.0, 0.0, 0.0],
-            "6000-7000": [0.5, 0.4, 0.2, 0.0, 0.0],
-            "7000-8000": [0.75, 0.5, 0.4, 0.2, 0.0],
-            ">8000": [1.0, 0.75, 0.5, 0.4, 0.0],
-        },
-        index=[1, 2, 3, 4, 5],
-    )
-    if coef_map_num == 1:
-        coef_note_map = {5: 0.5,
-                         4: 0.75,
-                         3: 1.0,
-                         2: 1.25,
-                         1: 1.5}
-    elif coef_map_num == 2:
-        coef_note_map = {5: 0.75,
-                         4: 1.0,
-                         3: 1.25,
-                         2: 1.75,
-                         1: 2.0}
-    elif coef_map_num == 3:
-        coef_note_map = {5: 1,
-                         4: 1.25,
-                         3: 1.5,
-                         2: 1.75,
-                         1: 2}
-    elif coef_map_num == 4:
-        coef_note_map = {5: 0.8,
-                         4: 1.0,
-                         3: 1.5,
-                         2: 1.75,
-                         1: 2}
-    elif coef_map_num == 5:
-        coef_note_map = {5: 1.0,
-                         4: 1.25,
-                         3: 1.5,
-                         2: 2.0,
-                         1: 2.5}
-    elif coef_map_num == 6:
-        coef_note_map = {5: 1.0,
-                         4: 1.5,
-                         3: 2.0,
-                         2: 2.5,
-                         1: 3}
-    elif coef_map_num == 7:
-        coef_note_map = {5: 1.0,
-                         4: 1.75,
-                         3: 2.5,
-                         2: 3.25,
-                         1: 4}
-    elif coef_map_num == 8:
-        coef_note_map = {5: 1.0,
-                         4: 2,
-                         3: 3.0,
-                         2: 4,
-                         1: 5}
-    elif coef_map_num == 9:
-        coef_note_map = {5: 1.0,
-                         4: 1.5,
-                         3: 3.0,
-                         2: 6,
-                         1: 12}
-    elif coef_map_num == 10:
-        coef_note_map = {5: 0.5,
-                         4: 1,
-                         3: 3.0,
-                         2: 6,
-                         1: 12}
-    elif coef_map_num == 11:
-        coef_note_map = {5: 0.5,
-                         4: 0.75,
-                         3: 1.0,
-                         2: 12,
-                         1: 24}
-
-    lookup = (
-        grille_trafic.unstack()
-        .reset_index()
-        .rename(
-            columns={
-                "level_0": "flow_car_cat",
-                "level_1": "note",
-                0: "coef_trafic",
-            }
+def calculate_length_bi_3(edge_df, model_name="GradientBoostingClassifier", coef_map_num=1):
+    if coef_map_num not in COEF_NOTE_MAPS:
+        raise ValueError(
+            f"coef_map_num invalide ({coef_map_num}). Choisissez une valeur entre 1 et {len(COEF_NOTE_MAPS)}."
         )
-    )
-    mapper = lookup.set_index(["flow_car_cat", "note"])["coef_trafic"]
 
-    bins = [-np.inf, 6000, 7000, 8000, np.inf]
-    labels = ["<6000", "6000-7000", "7000-8000", ">8000"]
+    df = apply_bi_model(edge_df, model_name)
 
-    edge_df["flow_car_cat"] = pd.cut(
-        edge_df["flow_car"], bins=bins, labels=labels, right=False
+    # Discrétisation du trafic
+    df["flow_car_cat"] = pd.cut(
+        df["flow_car"], bins=TRAFIC_BINS, labels=TRAFIC_LABELS, right=False
     )
 
-    edge_df["coef_trafic"] = (
-        pd.MultiIndex.from_arrays([edge_df["flow_car_cat"], edge_df["note"]]).map(mapper).values
-    )
+    # Mappings direct via les structures de config
+    idx = pd.MultiIndex.from_arrays([df["flow_car_cat"], df["note"]])
+    df["coef_trafic"] = idx.map(TRAFIC_MAPPER).values
+    df["coef_note"] = df["note"].map(COEF_NOTE_MAPS[coef_map_num])
 
-    edge_df["coef_note"] = edge_df["note"].map(coef_note_map)
-    edge_df["coef_bi"] = edge_df["coef_note"] + edge_df["coef_trafic"]
-    edge_df["length_bi"] = edge_df["length"]*edge_df["coef_bi"]
+    # Calculs finaux
+    df["coef_bi"] = df["coef_note"] + df["coef_trafic"]
+    df["length_bi"] = df["length"] * df["coef_bi"]
 
-    return edge_df
+    return df
 
 def calculate_congested_time(edge_df, free_flow_time_name="free_flow_time", congested_time_name="congested_time", flow_name="flow", capacity_name="capacity", alpha=0.15, beta=4):
     """Calculate congested travel time using BPR function.

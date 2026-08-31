@@ -5,6 +5,7 @@ from utils_plotting import *
 from utils_network_processing import *
 plt.rcParams.update({'font.size': 30})
 import os
+from PIL import Image
 
 # edge_df, node_df = import_network("data/_old/edges_small_grid_3.csv", "data/_old/nodes_small_grid_3.csv")
 #
@@ -491,42 +492,147 @@ import matplotlib.lines as mlines
 #     edge_df_results = pd.read_csv(filename_edge)
 #     plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = f"output/optimization/test_parametres/{horodatage}/images/", edge_df_results = edge_df_results, results_df_opt = results_df_opt)
 
-plt.rcParams.update({'font.size': 20})
-list_ASC_bike = [-2]
+# plt.rcParams.update({'font.size': 20})
 # list_ASC_bike = [-2]
-# ASC_bike = -2
-beta_time = -0.001
-# list_beta_time = [-0.005,-0.0001,-0.0005,-0.00001]
-list_coef_map_num = [9,11,16,17,18]
+# # list_ASC_bike = [-2]
+# # ASC_bike = -2
+# beta_time = -0.001
+# # list_beta_time = [-0.005,-0.0001,-0.0005,-0.00001]
+# list_coef_map_num = [9,11,16,17,18]
+#
+# # coef_map_num = 11
+# city_name = "Sioux_Falls"
+# horodatage = "2026-08-27_14-16-45"
+# os.makedirs(f"output/optimization/test_parametres/{horodatage}/images", exist_ok=True)
+# fig, ax = plt.subplots(3, 1, figsize=(30, 45))
+# fig.suptitle(f"Test parametres for {city_name}")
+# for ASC_bike in list_ASC_bike:
+#     for coef_map_num in list_coef_map_num:
+#         name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
+#         filename=f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
+#         df = pd.read_csv(filename)
+#         ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=coef_map_num)
+#         ax[0].set_xlabel("Number of dedicated bike lanes")
+#         ax[0].set_ylabel("Bicycle modal share (%)")
+#         ax[0].grid(True, alpha=0.3)
+#         ax[0].legend(loc="lower right")
+#
+#         ax[1].plot(df["nbr_bike_lanes"], df["average_bi_coef"], linewidth=2, label=coef_map_num)
+#         ax[1].set_xlabel("Number of dedicated bike lanes")
+#         ax[1].set_ylabel("Average Bikeability coefficient")
+#         ax[1].grid(True, alpha=0.3)
+#         ax[1].legend(loc="lower right")
+#
+#         ax[2].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"], linewidth=2, label=coef_map_num)
+#         ax[2].set_xlabel("Number of dedicated bike lanes")
+#         ax[2].set_ylabel("Flow of removed edge")
+#         ax[2].grid(True, alpha=0.3)
+#         ax[2].legend(loc="lower right")
+#
+#     plt.savefig(f"output/optimization/test_parametres/{horodatage}/images/bi_scenarios_comparaison_selected_with_flow.png")
+#     plt.tight_layout()
 
-# coef_map_num = 11
+import matplotlib
+matplotlib.use('TkAgg')
+
+
+plt.rcParams.update({'font.size': 14})
+
+list_ASC_bike = [-2]
+beta_time = -0.001
+list_coef_map_num = [11]
 city_name = "Sioux_Falls"
 horodatage = "2026-08-27_14-16-45"
-os.makedirs(f"output/optimization/test_parametres/{horodatage}/images", exist_ok=True)
-fig, ax = plt.subplots(3, 1, figsize=(30, 45))
-fig.suptitle(f"Test parametres for {city_name}")
-for ASC_bike in list_ASC_bike:
-    for coef_map_num in list_coef_map_num:
+
+# 1. Chargement préalable des données
+data_dict = {}
+for coef_map_num in list_coef_map_num:
+    for ASC_bike in list_ASC_bike:
         name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
-        filename=f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
-        df = pd.read_csv(filename)
-        ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=coef_map_num)
-        ax[0].set_xlabel("Number of dedicated bike lanes")
-        ax[0].set_ylabel("Bicycle modal share (%)")
-        ax[0].grid(True, alpha=0.3)
-        ax[0].legend(loc="lower right")
+        filename = f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
+        if os.path.exists(filename):
+            data_dict[coef_map_num] = pd.read_csv(filename)
 
-        ax[1].plot(df["nbr_bike_lanes"], df["average_bi_coef"], linewidth=2, label=coef_map_num)
-        ax[1].set_xlabel("Number of dedicated bike lanes")
-        ax[1].set_ylabel("Average Bikeability coefficient")
-        ax[1].grid(True, alpha=0.3)
-        ax[1].legend(loc="lower right")
+# 2. Création de la figure
+fig, axes = plt.subplots(3, 1, figsize=(16, 14), sharex=True)
+fig.suptitle(f"Test parametres for {city_name}")
 
-        ax[2].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"], linewidth=2, label=coef_map_num)
-        ax[2].set_xlabel("Number of dedicated bike lanes")
-        ax[2].set_ylabel("Flow of removed edge")
-        ax[2].grid(True, alpha=0.3)
-        ax[2].legend(loc="lower right")
+for coef_map_num, df in data_dict.items():
+    axes[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=coef_map_num)
+    axes[1].plot(df["nbr_bike_lanes"], df["average_bi_coef"], linewidth=2, label=coef_map_num)
+    axes[2].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"], linewidth=2, label=coef_map_num)
 
-    plt.savefig(f"output/optimization/test_parametres/{horodatage}/images/bi_scenarios_comparaison_selected_with_flow.png")
-    plt.tight_layout()
+axes[0].set_ylabel("Bicycle modal share (%)")
+axes[1].set_ylabel("Average Bikeability coef")
+axes[2].set_ylabel("Flow of removed edge")
+axes[2].set_xlabel("Number of dedicated bike lanes")
+
+for ax in axes:
+    ax.grid(True, alpha=0.3)
+    ax.legend(loc="lower right")
+
+# 3. Barres verticales synchronisées (curseurs)
+vlines = [ax.axvline(x=0, color='red', linestyle='--', alpha=0.6, visible=False) for ax in axes]
+
+# Encart d'information (Tooltip)
+annots = []
+for a in axes:
+    an = a.annotate("", xy=(0, 0), xytext=(15, 15), textcoords="offset points",
+                    bbox=dict(boxstyle="round", fc="white", ec="black", alpha=0.85),
+                    arrowprops=dict(arrowstyle="->"))
+    an.set_visible(False)
+    annots.append(an)
+
+# Correspondance des colonnes par axe
+metrics = ["modal_share_bike", "average_bi_coef", "flow_of_removed_edge"]
+
+# 4. Événement : Déplacement du curseur
+def on_move(event):
+    for an in annots:
+        an.set_visible(False)
+
+    if event.inaxes in axes and event.xdata is not None and event.ydata is not None:
+        idx = list(axes).index(event.inaxes)
+        nbr_lanes = int(round(event.xdata))
+        col_name = metrics[idx]
+
+        # Positionner les 3 barres verticales
+        for line in vlines:
+            line.set_xdata([nbr_lanes, nbr_lanes])
+            line.set_visible(True)
+
+        # Construire le texte d'information dynamique selon l'axe survolé
+        info_text = [f"Number of bike lanes : {nbr_lanes}"]
+        for coef, df in data_dict.items():
+            row = df[df["nbr_bike_lanes"] == nbr_lanes]
+            if not row.empty:
+                val = row[col_name].values[0]
+                info_text.append(f"{coef} : {val:.2f}")
+
+        # Activer l'infobulle sur l'axe survolé
+        curr_annot = annots[idx]
+        curr_annot.set_text("\n".join(info_text))
+        curr_annot.xy = (nbr_lanes, event.ydata)
+        curr_annot.set_visible(True)
+
+        fig.canvas.draw_idle()
+
+# 5. Événement : Clic pour ouvrir l'image de l'itération
+def on_click(event):
+    if event.inaxes in axes and event.xdata is not None:
+        nbr_lanes = int(round(event.xdata))
+        coef_map_num = list_coef_map_num[0]
+        target_image_path = f"output/optimization/test_parametres/{horodatage}/images/CAP_Sioux_Falls_test_-0.001_-2_bi_{coef_map_num}/network/networks_budget_{nbr_lanes}_CAP_Sioux_Falls_test_-0.001_-2_bi_{coef_map_num}.png"
+
+        if os.path.exists(target_image_path):
+            img = Image.open(target_image_path)
+            img.show()
+        else:
+            print(f"Image introuvable : {target_image_path}")
+
+# Connexion des événements
+fig.canvas.mpl_connect('motion_notify_event', on_move)
+fig.canvas.mpl_connect('button_press_event', on_click)
+
+plt.tight_layout()
+plt.show()

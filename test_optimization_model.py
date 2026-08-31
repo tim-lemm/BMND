@@ -80,7 +80,7 @@ logging.getLogger("aequilibrae").setLevel(logging.ERROR)
 
 list_ASC_bike = [-2]
 list_beta_time = [-0.001]
-list_coef_map_num = [18]
+list_coef_map_num = [19,20,21,22,23]
 
 horodatage = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 city_name = "Sioux_Falls"

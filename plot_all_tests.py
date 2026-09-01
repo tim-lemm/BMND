@@ -17,7 +17,7 @@ from config import COEF_NOTE_MAPS
 # Paramètres
 list_ASC_bike = [-2]
 beta_time = -0.001
-list_coef_map_num = list(range(1, 24))
+list_coef_map_num = list(range(1, 30))
 city_name = "Sioux_Falls"
 horodatage = "2026-08-27_14-16-45"
 ASC_bike = list_ASC_bike[0]
@@ -145,7 +145,7 @@ slider_coef = Slider(
     ax_slider_coef,
     "Bi Model",
     1,
-    23,
+    29,
     valinit=1,
     valstep=1,
 )

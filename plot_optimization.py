@@ -478,7 +478,7 @@ city_name = "Sioux_Falls"
 horodatage = "2026-08-27_14-16-45"
 beta_time = -0.001
 ASC_bike = -2
-list_coef_map_num = list(range(18, 24))
+list_coef_map_num = list(range(1, 30))
 for coef_map_num in list_coef_map_num:
     name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
 

@@ -259,12 +259,30 @@ def on_click(event):
         nbr_lanes = int(round(event.xdata))
         slider_i.set_val(nbr_lanes)
 
+# 11. Événement : Navigation au clavier (flèches droite/gauche ou haut/bas)
+def on_key_lr(event):
+    if event.key in ["left"]:
+        new_val = max(slider_i.valmin, slider_i.val - 1)
+        slider_i.set_val(new_val)
+    elif event.key in ["right"]:
+        new_val = min(slider_i.valmax, slider_i.val + 1)
+        slider_i.set_val(new_val)
+
+def on_key_ud(event):
+    if event.key in ["down"]:
+        new_val = max(slider_coef.valmin, slider_coef.val - 1)
+        slider_coef.set_val(new_val)
+    elif event.key in ["up"]:
+        new_val = min(slider_coef.valmax, slider_coef.val + 1)
+        slider_coef.set_val(new_val)
 
 # Connexion des événements
 slider_i.on_changed(update)
 slider_coef.on_changed(update)
 fig.canvas.mpl_connect("button_press_event", on_click)
 fig.canvas.mpl_connect("motion_notify_event", on_move)
+fig.canvas.mpl_connect("key_press_event", on_key_lr)
+fig.canvas.mpl_connect("key_press_event", on_key_ud)
 
 # Initialisation du style des courbes et du tableau au lancement
 update()

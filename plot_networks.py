@@ -3,7 +3,11 @@ from utils_od_matrix_generator import generate_od_df
 from utils_plotting import *
 from utils_network_processing import *
 import matplotlib.pyplot as plt
-# plt.rcParams.update({'font.size': 30})
+import glob
+from PIL import Image
+import os
+import re
+plt.rcParams.update({'font.size': 30})
 
 
 
@@ -57,3 +61,33 @@ import matplotlib.pyplot as plt
 # plot_network(edge_df, node_df, node_id_col='id',base_width=1, node_label=True, title="Slope (%)", ax=ax[1], color_col_num="slope", cmap="bwr")
 # plt.tight_layout()
 # plt.savefig("output/_hEART_article/figures/_networks/grid_networks.png")
+
+## Plot of different maps
+
+city_name = "Sioux_Falls"
+
+edge_df, node_df = import_network(
+    f"data/{city_name}/edges_{city_name}.csv",
+    f"data/{city_name}/nodes_{city_name}.csv",
+    real_network=True,
+    keep_length=False
+)
+
+fig, ax = plt.subplots(1,2, figsize=(30,15))
+
+plot_network(edge_df, node_df, node_id_col='id',base_width=1, node_label=True, title="Green overlap percentage", ax=ax[0], color_col_num="green_overlap_percentage", cmap="Greens")
+plot_network(edge_df, node_df, node_id_col='id',base_width=1, node_label=True, title="Slope (%)", ax=ax[1], color_col_num="slope", cmap="bwr")
+plt.tight_layout()
+plt.show()
+
+## gif creation
+def extrait_numero(chemin_fichier):
+    nom_fichier = os.path.basename(chemin_fichier)
+    match = re.search(r"\d+", nom_fichier)
+    return int(match.group()) if match else 0
+
+fichier = sorted(glob.glob("output/optimization/test_parametres/2026-08-27_14-16-45/images/CAP_Sioux_Falls_test_-0.001_-2_bi_11/network/*.png"), key=extrait_numero)
+images = [Image.open(f) for f in fichier]
+
+images[0].save("output/optimization/test_parametres/2026-08-27_14-16-45/images/CAP_Sioux_Falls_test_-0.001_-2_bi_11/gif_network.gif",
+               save_all=True, append_images=images[1:],duration=200, loop=0)

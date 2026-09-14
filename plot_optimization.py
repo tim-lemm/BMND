@@ -474,60 +474,132 @@ import matplotlib.lines as mlines
 # plt.tight_layout()
 # plt.show()
 
-city_name = "Sioux_Falls"
-horodatage = "2026-08-27_14-16-45"
-beta_time = -0.001
-ASC_bike = -2
-list_coef_map_num = list(range(1, 30))
-for coef_map_num in list_coef_map_num:
-    name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
-
-    edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True)
-    edge_df['existing_bike_infra']=False
-    edge_df['type_bike']=None
-    # plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True, step = 1)
-    filename_results=f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
-    filename_edge = f"output/optimization/test_parametres/{horodatage}/rgo_edge_df_results_{name_test}.csv"
-    results_df_opt = pd.read_csv(filename_results)
-    edge_df_results = pd.read_csv(filename_edge)
-    plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = f"output/optimization/test_parametres/{horodatage}/images/", edge_df_results = edge_df_results, results_df_opt = results_df_opt)
-
-# plt.rcParams.update({'font.size': 20})
-# list_ASC_bike = [-2]
-# # list_ASC_bike = [-2]
-# # ASC_bike = -2
-# beta_time = -0.001
-# # list_beta_time = [-0.005,-0.0001,-0.0005,-0.00001]
-# list_coef_map_num = [9,11,16,17,18]
-#
-# # coef_map_num = 11
 # city_name = "Sioux_Falls"
 # horodatage = "2026-08-27_14-16-45"
-# os.makedirs(f"output/optimization/test_parametres/{horodatage}/images", exist_ok=True)
-# fig, ax = plt.subplots(3, 1, figsize=(30, 45))
-# fig.suptitle(f"Test parametres for {city_name}")
-# for ASC_bike in list_ASC_bike:
-#     for coef_map_num in list_coef_map_num:
-#         name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
-#         filename=f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
-#         df = pd.read_csv(filename)
-#         ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=coef_map_num)
-#         ax[0].set_xlabel("Number of dedicated bike lanes")
-#         ax[0].set_ylabel("Bicycle modal share (%)")
-#         ax[0].grid(True, alpha=0.3)
-#         ax[0].legend(loc="lower right")
+# beta_time = -0.001
+# ASC_bike = -2
+# list_coef_map_num = list(range(1, 30))
+# for coef_map_num in list_coef_map_num:
+#     name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
 #
-#         ax[1].plot(df["nbr_bike_lanes"], df["average_bi_coef"], linewidth=2, label=coef_map_num)
-#         ax[1].set_xlabel("Number of dedicated bike lanes")
-#         ax[1].set_ylabel("Average Bikeability coefficient")
-#         ax[1].grid(True, alpha=0.3)
-#         ax[1].legend(loc="lower right")
-#
-#         ax[2].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"], linewidth=2, label=coef_map_num)
-#         ax[2].set_xlabel("Number of dedicated bike lanes")
-#         ax[2].set_ylabel("Flow of removed edge")
-#         ax[2].grid(True, alpha=0.3)
-#         ax[2].legend(loc="lower right")
-#
-#     plt.savefig(f"output/optimization/test_parametres/{horodatage}/images/bi_scenarios_comparaison_selected_with_flow.png")
-#     plt.tight_layout()
+#     edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True)
+#     edge_df['existing_bike_infra']=False
+#     edge_df['type_bike']=None
+#     # plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = "output/optimization/images/", edge_df_results = True, results_df_opt = True, step = 1)
+#     filename_results=f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
+#     filename_edge = f"output/optimization/test_parametres/{horodatage}/rgo_edge_df_results_{name_test}.csv"
+#     results_df_opt = pd.read_csv(filename_results)
+#     edge_df_results = pd.read_csv(filename_edge)
+#     plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = f"output/optimization/test_parametres/{horodatage}/images/", edge_df_results = edge_df_results, results_df_opt = results_df_opt)
+
+plt.rcParams.update({'font.size': 20})
+ASC_bike = -2
+beta_time = -0.001
+list_coef_map_num = [9,11,16]
+list_name_bi=['low','medium','high']
+
+city_name = "Sioux_Falls"
+horodatage = "2026-08-27_14-16-45"
+os.makedirs(f"output/optimization/test_parametres/{horodatage}/images", exist_ok=True)
+fig, ax = plt.subplots(3, 1, figsize=(30, 45))
+
+for coef_map_num, name_bi in zip(list_coef_map_num, list_name_bi):
+    name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
+    filename=f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
+    df = pd.read_csv(filename)
+    ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=name_bi)
+    ax[0].set_xlabel("Number of dedicated bike lanes")
+    ax[0].set_ylabel("Bicycle modal share (%)")
+    ax[0].grid(True, alpha=0.3)
+    ax[0].legend(loc="lower right")
+
+    ax[1].plot(df["nbr_bike_lanes"], df["average_bi_coef"], linewidth=2, label=name_bi)
+    ax[1].set_xlabel("Number of dedicated bike lanes")
+    ax[1].set_ylabel("Average Bikeability coefficient")
+    ax[1].grid(True, alpha=0.3)
+    ax[1].legend(loc="lower right")
+
+    ax[2].plot(df["nbr_bike_lanes"], df["flow_of_removed_edge"], linewidth=2, label=name_bi)
+    ax[2].set_xlabel("Number of dedicated bike lanes")
+    ax[2].set_ylabel("Flow of removed edge")
+    ax[2].grid(True, alpha=0.3)
+    ax[2].legend(loc="lower right")
+
+plt.savefig(f"output/_hEART_poster/bi_scenarios_comparaison_selected_with_flow.png")
+
+plt.rcParams.update({'font.size': 20})
+ASC_bike = -2
+beta_time = -0.001
+list_coef_map_num = [9,11,16]
+list_name_bi=['low','medium','high']
+
+city_name = "Sioux_Falls"
+horodatage = "2026-08-27_14-16-45"
+os.makedirs(f"output/optimization/test_parametres/{horodatage}/images", exist_ok=True)
+fig, ax = plt.subplots(1, 1, figsize=(25, 10))
+
+for coef_map_num, name_bi in zip(list_coef_map_num, list_name_bi):
+    name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
+    filename = f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv"
+    df = pd.read_csv(filename)
+    ax.plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=name_bi)
+
+# Configuration des axes avant d'ajouter les zones
+ax.set_xlabel("Number of dedicated bike lanes")
+ax.set_ylabel("Bicycle modal share (%)")
+ax.grid(True, alpha=0.3)
+
+# Récupération de la limite max de l'axe X
+x_max = ax.get_xlim()[1]
+y_min = ax.get_ylim()[0]
+y_max = ax.get_ylim()[1]
+
+# Zone 1 : 0 à 35
+ax.axvspan(0, 35, color="black", hatch = ".", alpha=0.05)
+ax.text(
+    17.5,
+    0.05,
+    "rapid growth phase",
+    transform=ax.get_xaxis_transform(),
+    ha="center",
+    va="top",
+    fontsize=15,
+    fontweight="bold",
+
+)
+
+# Zone 2 : 35 à 52
+ax.axvspan(35, 52, color="black", hatch = "/", alpha=0.05)
+ax.text(
+    43.5,
+    0.05,
+    "first threshold",
+    transform=ax.get_xaxis_transform(),
+    ha="center",
+    va="top",
+    fontsize=15,
+    fontweight="bold",
+)
+ax.axvline(x=35, color="black", linestyle="--", linewidth=1.5, alpha=0.7)
+ax.axvline(x=52, color="black", linestyle="--", linewidth=1.5, alpha=0.7)
+
+
+# Zone 3 : 52 à la fin
+ax.axvspan(52, x_max, color="black", hatch = '\\', alpha=0.05)
+ax.text(
+    (52 + x_max) / 2,
+    0.05,
+    "second threshold",
+    transform=ax.get_xaxis_transform(),
+    ha="center",
+    va="top",
+    fontsize=15,
+    fontweight="bold",
+)
+
+ax.set_xlim(0, x_max)
+ax.legend(loc="upper left")
+
+plt.savefig("output/_hEART_poster/graph_results.png")
+
+

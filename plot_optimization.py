@@ -492,11 +492,12 @@ import matplotlib.lines as mlines
 #     edge_df_results = pd.read_csv(filename_edge)
 #     plot_optimization_results(name_test, edge_df, node_df, save = True, file_path = f"output/optimization/test_parametres/{horodatage}/images/", edge_df_results = edge_df_results, results_df_opt = results_df_opt)
 
-plt.rcParams.update({'font.size': 20})
+fontsize = 25
+plt.rcParams.update({'font.size': fontsize})
 ASC_bike = -2
 beta_time = -0.001
-list_coef_map_num = [9,11,16]
-list_name_bi=['low','medium','high']
+list_coef_map_num = [20,21,25]
+list_name_bi=[f'high ({list_coef_map_num[0]})',f'medium ({list_coef_map_num[1]})',f'low ({list_coef_map_num[2]})']
 
 city_name = "Sioux_Falls"
 horodatage = "2026-08-27_14-16-45"
@@ -527,15 +528,7 @@ for coef_map_num, name_bi in zip(list_coef_map_num, list_name_bi):
 
 plt.savefig(f"output/_hEART_poster/bi_scenarios_comparaison_selected_with_flow.png")
 
-plt.rcParams.update({'font.size': 20})
-ASC_bike = -2
-beta_time = -0.001
-list_coef_map_num = [9,11,16]
-list_name_bi=['low','medium','high']
-
-city_name = "Sioux_Falls"
-horodatage = "2026-08-27_14-16-45"
-os.makedirs(f"output/optimization/test_parametres/{horodatage}/images", exist_ok=True)
+list_name_bi = ['high', 'medium', 'low']
 fig, ax = plt.subplots(1, 1, figsize=(25, 10))
 
 for coef_map_num, name_bi in zip(list_coef_map_num, list_name_bi):
@@ -553,52 +546,57 @@ ax.grid(True, alpha=0.3)
 x_max = ax.get_xlim()[1]
 y_min = ax.get_ylim()[0]
 y_max = ax.get_ylim()[1]
+zone1 = 40
+zone2 = 55
 
-# Zone 1 : 0 à 35
-ax.axvspan(0, 35, color="black", hatch = ".", alpha=0.05)
+
+# Zone 1
+ax.axvspan(0, zone1, color="black", hatch = ".", alpha=0.05)
 ax.text(
-    17.5,
+    zone1/2,
     0.05,
     "rapid growth phase",
     transform=ax.get_xaxis_transform(),
     ha="center",
     va="top",
-    fontsize=15,
+    fontsize=fontsize-2,
     fontweight="bold",
 
 )
 
-# Zone 2 : 35 à 52
-ax.axvspan(35, 52, color="black", hatch = "/", alpha=0.05)
+# Zone 2
+ax.axvspan(zone1, zone2, color="black", hatch = "/", alpha=0.05)
 ax.text(
-    43.5,
+    (zone1+zone2)/2,
     0.05,
     "first threshold",
     transform=ax.get_xaxis_transform(),
     ha="center",
     va="top",
-    fontsize=15,
-    fontweight="bold",
-)
-ax.axvline(x=35, color="black", linestyle="--", linewidth=1.5, alpha=0.7)
-ax.axvline(x=52, color="black", linestyle="--", linewidth=1.5, alpha=0.7)
+    fontsize=fontsize-2,
+    fontweight="bold")
 
 
-# Zone 3 : 52 à la fin
-ax.axvspan(52, x_max, color="black", hatch = '\\', alpha=0.05)
+
+
+# Zone 3
+ax.axvspan(zone2, x_max, color="black", hatch = '\\', alpha=0.05)
 ax.text(
-    (52 + x_max) / 2,
+    (zone2 + x_max) / 2,
     0.05,
     "second threshold",
     transform=ax.get_xaxis_transform(),
     ha="center",
     va="top",
-    fontsize=15,
+    fontsize=fontsize-2,
     fontweight="bold",
 )
 
 ax.set_xlim(0, x_max)
-ax.legend(loc="upper left")
+ax.legend(loc="upper left", title="Bikeability sensitivity", fontsize=fontsize-3)
+
+ax.axvline(x=zone1, color="black", linestyle="--", linewidth=1.5, alpha=0.7)
+ax.axvline(x=zone2, color="black", linestyle="--", linewidth=1.5, alpha=0.7)
 
 plt.savefig("output/_hEART_poster/graph_results.png")
 

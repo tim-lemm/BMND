@@ -71,7 +71,7 @@ os.makedirs(f"output/optimization/test_parametres/{horodatage}", exist_ok=True)
 beta_time = -0.001
 # list_beta_time = [-0.0009,-0.001,-0.0011]
 # ASC_bike = -2
-list_ASC_bike = [-2.01]
+list_ASC_bike = [-1.98, -1.99, -2, -2.01, -2.02]
 dict_parameter = parameter("all")
 list_coef_map_num = [20,31,25]
 for coef_map_num in list_coef_map_num:

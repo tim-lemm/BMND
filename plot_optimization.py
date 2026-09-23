@@ -1,3 +1,5 @@
+from xml.etree.ElementTree import tostring
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import legend
@@ -637,14 +639,14 @@ import matplotlib.lines as mlines
 fontsize = 25
 plt.rcParams.update({'font.size': fontsize})
 # ASC_bike = -2
-list_ASC_bike = [-1.99,-2.01,-2]
+list_ASC_bike = [0, -2, -3, -4]
 # list_beta_time = [-0.0009, -0.001, -0.0011]
 beta_time = -0.001
 list_coef_map_num = [20, 31, 25]
 list_name_bi = [f'high ({list_coef_map_num[0]})', f'medium ({list_coef_map_num[1]})', f'low ({list_coef_map_num[2]})']
 
 city_name = "Sioux_Falls"
-horodatage = "2026-09-18_15-37-04"
+horodatage = "2026-09-22_16-15-18"
 output = f"output/optimization/test_parametres/{horodatage}/images"
 os.makedirs(output, exist_ok=True)
 fig, ax = plt.subplots(3, 1, figsize=(30, 45))
@@ -663,7 +665,7 @@ for coef_map_num, name_bi in zip(list_coef_map_num, list_name_bi):
 
     # Traçage des courbes moyennes
     ax[0].plot(mean_df["nbr_bike_lanes"], mean_df["modal_share_bike"], linewidth=2, label="mean " + name_bi)
-    ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=name_bi)
+    #ax[0].plot(df["nbr_bike_lanes"], df["modal_share_bike"], linewidth=2, label=name_bi)
     ax[0].set_xlabel("Number of dedicated bike lanes")
     ax[0].set_ylabel("Bicycle modal share (%)")
     ax[0].grid(True, alpha=0.3)

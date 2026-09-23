@@ -217,13 +217,14 @@ def import_network(edge_filepath:str, node_filepath:str, capacity_car:int = 1500
         if not keep_length:
             edge_df = calculate_length_real(node_df, edge_df)
         edge_df['nbr_car_lane'] = edge_df['init_nbr_car_lane']
+        edge_df["capacity_per_lane"] = edge_df["capacity"] / edge_df["nbr_car_lane"]
+        update_car_capacity(edge_df, capacity_car)
     else :
         if not keep_length:
             edge_df = calculate_length(node_df, edge_df)
         edge_df["nbr_car_lane"] = 2
 
-    edge_df["capacity_per_lane"]=edge_df["capacity"]/edge_df["nbr_car_lane"]
-    update_car_capacity(edge_df, capacity_car)
+
     edge_df["type_bike"] = edge_df["type_bike"].fillna("None")
     edge_df["speed_bike"] /= 3.6
     edge_df["speed_car"] /= 3.6

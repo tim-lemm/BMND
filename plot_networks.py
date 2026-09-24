@@ -29,9 +29,9 @@ plt.rcParams.update({'font.size': 30})
 #                              title=f"Network with slope",cmap="coolwarm", ax=ax[1])
 # plt.show()
 
-list_test_name = ["grid","grid_2","clock","city"]
-fig, ax = plt.subplots(1,4, figsize=(40,10))
-for i, test_name in zip([0,1,2,3], list_test_name):
+list_test_name = ["grid","grid_2","H","clock","city"]
+fig, ax = plt.subplots(1,5, figsize=(50,10))
+for i, test_name in enumerate(list_test_name):
     edge_df, node_df = import_network(f"data/edges_{test_name}.csv", f"data/nodes_{test_name}.csv")
     plot_network(edge_df, node_df, node_id_col='id', base_width=1, node_label=True, title=f"{test_name} network", ax=ax[i])
 plt.show()

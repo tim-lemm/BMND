@@ -37,7 +37,8 @@ id,a_node,b_node,type_car,type_bike,speed_car,speed_bike,green_overlap_percentag
 36,2,13,primary,None,20,15,0,0
 37,2,6,primary,None,20,15,0,0
 38,6,2,primary,None,20,15,0,0
-39,6,3,primary,None,20,15,0,0
 40,3,6,primary,None,20,15,0,0
 41,12,7,primary,None,20,15,0,0
 42,12,7,primary,None,20,15,0,0
+39,6,7,primary,None,20,15,0,0
+43,12,6,primary,None,20,15,0,0

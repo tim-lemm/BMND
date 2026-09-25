@@ -29,13 +29,13 @@ plt.rcParams.update({'font.size': 30})
 #                              title=f"Network with slope",cmap="coolwarm", ax=ax[1])
 # plt.show()
 
-list_test_name = ["grid","grid_2","H","clock","city"]
-fig, ax = plt.subplots(1,5, figsize=(50,10))
-for i, test_name in enumerate(list_test_name):
-    edge_df, node_df = import_network(f"data/edges_{test_name}.csv", f"data/nodes_{test_name}.csv")
-    plot_network(edge_df, node_df, node_id_col='id', base_width=1, node_label=True, title=f"{test_name} network", ax=ax[i])
-plt.show()
+list_test_name = ["grid","grid_2","H","clock","city",'tunnel']
 
+for test_name in list_test_name:
+    fig, ax = plt.subplots(1,1, figsize=(10,10))
+    edge_df, node_df = import_network(f"data/edges_{test_name}.csv", f"data/nodes_{test_name}.csv")
+    plot_network(edge_df, node_df, node_id_col='id', base_width=1, node_label=True, title=f"{test_name} network", ax=ax)
+    plt.savefig(f"output/figures/toy_networks/{test_name}.png")
 
 # list_test_name = ["grid","H","tunnel"]
 # fig, ax = plt.subplots(3,1, figsize=(15,30))

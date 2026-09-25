@@ -29,7 +29,7 @@ plt.rcParams.update({'font.size': 30})
 #                              title=f"Network with slope",cmap="coolwarm", ax=ax[1])
 # plt.show()
 
-list_test_name = ["grid","grid_2","H","clock","city",'tunnel']
+list_test_name = ["grid","grid_2","H","clock","city",'city_2','tunnel']
 
 for test_name in list_test_name:
     fig, ax = plt.subplots(1,1, figsize=(10,10))

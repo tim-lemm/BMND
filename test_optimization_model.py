@@ -70,22 +70,22 @@ horodatage = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 os.makedirs(f"output/optimization/test_parametres/{horodatage}", exist_ok=True)
 beta_time = -0.001
 # list_beta_time = [-0.0009,-0.001,-0.0011]
-# ASC_bike = -2
-list_ASC_bike = [0, -2, -3, -4]
+ASC_bike = -2
 dict_parameter = parameter("all")
-list_coef_map_num = [20,31,25]
+list_coef_map_num = [31]
+list_metric_of_selection = ["flow_bike","mean_degree_centrality","mean_closeness_centrality", "betweenness_centrality"]
 for coef_map_num in list_coef_map_num:
-    for ASC_bike in list_ASC_bike :
+    for metric in list_metric_of_selection :
         dict_parameter["beta_time"] = beta_time
         dict_parameter["ASC_bike"] = ASC_bike
         city_name = "Sioux_Falls"
-        name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}"
+        name_test = f"CAP_{city_name}_test_{beta_time}_{ASC_bike}_bi_{coef_map_num}_{metric}"
         edge_df, node_df = import_network(f"data/{city_name}/edges_{city_name}.csv", f"data/{city_name}/nodes_{city_name}.csv", real_network=True, keep_length=False)
         od_df = pd.read_csv(f"data/{city_name}/od_{city_name}.csv")
         od_df = convert_from_aequilibrae_od_matrix(od_df)
         plot = False
         edge_df_results, results_df_opt = reverse_growth_optimization(edge_df, node_df, od_df, limit=100, CAP=True,
-                                                                                   from_scratch=True, custom_parameter_dict=dict_parameter, coef_map_num=coef_map_num)
+                                                                                   from_scratch=True, custom_parameter_dict=dict_parameter, coef_map_num=coef_map_num, metric_for_opt=metric)
         edge_df_results.to_csv(f"output/optimization/test_parametres/{horodatage}/rgo_edge_df_results_{name_test}.csv")
         results_df_opt.to_csv(f"output/optimization/test_parametres/{horodatage}/rgo_results_df_opt_{name_test}.csv")
 

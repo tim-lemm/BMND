@@ -1,78 +1,7 @@
 from utils_od_matrix_generator import *
 from utils_model_handeling import *
 from geopy.distance import geodesic
-
-# def calculate_row_ffs(row):
-#     if row["type_car"] == "freeway":
-#         return (row["free_flow_speed_car"]
-#                 - adjf_lane_width(row["lane_width"])
-#                 - adjf_right_side_clearance_freeway(row["lane_width"], row["nbr_car_lane"])
-#                 - adjf_TRD(row["trd"]))
-#     else:
-#         return (row["free_flow_speed_car"]
-#                 - adjf_lane_width(row["lane_width"])
-#                 - adjf_right_side_clearance_highway(row["lane_width"], row["nbr_car_lane"])
-#                 - adjf_median_sep(row["median_type"])
-#                 - adjf_access_point_density(row["trd"]))
-#
-# def estimate_FFS(edge_df):
-#     edge_df["free_flow_speed_car"] = edge_df["speed_car"].astype(float)
-#     edge_df["trd"] = edge_df["nbr_access_point"] / (edge_df["length"] / 1000)
-#     edge_df["ffs"] = edge_df.apply(calculate_row_ffs, axis=1)
-#     return edge_df
-#
-# def estimate_capacity(edge_df):
-#     edge_df = estimate_FFS(edge_df)
-#     edge_df["capacity_cars"] = edge_df["nbr_car_lane"] * (1900 + 20 * edge_df["ffs"] - 72)
-#
-#     is_freeway = edge_df["type_car"] == "freeway"
-#     edge_df.loc[is_freeway, "capacity_cars"] = edge_df.loc[is_freeway, "nbr_car_lane"] * (
-#                 2200 + 10 * edge_df.loc[is_freeway, "ffs"] - 80)
-#     return edge_df
-#
-# def adjf_access_point_density(TRD):
-#     TRD = TRD*0.62
-#     if TRD < 10:
-#         return 0
-#     elif TRD < 20:
-#         return 2.5
-#     elif TRD < 30:
-#         return 5.0
-#     elif TRD < 40:
-#         return 7.5
-#     else:
-#         return 10
-# def adjf_median_sep(median_type):
-#     if median_type == "undivided":
-#         return 1.6
-#     else:
-#         return 0
-#
-# def adjf_lane_width(lane_width):
-#     if lane_width >= 3.66:
-#         return 0
-#     elif 3.35 <= lane_width < 3.66:
-#         return 1.9
-#     else:
-#         return 6.6
-#
-# def adjf_right_side_clearance_freeway(width, nbr_lane):
-#         clearance_values = [0, 0.30, 0.61, 0.91, 1.22, 1.52, 1.83]
-#         lanes_values = {
-#             2: [3.6, 3.0, 2.4, 1.8, 1.2, 0.6, 0.0],
-#             3: [2.4, 2.0, 1.6, 1.2, 0.8, 0.4, 0.0],
-#             4: [1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.0],
-#             5: [0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0]
-#         }
-#         l = int(max(2, min(nbr_lane, 5)))
-#         return np.interp(width, clearance_values, lanes_values[l])
-#
-#
-# def adjf_right_side_clearance_highway(width, nbr_lane):
-#     return 1.6
-#
-# def adjf_TRD(TRD):
-#     return 2.155*TRD**0.84
+import networkx as nx
 
 def calculate_length(node_df, edge_df):
     """ Calculate Euclidean length of edges based on node coordinates. """
@@ -302,3 +231,108 @@ def apply_bike_infra_scenario(edge_df:pd.DataFrame, num_scenario:int):
         return edge_df
     else:
         raise ValueError("Pleas choose a valid scenario (0 to 5)")
+
+def build_networkx_graph(df_edges, df_nodes, source_col='a_node', target_col='b_node', node_id_col='node_id', create_using=nx.DiGraph()):
+    """
+    Convertit des DataFrames Pandas en un graphe NetworkX.
+
+    Arguments:
+    - df_edges : DataFrame contenant les arêtes (doit inclure source_col, target_col, et autres features).
+    - df_nodes : DataFrame contenant les nœuds (doit inclure node_id_col, 'x', et 'y').
+    - source_col : Nom de la colonne du nœud source dans df_edges.
+    - target_col : Nom de la colonne du nœud cible dans df_edges.
+    - node_id_col : Nom de la colonne de l'identifiant du nœud dans df_nodes.
+
+    Retourne:
+    - G : Un objet networkx.Graph (non orienté par défaut).
+    """
+    G = nx.from_pandas_edgelist(
+        df_edges,
+        source=source_col,
+        target=target_col,
+        edge_attr=True,
+        create_using=create_using
+    )
+    node_attributes = df_nodes.set_index(node_id_col).to_dict('index')
+    nx.set_node_attributes(G, node_attributes)
+
+    return G
+
+def graph_to_dataframes(G, source_col='a_node', target_col='b_node', node_id_col='id'):
+    """
+    Reconvertit un graphe NetworkX en deux DataFrames (arêtes et nœuds).
+
+    Arguments :
+    - G : L'objet networkx.Graph ou networkx.DiGraph.
+    - source_col : Nom de la colonne source pour df_edges.
+    - target_col : Nom de la colonne cible pour df_edges.
+    - node_id_col : Nom de la colonne de l'identifiant du nœud pour df_nodes.
+
+    Retourne :
+    - df_edges : DataFrame contenant (source_col, target_col, id, + features).
+    - df_nodes : DataFrame contenant (node_id_col, x, y, + attributs).
+    """
+    df_edges = nx.to_pandas_edgelist(G, source=source_col, target=target_col)
+    nodes_data = [{node_id_col: node, **data} for node, data in G.nodes(data=True)]
+    df_nodes = pd.DataFrame(nodes_data)
+
+    return df_edges, df_nodes
+
+def add_node_centralities(G, weight=None):
+    """
+    Calcule la degree, closeness et betweenness centrality des nœuds
+    et les ajoute comme attributs au graphe G.
+
+    Arguments :
+    - G : Un objet networkx.Graph ou networkx.DiGraph.
+
+    Retourne :
+    - G : Le graphe enrichi des attributs de centralité.
+    """
+    # 1. Calcul des métriques de centralité
+    degree_dict = nx.degree_centrality(G)
+    closeness_dict = nx.closeness_centrality(G, distance=weight)
+    betweenness_dict = nx.edge_betweenness_centrality(G, weight=weight)
+
+    # 2. Ajout des métriques aux nœuds
+    nx.set_node_attributes(G, degree_dict, 'degree_centrality')
+    nx.set_node_attributes(G, closeness_dict, 'closeness_centrality')
+    nx.set_edge_attributes(G, betweenness_dict, 'betweenness_centrality')
+
+    return G
+
+def add_edge_mean_from_nodes(G, node_attr, edge_attr_name=None, default_val=0.0):
+    """
+    Calcule la moyenne d'un attribut de nœud pour les deux extrémités de chaque arête
+    et l'ajoute comme attribut d'arête.
+
+    Arguments :
+    - G : Le graphe NetworkX (Graph ou DiGraph).
+    - node_attr : Nom de l'attribut de nœud à moyenner (ex: 'degree_centrality', 'x').
+    - edge_attr_name : Nom de l'attribut d'arête généré (par défaut 'mean_<node_attr>').
+    - default_val : Valeur de remplacement si un nœud n'a pas l'attribut.
+
+    Retourne :
+    - G : Le graphe enrichi du nouvel attribut d'arête.
+    """
+    if edge_attr_name is None:
+        edge_attr_name = f"mean_{node_attr}"
+
+    edge_values = {}
+    for u, v in G.edges():
+        val_u = G.nodes[u].get(node_attr, default_val)
+        val_v = G.nodes[v].get(node_attr, default_val)
+        edge_values[(u, v)] = (val_u + val_v) / 2.0
+
+    nx.set_edge_attributes(G, edge_values, edge_attr_name)
+    return G
+
+def calculate_network_metrics(edge_df, node_df, weight_centrality = 'length_bi', source_col='a_node',target_col='b_node',node_id_col='id'):
+    G = build_networkx_graph(edge_df, node_df, source_col=source_col, target_col=target_col,node_id_col=node_id_col)
+    # calculs des métrics (mettre les valeurs dans les attributs)
+    G = add_node_centralities(G, weight=weight_centrality)
+    G = add_edge_mean_from_nodes(G, node_attr="degree_centrality")
+    G = add_edge_mean_from_nodes(G, node_attr="closeness_centrality")
+    # reconvertion en dfs
+    edge_df, node_df = graph_to_dataframes(G)
+    return edge_df, node_df

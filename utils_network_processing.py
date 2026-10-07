@@ -278,7 +278,7 @@ def graph_to_dataframes(G, source_col='a_node', target_col='b_node', node_id_col
 
     return df_edges, df_nodes
 
-def add_node_centralities(G, weight=None):
+def add_node_centralities(G, weight=None, prefix = ""):
     """
     Calcule la degree, closeness et betweenness centrality des nœuds
     et les ajoute comme attributs au graphe G.
@@ -292,12 +292,14 @@ def add_node_centralities(G, weight=None):
     # 1. Calcul des métriques de centralité
     degree_dict = nx.degree_centrality(G)
     closeness_dict = nx.closeness_centrality(G, distance=weight)
-    betweenness_dict = nx.edge_betweenness_centrality(G, weight=weight)
+    betweenness_weighted_dict = nx.edge_betweenness_centrality(G, weight=weight)
+    betweenness_dict = nx.edge_betweenness_centrality(G)
 
     # 2. Ajout des métriques aux nœuds
-    nx.set_node_attributes(G, degree_dict, 'degree_centrality')
-    nx.set_node_attributes(G, closeness_dict, 'closeness_centrality')
-    nx.set_edge_attributes(G, betweenness_dict, 'betweenness_centrality')
+    nx.set_node_attributes(G, degree_dict, f'{prefix}degree_centrality')
+    nx.set_node_attributes(G, closeness_dict, f'{prefix}closeness_centrality')
+    nx.set_edge_attributes(G, betweenness_dict, f'{prefix}betweenness_centrality')
+    nx.set_edge_attributes(G, betweenness_weighted_dict, f'{prefix}betweenness_centrality_weighted')
 
     return G
 
@@ -327,12 +329,12 @@ def add_edge_mean_from_nodes(G, node_attr, edge_attr_name=None, default_val=0.0)
     nx.set_edge_attributes(G, edge_values, edge_attr_name)
     return G
 
-def calculate_network_metrics(edge_df, node_df, weight_centrality = 'length_bi', source_col='a_node',target_col='b_node',node_id_col='id'):
+def calculate_network_metrics(edge_df, node_df, weight_centrality = 'length_bi', source_col='a_node',target_col='b_node',node_id_col='id', prefix=""):
     G = build_networkx_graph(edge_df, node_df, source_col=source_col, target_col=target_col,node_id_col=node_id_col)
     # calculs des métrics (mettre les valeurs dans les attributs)
-    G = add_node_centralities(G, weight=weight_centrality)
-    G = add_edge_mean_from_nodes(G, node_attr="degree_centrality")
-    G = add_edge_mean_from_nodes(G, node_attr="closeness_centrality")
+    G = add_node_centralities(G, weight=weight_centrality, prefix=prefix)
+    G = add_edge_mean_from_nodes(G, node_attr=f"{prefix}degree_centrality")
+    G = add_edge_mean_from_nodes(G, node_attr=f"{prefix}closeness_centrality")
     # reconvertion en dfs
     edge_df, node_df = graph_to_dataframes(G)
     return edge_df, node_df

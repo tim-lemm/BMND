@@ -73,7 +73,7 @@ beta_time = -0.001
 ASC_bike = -2
 dict_parameter = parameter("all")
 list_coef_map_num = [31]
-list_metric_of_selection = ["flow_bike","mean_degree_centrality","mean_closeness_centrality", "betweenness_centrality"]
+list_metric_of_selection = ["flow_bike", "betweenness_centrality", "betweenness_centrality_weighted"]
 for coef_map_num in list_coef_map_num:
     for metric in list_metric_of_selection :
         dict_parameter["beta_time"] = beta_time

@@ -11,15 +11,14 @@ from PIL import Image
 
 total_lanes = 75  # Remplacez cette valeur par le total réel de votre réseau
 city_name = "Sioux_Falls"
-horodatage = "2026-10-05_15-19-26"
+horodatage = "2026-10-07_17-48-00"
 beta_time = -0.001
 ASC_bike = -2
-list_metric_of_selection = ["flow_bike","mean_degree_centrality","mean_closeness_centrality", "betweenness_centrality"]
+list_metric_of_selection = ["flow_bike","betweenness_centrality","betweenness_centrality_weighted"]
 list_metric_to_plot = ["modal_share_bike",
                        "average_bi_coef",
-                       "mean_degree_centrality_of_removed_edge",
-                       "mean_closeness_centrality_of_removed_edge",
-                       "betweenness_centrality_of_removed_edge"]
+                       "betweenness_centrality_of_removed_edge",
+                       "betweenness_centrality_weighted_of_removed_edge"]
 fig, axes = plt.subplots(len(list_metric_to_plot), 1, figsize=(25, 10*len(list_metric_to_plot)))
 coef_map_num = 31
 

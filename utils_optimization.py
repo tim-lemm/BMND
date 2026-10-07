@@ -19,23 +19,6 @@ def _create_empty_result_df_optimization():
 
 import pandas as pd
 
-def update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bike_lanes,
-                                   modal_share_car, modal_share_bike, index_least_used,
-                                   flow_of_removed_edge, average_bi_coef, **kwargs):
-    row_data = {
-        'iteration': int(i),
-        'nbr_bike_lanes': nbr_bike_lanes,
-        'nbr_none_bike_lanes': nbr_none_bike_lanes,
-        'modal_share_car': modal_share_car,
-        'modal_share_bike': modal_share_bike,
-        'index_removed': index_least_used,
-        'flow_of_removed_edge': flow_of_removed_edge,
-        'average_bi_coef': average_bi_coef,
-        **kwargs
-    }
-    return pd.concat([results_df_opt, pd.DataFrame([row_data])], ignore_index=True)
-
-
 def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bool = False, nbr_removal:int = 1, CAP:bool = True, custom_parameter_dict:dict = None, from_scratch:bool = True, coef_map_num = 1, metric_for_opt = "flow_bike"):
     # construct bike lane on all edge
     edge_df = apply_bike_infra_scenario(edge_df, 2)
@@ -108,8 +91,9 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bo
         name_col_degree_centrality = 'mean_degree_centrality_' + str(i)
         name_col_closeness_centrality = 'mean_closeness_centrality_' + str(i)
         name_col_betweenness_centrality = 'betweenness_centrality_' + str(i)
+        name_col_betweenness_centrality_weighted = "betweenness_centrality_weighted_" + str(i)
 
-        cols_to_transfer = ['id', 'flow_car', 'flow_bike', 'travel_time_car', 'travel_time_bike', "coef_bi", "mean_degree_centrality","mean_closeness_centrality", "betweenness_centrality"]
+        cols_to_transfer = ['id', 'flow_car', 'flow_bike', 'travel_time_car', 'travel_time_bike', "coef_bi", "mean_degree_centrality","mean_closeness_centrality", "betweenness_centrality","betweenness_centrality_weighted"]
         edge_df_results = edge_df_results.merge(
             edge_df[cols_to_transfer],
             on='id',
@@ -123,7 +107,8 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bo
             'coef_bi': name_col_coef_bi,
             "mean_degree_centrality": name_col_degree_centrality,
             "mean_closeness_centrality": name_col_closeness_centrality,
-            "betweenness_centrality": name_col_betweenness_centrality
+            "betweenness_centrality": name_col_betweenness_centrality,
+            "betweenness_centrality_weighted": name_col_betweenness_centrality_weighted
         })
         # identify edges considered for removal
         edges_considered_for_removal = edge_df_results[
@@ -139,6 +124,8 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bo
             name_metric = name_col_closeness_centrality
         elif metric_for_opt == "betweenness_centrality":
             name_metric = name_col_betweenness_centrality
+        elif metric_for_opt == "betweenness_centrality_weighted":
+            name_metric = name_col_betweenness_centrality_weighted
         else :
             raise KeyError("Choose between the following metrics: flow_bike, mean_degree_centrality, mean_closeness_centrality or betweenness_centrality")
 
@@ -149,6 +136,7 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bo
         mean_degree_centrality_of_removed_edge = edge_df_results.loc[edge_df_results['id'].isin(index_least_used), name_col_degree_centrality].mean()
         mean_closeness_centrality_of_removed_edge = edge_df_results.loc[edge_df_results['id'].isin(index_least_used), name_col_closeness_centrality].mean()
         betweenness_centrality_of_removed_edge = edge_df_results.loc[edge_df_results['id'].isin(index_least_used), name_col_betweenness_centrality].mean()
+        betweenness_centrality_weighted_of_removed_edge = edge_df_results.loc[edge_df_results['id'].isin(index_least_used), name_col_betweenness_centrality_weighted].mean()
 
         # remove infrastructures from selected edges
         print(f"Removing bike lane on edge {index_least_used} with {name_metric} : {metric_of_removed_edge}")
@@ -179,14 +167,8 @@ def reverse_growth_optimization(edge_df, node_df, od_df, limit:int = 48, plot:bo
         'average_bi_coef': average_bi_coef,
         'mean_degree_centrality_of_removed_edge' : mean_degree_centrality_of_removed_edge,
         'mean_closeness_centrality_of_removed_edge' : mean_closeness_centrality_of_removed_edge,
-        'betweenness_centrality_of_removed_edge' : betweenness_centrality_of_removed_edge})
-
-        # results_df_opt = update_result_df_optimization(results_df_opt, i, nbr_bike_lanes, nbr_none_bike_lanes, modal_share_car, modal_share_bike, index_least_used,
-        #                                                flow_of_removed_edge, average_bi_coef,
-        #                                                mean_degree_centrality_of_removed_edge = mean_degree_centrality_of_removed_edge,
-        #                                                mean_closeness_centrality_of_removed_edge = mean_closeness_centrality_of_removed_edge,
-        #                                                betweenness_centrality_of_removed_edge = betweenness_centrality_of_removed_edge)
-
+        'betweenness_centrality_of_removed_edge' : betweenness_centrality_of_removed_edge,
+        'betweenness_centrality_weighted_of_removed_edge': betweenness_centrality_weighted_of_removed_edge})
         i += 1
     results_df_opt = pd.DataFrame(results_list)
     return edge_df_results, results_df_opt

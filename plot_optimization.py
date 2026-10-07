@@ -46,7 +46,7 @@ for ax in axes:
 
 
 os.makedirs(f"output/optimization/test_parametres/{horodatage}/images", exist_ok=True)
-plt.savefig(f"output/optimization/test_parametres/{horodatage}/images/all_plots.png")
+plt.show()
 
 
 for metric in list_metric_of_selection:
@@ -80,5 +80,6 @@ for metric in list_metric_of_selection:
                          base_width=1,
                          legend=True,
                          title=metric,
-                     ax=ax, show_nodes=True)
+                 cmap="magma",
+                     ax=ax, show_nodes=True, colorbar_label = "(<-- Low) Edge importance in the bike network (High -->)")
     plt.savefig(f"output/optimization/test_parametres/{horodatage}/images/network_{metric}.png")

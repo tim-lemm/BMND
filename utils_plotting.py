@@ -142,7 +142,8 @@ def plot_network(edges_df, nodes_df, ax=None, figsize=(10, 10), node_x_col='x', 
         # Determine colorbar label
         if colorbar_label is None:
             colorbar_label = color_col_num.replace('_', ' ').title()
-        cbar = plt.colorbar(sm, ax=ax, label=colorbar_label, shrink=0.8)
+        cbar = plt.colorbar(sm, ax=ax, shrink=0.8)
+        cbar.set_label(colorbar_label, fontsize=20)
 
     if edges_label_col is not None and edges_label_col in edges_df.columns:
         for _, edge in edges_df.iterrows():
